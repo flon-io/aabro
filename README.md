@@ -3,7 +3,7 @@
 
 Parsing trees.
 
-Where I come from it means "tree" (arbor).
+Where I come from, it means "tree" (from lat. "arbor").
 
 ## License
 
