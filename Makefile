@@ -1,5 +1,7 @@
 
-default: build
+NAME=aabro
+
+default: $(NAME).o
 
 .DEFAULT:
 	cd tmp/ && $(MAKE) $@
@@ -7,11 +9,8 @@ default: build
 spec:
 	cd tmp/ && $(MAKE) spec
 
-.PHONY: clean spec
-
 clean:
-	rm -f tmp/*.o
-	rm -f tmp/*.so
-	rm -f tmp/*.c
-	rm -f tmp/*.h
+	cd tmp/ && $(MAKE) clean
+
+.PHONY: clean spec
 

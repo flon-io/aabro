@@ -1,5 +1,5 @@
 
-CFLAGS=
+CFLAGS=-I../src
 LDLIBS=
 CC=c99
 NAME=aabro
@@ -9,16 +9,20 @@ RODZO=../../rodzo/bin/rodzo
 
 VPATH=../src
 
+s.c: ../spec/*_spec.c
+	$(RODZO) ../spec -o s.c
 
-build: $(NAME).o
-	cp ../src/$(NAME).h .
+spec: s
+	time ./s
 
-spec.c: ../spec/*_spec.c
-	$(RODZO) ../spec
+vspec: s
+	valgrind --leak-check=full -v ./s
 
-spec: build spec.c
-	time ./a.out
+clean:
+	rm -f *.o
+	rm -f *.so
+	rm -f *.c
+	rm -f s
 
-vspec: build spec.c
-	valgrind --leak-check=full -v ./a.out
+.PHONY: spec vspec
 
