@@ -7,14 +7,13 @@ NAME=aabro
 # TODO: at some point deploy rodzo and help deploy it
 RODZO=../../rodzo/bin/rodzo
 
-SRC=../src
-VPATH=$(SRC)
+VPATH=../src
 
 
 build: $(NAME).o
-	cp $(SRC)/$(NAME).h .
+	cp ../src/$(NAME).h .
 
-spec.c:
+spec.c: ../spec/*_spec.c
 	$(RODZO) ../spec
 
 spec: build spec.c
