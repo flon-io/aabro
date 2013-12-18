@@ -12,5 +12,5 @@ spec:
 clean:
 	cd tmp/ && $(MAKE) clean
 
-.PHONY: clean spec
+.PHONY: spec clean
 

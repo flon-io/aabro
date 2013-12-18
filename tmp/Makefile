@@ -24,5 +24,5 @@ clean:
 	rm -f *.c
 	rm -f s
 
-.PHONY: spec vspec
+.PHONY: spec vspec clean
 
