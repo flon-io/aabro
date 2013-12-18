@@ -2,15 +2,17 @@
 CFLAGS=-I../src
 LDLIBS=
 CC=c99
+VPATH=../src
 NAME=aabro
 
 # TODO: at some point deploy rodzo and help deploy it
 RODZO=../../rodzo/bin/rodzo
 
-VPATH=../src
 
 s.c: ../spec/*_spec.c
 	$(RODZO) ../spec -o s.c
+
+s: $(NAME).o
 
 spec: s
 	time ./s

@@ -12,7 +12,8 @@ describe "abr_parse_string()"
 {
   it "flips burgers"
   {
-    ensure(1 == 2);
+    ensure(1 == 1);
+    ensure(3 == 4);
   }
 }
 

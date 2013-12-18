@@ -23,5 +23,26 @@
 // Made in Japan.
 //
 
+#include <stdio.h>
+
 #include "aabro.h"
+
+
+abr_node *abr_malloc_node(char *name, int success)
+{
+  abr_node *n = malloc(sizeof(abr_node));
+
+  n->name = name;
+  n->success = success;
+
+  return n;
+}
+
+char *abr_node_to_string(abr_node *n)
+{
+  char *s = calloc(9 + strlen(n->name), sizeof(char));
+  sprintf(s, "[ %s, %d ]", n->name, n->success);
+
+  return s;
+}
 
