@@ -14,7 +14,11 @@ describe "abr_node"
   {
     it "creates a node"
     {
-      ensure(1 == 2);
+      abr_node *n = abr_malloc_node("nada", 0);
+
+      ensure(n != NULL);
+
+      abr_free_node(n);
     }
   }
   describe "abr_node_to_string(n)"
@@ -22,8 +26,12 @@ describe "abr_node"
     it "returns a string representation of the node"
     {
       abr_node *n = abr_malloc_node("nada", 0);
+      char *s = abr_node_to_string(n);
 
-      ensure(strcmp("[ nada, 0 ]", abr_node_to_string(n)) == 0);
+      ensure(strcmp("[ nada, 0 ]", s) == 0);
+
+      free(s);
+      abr_free_node(n);
     }
   }
 }
