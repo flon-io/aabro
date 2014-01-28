@@ -13,7 +13,7 @@ endif
 s.c: ../spec/*_spec.c
 	$(RODZO) ../spec -o s.c
 
-s: $(NAME).o flutil.o
+s: $(NAME).o $(FLIBS:=.o)
 
 spec: s
 	time ./s
