@@ -29,7 +29,7 @@
 typedef struct abr_node {
   char *name;
   int success;
-  struct abr_node **children;
+  struct abr_node *children;
 } abr_node;
 
 abr_node *abr_parse_string(char *input, int offset, char *s);
