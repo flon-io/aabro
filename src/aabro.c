@@ -29,6 +29,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "flutil.h"
 #include "aabro.h"
 
 
@@ -51,9 +52,6 @@ void abr_free_node(abr_node *n)
 
 char *abr_node_to_string(abr_node *n)
 {
-  char *s = calloc(9 + strlen(n->name), sizeof(char));
-  sprintf(s, "[ %s, %d ]", n->name, n->success);
-
-  return s;
+  return flu_sprintf("[ %s, %d ]", n->name, n->success);
 }
 
