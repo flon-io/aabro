@@ -34,8 +34,8 @@ typedef struct abr_node {
 
 abr_node *abr_parse_string(char *input, int offset, char *s);
 
-abr_node *abr_malloc_node(char *name, int success);
-void abr_free_node(abr_node *n);
+abr_node *abr_node_malloc(char *name, int success);
+void abr_node_free(abr_node *n);
 
 char *abr_node_to_string(abr_node *n);
 

@@ -33,7 +33,7 @@
 #include "aabro.h"
 
 
-abr_node *abr_malloc_node(char *name, int success)
+abr_node *abr_node_malloc(char *name, int success)
 {
   abr_node *n = malloc(sizeof(abr_node));
 
@@ -43,7 +43,7 @@ abr_node *abr_malloc_node(char *name, int success)
   return n;
 }
 
-void abr_free_node(abr_node *n)
+void abr_node_free(abr_node *n)
 {
   if (n == NULL) return;
   if (n->name != NULL) free(n->name);

@@ -16,14 +16,14 @@ describe "abr_node"
   }
   after each
   {
-    if (n != NULL) abr_free_node(n);
+    if (n != NULL) abr_node_free(n);
   }
 
-  describe "abr_malloc_node()"
+  describe "abr_node_malloc_node()"
   {
     it "creates a node"
     {
-      n = abr_malloc_node("nada", 0);
+      n = abr_node_malloc("nada", 0);
 
       ensure(n != NULL);
     }
@@ -32,7 +32,7 @@ describe "abr_node"
   {
     it "returns a string representation of the node"
     {
-      n = abr_malloc_node("nada", 0);
+      n = abr_node_malloc("nada", 0);
 
       ensure(abr_node_to_string(n) ===f "[ nada, 0 ]");
     }
