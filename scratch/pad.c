@@ -94,4 +94,17 @@ void my_parse_value(abr_context *c, ...)
     my_parse_optional_spaces,
     NULL);
 }
+// circularity ?
+
+abr_p_sequence / abr_p_alternative
+abr_p_and / abr_p_or
+
+abr_p_char
+abr_p_string
+abr_p_regex
+
+abr_p_repetition
+abr_p_not
+
+abr_p_lookahead //presence / absence
 
