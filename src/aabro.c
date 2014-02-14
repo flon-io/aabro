@@ -55,3 +55,8 @@ char *abr_node_to_string(abr_node *n)
   return flu_sprintf("[ %s, %d ]", n->name, n->success);
 }
 
+abr_node *abr_p_string(char *input, int offset, ...)
+{
+  return NULL;
+}
+

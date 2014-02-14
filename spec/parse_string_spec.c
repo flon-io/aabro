@@ -8,12 +8,22 @@
 #include "aabro.h"
 
 
-describe "abr_parse_string()"
+describe "abr_p_string()"
 {
-  it "flips burgers"
+  before each
   {
-    ensure(1 == 1);
-    ensure(3 == 4);
+    abr_node *n = NULL;
+  }
+  after each
+  {
+    if (n != NULL) abr_node_free(n);
+  }
+
+  it "parses"
+  {
+    n = abr_p_string("xxx", 0, "xxx");
+
+    ensure(n != NULL);
   }
 }
 

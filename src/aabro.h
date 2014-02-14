@@ -26,18 +26,26 @@
 #ifndef AABRO_H
 #define AABRO_H
 
+//
+// abr_node
+
 typedef struct abr_node {
   char *name;
   int success;
   struct abr_node *children;
 } abr_node;
 
-abr_node *abr_parse_string(char *input, int offset, char *s);
-
 abr_node *abr_node_malloc(char *name, int success);
 void abr_node_free(abr_node *n);
 
 char *abr_node_to_string(abr_node *n);
+
+//
+// abr_p_func
+
+typedef abr_node *abr_parse_func(char *input, int offset, ...);
+
+abr_node *abr_p_string(char *input, int offset, ...);
 
 #endif // AABRO_H
 
