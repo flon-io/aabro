@@ -33,12 +33,15 @@
 #include "aabro.h"
 
 
-abr_node *abr_node_malloc(char *name, int success)
+abr_node *abr_node_malloc(int success, int offset, int length)
 {
   abr_node *n = malloc(sizeof(abr_node));
 
-  n->name = strdup(name);
+  n->name = NULL;
   n->success = success;
+  n->offset = offset;
+  n->length = length;
+  n->children = NULL;
 
   return n;
 }
@@ -52,11 +55,30 @@ void abr_node_free(abr_node *n)
 
 char *abr_node_to_string(abr_node *n)
 {
-  return flu_sprintf("[ %s, %d ]", n->name, n->success);
+  return flu_sprintf(
+    "[ %s, %d, %d, %d ]",
+    n->name,
+    n->success,
+    n->offset,
+    n->length);
 }
 
 abr_node *abr_p_string(char *input, int offset, ...)
 {
-  return NULL;
+  va_list ap;
+  va_start(ap, offset);
+  char *s = va_arg(ap, char *);
+  va_end(ap);
+
+  int su = 1;
+  int le = strlen(s);
+
+  if (strncmp(input + offset, s, le) != 0) { su = 0; le = -1; }
+
+  //free(s);
+    // no, it's probably a string literal...
+    // let the caller free it if necessary
+
+  return abr_node_malloc(su, offset, le);
 }
 

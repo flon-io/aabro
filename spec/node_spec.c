@@ -23,7 +23,7 @@ describe "abr_node"
   {
     it "creates a node"
     {
-      n = abr_node_malloc("nada", 0);
+      n = abr_node_malloc(0, 1, 2);
 
       ensure(n != NULL);
     }
@@ -32,9 +32,9 @@ describe "abr_node"
   {
     it "returns a string representation of the node"
     {
-      n = abr_node_malloc("nada", 0);
+      n = abr_node_malloc(0, 1, 2);
 
-      ensure(abr_node_to_string(n) ===f "[ nada, 0 ]");
+      ensure(abr_node_to_string(n) ===f "[ (null), 0, 1, 2 ]");
     }
   }
 }

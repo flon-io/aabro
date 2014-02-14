@@ -106,5 +106,7 @@ abr_p_regex
 abr_p_repetition
 abr_p_not
 
+abr_p_name
+
 abr_p_lookahead //presence / absence
 

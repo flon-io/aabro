@@ -32,10 +32,12 @@
 typedef struct abr_node {
   char *name;
   int success;
+  int offset;
+  int length;
   struct abr_node *children;
 } abr_node;
 
-abr_node *abr_node_malloc(char *name, int success);
+abr_node *abr_node_malloc(int success, int offset, int length);
 void abr_node_free(abr_node *n);
 
 char *abr_node_to_string(abr_node *n);
