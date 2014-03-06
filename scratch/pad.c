@@ -110,3 +110,13 @@ abr_p_name
 
 abr_p_lookahead //presence / absence
 
+// ...
+
+void my_parse_xs(char *s, int offset, ...)
+{
+  return abr_p_repetition(*s, offset, 0, 1, my_parse_string);
+}
+// => we have to define a method for anything useful...
+// => we're better served by compiled a parser tree
+//    (as opposed to a parse tree)
+
