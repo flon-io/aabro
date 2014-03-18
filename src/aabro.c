@@ -33,42 +33,42 @@
 #include "aabro.h"
 
 
-abr_node *abr_node_malloc(int success, int offset, int length)
+abr_tree *abr_tree_malloc(int success, int offset, int length)
 {
-  abr_node *n = malloc(sizeof(abr_node));
+  abr_tree *t = malloc(sizeof(abr_tree));
 
-  n->name = NULL;
-  n->success = success;
-  n->offset = offset;
-  n->length = length;
-  n->children = NULL;
+  t->name = NULL;
+  t->success = success;
+  t->offset = offset;
+  t->length = length;
+  t->children = NULL;
 
-  return n;
+  return t;
 }
 
-void abr_node_free(abr_node *n)
+void abr_tree_free(abr_tree *t)
 {
-  if (n == NULL) return;
-  if (n->name != NULL) free(n->name);
-  free(n);
+  if (t == NULL) return;
+  if (t->name != NULL) free(t->name);
+  free(t);
 }
 
-char *abr_node_to_string(abr_node *n)
+char *abr_tree_to_string(abr_tree *t)
 {
   return flu_sprintf(
     "[ %s, %d, %d, %d ]",
-    n->name,
-    n->success,
-    n->offset,
-    n->length);
+    t->name,
+    t->success,
+    t->offset,
+    t->length);
 }
 
-abr_node *abr_p_string(char *input, int offset, ...)
+//
+// the parse methods
+
+abr_tree *abr_p_string(char *input, int offset, abr_parser *p)
 {
-  va_list ap;
-  va_start(ap, offset);
-  char *s = va_arg(ap, char *);
-  va_end(ap);
+  char *s = p->string;
 
   int su = 1;
   int le = strlen(s);
@@ -79,6 +79,11 @@ abr_node *abr_p_string(char *input, int offset, ...)
     // no, it's probably a string literal...
     // let the caller free it if necessary
 
-  return abr_node_malloc(su, offset, le);
+  return abr_tree_malloc(su, offset, le);
+}
+
+abr_tree *abr_parse(char *input, int offset, abr_parser *p)
+{
+  return NULL;
 }
 

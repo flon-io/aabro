@@ -38,23 +38,39 @@ typedef struct abr_tree {
 } abr_tree;
 
 abr_tree *abr_tree_malloc(int success, int offset, int length);
-void abr_tree_free(abr_node *n);
+void abr_tree_free(abr_tree *t);
 
-char *abr_tree_to_string(abr_tree *n);
+char *abr_tree_to_string(abr_tree *t);
 
 //
 // abr_parser_node
 
 typedef struct abr_parser {
-  char *name;
-  char **parameters;
+  char type;
+  char *string;
+  //regex_t *regex;
+  int min; int max;
   struct abr_parser *children;
 } abr_parser;
 
-abr_tree *abr_p_string(char *input, int offset, abr_parser *p);
+void abr_parser_free(abr_parser *p);
+
+char *abr_parser_to_string(abr_parser *p);
 
 //
 // abr_parser builders
+
+/*
+ * type 's' string
+ * type 'c' char
+ * type 'r' regex
+ * type '[' rep
+ * type '|' alternative
+ * type '!' not, negation
+ * type 'n' name
+ * type 'p' presence
+ * type 'a' absence
+ */
 
 abr_parser *abr_string(char *s);
 abr_parser *abr_char(char c);
@@ -70,7 +86,7 @@ abr_parser *abr_presence(abr_parser *n);
 abr_parser *abr_absence(abr_parser *n);
 
 //
-// entry
+// entry point
 
 abr_tree *abr_parse(char *input, int offset, abr_parser *p);
 
