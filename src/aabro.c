@@ -100,11 +100,6 @@ abr_parser *abr_parser_malloc(
   return p;
 }
 
-char *abr_parser_to_string(abr_parser *p)
-{
-  return strdup("");
-}
-
 //
 // the builder methods
 
@@ -126,9 +121,10 @@ abr_parser *abr_string(char *s)
 }
 
 //
-// the parse methods
+// the parse and to_s methods
 
 typedef abr_tree *abr_p_func(char *, int, abr_parser *);
+typedef char *abr_p_to_s_func(abr_parser *);
 
 abr_tree *abr_p_string(char *input, int offset, abr_parser *p)
 {
@@ -146,7 +142,17 @@ abr_tree *abr_p_string(char *input, int offset, abr_parser *p)
   return abr_tree_malloc(su, offset, le);
 }
 
+char *abr_p_string_to_s(abr_parser *p)
+{
+  return strdup("");
+}
+
 abr_tree *abr_p_char(char *input, int offset, abr_parser *p)
+{
+  return NULL;
+}
+
+char *abr_p_char_to_s(abr_parser *p)
 {
   return NULL;
 }
@@ -156,7 +162,17 @@ abr_tree *abr_p_regex(char *input, int offset, abr_parser *p)
   return NULL;
 }
 
+char *abr_p_regex_to_s(abr_parser *p)
+{
+  return NULL;
+}
+
 abr_tree *abr_p_rep(char *input, int offset, abr_parser *p)
+{
+  return NULL;
+}
+
+char *abr_p_rep_to_s(abr_parser *p)
 {
   return NULL;
 }
@@ -166,7 +182,17 @@ abr_tree *abr_p_alt(char *input, int offset, abr_parser *p)
   return NULL;
 }
 
+char *abr_p_alt_to_s(abr_parser *p)
+{
+  return NULL;
+}
+
 abr_tree *abr_p_not(char *input, int offset, abr_parser *p)
+{
+  return NULL;
+}
+
+char *abr_p_not_to_s(abr_parser *p)
 {
   return NULL;
 }
@@ -176,12 +202,27 @@ abr_tree *abr_p_name(char *input, int offset, abr_parser *p)
   return NULL;
 }
 
+char *abr_p_name_to_s(abr_parser *p)
+{
+  return NULL;
+}
+
 abr_tree *abr_p_presence(char *input, int offset, abr_parser *p)
 {
   return NULL;
 }
 
+char *abr_p_presence_to_s(abr_parser *p)
+{
+  return NULL;
+}
+
 abr_tree *abr_p_absence(char *input, int offset, abr_parser *p)
+{
+  return NULL;
+}
+
+char *abr_p_absence_to_s(abr_parser *p)
 {
   return NULL;
 }
@@ -197,9 +238,25 @@ abr_p_func *abr_p_funcs[] = { // const ?
   abr_p_presence,
   abr_p_absence
 };
+abr_p_to_s_func *abr_p_to_s_funcs[] = { // const ?
+  abr_p_string_to_s,
+  abr_p_char_to_s,
+  abr_p_regex_to_s,
+  abr_p_rep_to_s,
+  abr_p_alt_to_s,
+  abr_p_not_to_s,
+  abr_p_name_to_s,
+  abr_p_presence_to_s,
+  abr_p_absence_to_s
+};
 
 abr_tree *abr_parse(char *input, int offset, abr_parser *p)
 {
   return NULL;
+}
+
+char *abr_parser_to_string(abr_parser *p)
+{
+  return abr_p_to_s_funcs[p->type](p);
 }
 
