@@ -64,7 +64,49 @@ char *abr_tree_to_string(abr_tree *t)
 }
 
 //
-// the parse methods
+// the abr_parser methods
+
+void abr_parser_free(abr_parser *p)
+{
+  if (p == NULL) return;
+
+  if (p->string != NULL) free(p->string);
+  //if (p->regex != NULL) regfree(p->regex);
+
+  if (p->children != NULL)
+  {
+    for(size_t i = 0; ; i++)
+    {
+      if (p->children[i] == NULL) break;
+      abr_parser_free(p->children[i]);
+    }
+  }
+  free(p);
+}
+
+abr_parser *abr_parser_malloc(
+  unsigned short type, char *string, int min, int max
+)
+{
+  abr_parser *p = malloc(sizeof(abr_parser));
+
+  p->type = type;
+  p->string = NULL;
+  if (string != NULL) p->string = strdup(string);
+  //p->regex = NULL;
+  p->min = min; p->max = max;
+  p->children = NULL;
+
+  return p;
+}
+
+char *abr_parser_to_string(abr_parser *p)
+{
+  return strdup("");
+}
+
+//
+// the builder methods
 
 /*
  * type 0 string
@@ -77,6 +119,14 @@ char *abr_tree_to_string(abr_tree *t)
  * type 7 presence
  * type 8 absence
  */
+
+abr_parser *abr_string(char *s)
+{
+  return abr_parser_malloc(0, s, -1, -1);
+}
+
+//
+// the parse methods
 
 typedef abr_tree *abr_p_func(char *, int, abr_parser *);
 

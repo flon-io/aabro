@@ -21,7 +21,7 @@ describe "abr_tree"
 
   describe "abr_tree_malloc()"
   {
-    it "creates a node"
+    it "creates a tree struct"
     {
       t = abr_tree_malloc(0, 1, 2);
 
@@ -30,7 +30,7 @@ describe "abr_tree"
   }
   describe "abr_tree_to_string(t)"
   {
-    it "returns a string representation of the node"
+    it "returns a string representation of the tree struct"
     {
       t = abr_tree_malloc(0, 1, 2);
 
