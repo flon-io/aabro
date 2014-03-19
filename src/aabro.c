@@ -66,6 +66,20 @@ char *abr_tree_to_string(abr_tree *t)
 //
 // the parse methods
 
+/*
+ * type 0 string
+ * type 1 char
+ * type 2 regex
+ * type 3 rep
+ * type 4 alternative
+ * type 5 not, negation
+ * type 6 name
+ * type 7 presence
+ * type 8 absence
+ */
+
+typedef abr_tree *abr_p_func(char *, int, abr_parser *);
+
 abr_tree *abr_p_string(char *input, int offset, abr_parser *p)
 {
   char *s = p->string;
@@ -81,6 +95,58 @@ abr_tree *abr_p_string(char *input, int offset, abr_parser *p)
 
   return abr_tree_malloc(su, offset, le);
 }
+
+abr_tree *abr_p_char(char *input, int offset, abr_parser *p)
+{
+  return NULL;
+}
+
+abr_tree *abr_p_regex(char *input, int offset, abr_parser *p)
+{
+  return NULL;
+}
+
+abr_tree *abr_p_rep(char *input, int offset, abr_parser *p)
+{
+  return NULL;
+}
+
+abr_tree *abr_p_alt(char *input, int offset, abr_parser *p)
+{
+  return NULL;
+}
+
+abr_tree *abr_p_not(char *input, int offset, abr_parser *p)
+{
+  return NULL;
+}
+
+abr_tree *abr_p_name(char *input, int offset, abr_parser *p)
+{
+  return NULL;
+}
+
+abr_tree *abr_p_presence(char *input, int offset, abr_parser *p)
+{
+  return NULL;
+}
+
+abr_tree *abr_p_absence(char *input, int offset, abr_parser *p)
+{
+  return NULL;
+}
+
+abr_p_func *abr_p_funcs[] = { // const ?
+  abr_p_string,
+  abr_p_char,
+  abr_p_regex,
+  abr_p_rep,
+  abr_p_alt,
+  abr_p_not,
+  abr_p_name,
+  abr_p_presence,
+  abr_p_absence
+};
 
 abr_tree *abr_parse(char *input, int offset, abr_parser *p)
 {

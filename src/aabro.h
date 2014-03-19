@@ -46,7 +46,7 @@ char *abr_tree_to_string(abr_tree *t);
 // abr_parser_node
 
 typedef struct abr_parser {
-  char type;
+  unsigned short type;
   char *string;
   //regex_t *regex;
   int min; int max;
@@ -59,18 +59,6 @@ char *abr_parser_to_string(abr_parser *p);
 
 //
 // abr_parser builders
-
-/*
- * type 's' string
- * type 'c' char
- * type 'r' regex
- * type '[' rep
- * type '|' alternative
- * type '!' not, negation
- * type 'n' name
- * type 'p' presence
- * type 'a' absence
- */
 
 abr_parser *abr_string(char *s);
 abr_parser *abr_char(char c);
