@@ -123,49 +123,49 @@ abr_parser *abr_string(char *s)
 //
 // the to_s methods
 
-typedef char *abr_p_to_s_func(abr_parser *);
+typedef char *abr_p_to_s_func(int indent, abr_parser *);
 
-char *abr_p_string_to_s(abr_parser *p)
+char *abr_p_string_to_s(int indent, abr_parser *p)
 {
   return strdup("");
 }
 
-char *abr_p_char_to_s(abr_parser *p)
+char *abr_p_char_to_s(int indent, abr_parser *p)
 {
   return NULL;
 }
 
-char *abr_p_regex_to_s(abr_parser *p)
+char *abr_p_regex_to_s(int indent, abr_parser *p)
 {
   return NULL;
 }
 
-char *abr_p_rep_to_s(abr_parser *p)
+char *abr_p_rep_to_s(int indent, abr_parser *p)
 {
   return NULL;
 }
 
-char *abr_p_alt_to_s(abr_parser *p)
+char *abr_p_alt_to_s(int indent, abr_parser *p)
 {
   return NULL;
 }
 
-char *abr_p_not_to_s(abr_parser *p)
+char *abr_p_not_to_s(int indent, abr_parser *p)
 {
   return NULL;
 }
 
-char *abr_p_name_to_s(abr_parser *p)
+char *abr_p_name_to_s(int indent, abr_parser *p)
 {
   return NULL;
 }
 
-char *abr_p_presence_to_s(abr_parser *p)
+char *abr_p_presence_to_s(int indent, abr_parser *p)
 {
   return NULL;
 }
 
-char *abr_p_absence_to_s(abr_parser *p)
+char *abr_p_absence_to_s(int indent, abr_parser *p)
 {
   return NULL;
 }
@@ -184,7 +184,7 @@ abr_p_to_s_func *abr_p_to_s_funcs[] = { // const ?
 
 char *abr_parser_to_string(abr_parser *p)
 {
-  return abr_p_to_s_funcs[p->type](p);
+  return abr_p_to_s_funcs[p->type](0, p);
 }
 
 //
