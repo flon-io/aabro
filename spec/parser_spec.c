@@ -36,7 +36,7 @@ describe "abr_parser"
     {
       p = abr_string("toto");
 
-      ensure(abr_parser_to_string(p) ===f "xxx");
+      ensure(abr_parser_to_string(p) ===f "abr_string(\"toto\")");
     }
   }
 }

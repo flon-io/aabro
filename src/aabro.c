@@ -127,7 +127,9 @@ typedef char *abr_p_to_s_func(int indent, abr_parser *);
 
 char *abr_p_string_to_s(int indent, abr_parser *p)
 {
-  return strdup("");
+  flu_sbuffer *b = flu_sbuffer_malloc();
+  flu_sbprintf(b, "abr_string(\"%s\")", p->string);
+  return flu_sbuffer_to_string(b);
 }
 
 char *abr_p_char_to_s(int indent, abr_parser *p)
