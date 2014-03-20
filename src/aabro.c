@@ -264,6 +264,6 @@ abr_p_func *abr_p_funcs[] = { // const ?
 
 abr_tree *abr_parse(char *input, int offset, abr_parser *p)
 {
-  return NULL;
+  return abr_p_funcs[p->type](input, offset, p);
 }
 
