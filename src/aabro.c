@@ -104,15 +104,14 @@ abr_parser *abr_parser_malloc(
 // the builder methods
 
 /*
- * type 0 string
- * type 1 char
- * type 2 regex
- * type 3 rep
- * type 4 alternative
- * type 5 not, negation
- * type 6 name
- * type 7 presence
- * type 8 absence
+ * string
+ * regex
+ * rep
+ * alternative
+ * not, negation
+ * name
+ * presence
+ * absence
  */
 
 abr_parser *abr_string(char *s)
@@ -131,11 +130,6 @@ char *abr_p_string_to_s(int indent, abr_parser *p)
   for (int i = 0; i < indent; i++) flu_sbprintf(b, "  ");
   flu_sbprintf(b, "abr_string(\"%s\")", p->string);
   return flu_sbuffer_to_string(b);
-}
-
-char *abr_p_char_to_s(int indent, abr_parser *p)
-{
-  return NULL;
 }
 
 char *abr_p_regex_to_s(int indent, abr_parser *p)
@@ -175,7 +169,6 @@ char *abr_p_absence_to_s(int indent, abr_parser *p)
 
 abr_p_to_s_func *abr_p_to_s_funcs[] = { // const ?
   abr_p_string_to_s,
-  abr_p_char_to_s,
   abr_p_regex_to_s,
   abr_p_rep_to_s,
   abr_p_alt_to_s,
@@ -209,11 +202,6 @@ abr_tree *abr_p_string(char *input, int offset, abr_parser *p)
     // let the caller free it if necessary
 
   return abr_tree_malloc(su, offset, le);
-}
-
-abr_tree *abr_p_char(char *input, int offset, abr_parser *p)
-{
-  return NULL;
 }
 
 abr_tree *abr_p_regex(char *input, int offset, abr_parser *p)
@@ -253,7 +241,6 @@ abr_tree *abr_p_absence(char *input, int offset, abr_parser *p)
 
 abr_p_func *abr_p_funcs[] = { // const ?
   abr_p_string,
-  abr_p_char,
   abr_p_regex,
   abr_p_rep,
   abr_p_alt,
