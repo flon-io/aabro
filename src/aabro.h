@@ -61,11 +61,11 @@ char *abr_parser_to_string(abr_parser *p);
 // abr_parser builders
 
 abr_parser *abr_string(char *s);
-abr_parser *abr_char(char c);
 //abr_parser *abr_regex(regex_t *r);
 
 abr_parser *abr_rep(abr_parser *n, int min, int max);
 abr_parser *abr_alt(abr_parser *n, ...);
+abr_parser *abr_seq(abr_parser *n, ...);
 abr_parser *abr_not(abr_parser *n);
 
 abr_parser *abr_name(char *name, abr_parser *n);
