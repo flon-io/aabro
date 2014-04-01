@@ -63,15 +63,15 @@ char *abr_parser_to_string(abr_parser *p);
 abr_parser *abr_string(char *s);
 //abr_parser *abr_regex(regex_t *r);
 
-abr_parser *abr_rep(abr_parser *n, int min, int max);
-abr_parser *abr_alt(abr_parser *n, ...);
-abr_parser *abr_seq(abr_parser *n, ...);
-abr_parser *abr_not(abr_parser *n);
+abr_parser *abr_rep(abr_parser *p, int min, int max);
+abr_parser *abr_alt(abr_parser *p, ...);
+abr_parser *abr_seq(abr_parser *p, ...);
+abr_parser *abr_not(abr_parser *p);
 
-abr_parser *abr_name(char *name, abr_parser *n);
+abr_parser *abr_name(char *name, abr_parser *p);
 
-abr_parser *abr_presence(abr_parser *n);
-abr_parser *abr_absence(abr_parser *n);
+abr_parser *abr_presence(abr_parser *p);
+abr_parser *abr_absence(abr_parser *p);
 
 //
 // entry point

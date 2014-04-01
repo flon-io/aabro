@@ -84,21 +84,23 @@ void abr_parser_free(abr_parser *p)
   free(p);
 }
 
-abr_parser *abr_parser_malloc(
-  unsigned short type, char *string, int min, int max
-)
+abr_parser *abr_parser_malloc(unsigned short type)
 {
   abr_parser *p = malloc(sizeof(abr_parser));
 
   p->type = type;
   p->string = NULL;
-  if (string != NULL) p->string = strdup(string);
   //p->regex = NULL;
-  p->min = min; p->max = max;
+  p->min = -1; p->max = -1;
   p->children = NULL;
 
   return p;
 }
+
+//
+// some declarations
+
+char *abr_p_to_s(abr_parser *p);
 
 //
 // the builder methods
@@ -106,8 +108,9 @@ abr_parser *abr_parser_malloc(
 /*
  * string
  * regex
- * rep
+ * repetition
  * alternative
+ * sequence
  * not, negation
  * name
  * presence
@@ -116,7 +119,20 @@ abr_parser *abr_parser_malloc(
 
 abr_parser *abr_string(char *s)
 {
-  return abr_parser_malloc(0, s, -1, -1);
+  abr_parser *p = abr_parser_malloc(0);
+  p->string = strdup(s);
+  return p;
+}
+
+abr_parser *abr_rep(abr_parser *p, int min, int max)
+{
+  abr_parser *r = abr_parser_malloc(2);
+  r->min = min;
+  r->max = max;
+  r->children = calloc(2, sizeof(abr_parser *));
+  r->children[0] = p;
+  r->children[1] = NULL;
+  return r;
 }
 
 //
@@ -139,7 +155,12 @@ char *abr_p_regex_to_s(int indent, abr_parser *p)
 
 char *abr_p_rep_to_s(int indent, abr_parser *p)
 {
-  return NULL;
+  flu_sbuffer *b = flu_sbuffer_malloc();
+  for (int i = 0; i < indent; i++) flu_sbprintf(b, "  ");
+  flu_sbprintf(b, "abr_rep(\n");
+  flu_sbprintf(b, "  %s,\n", abr_p_to_s(p->children[0]));
+  flu_sbprintf(b, "  %i, %i)", p->min, p->max);
+  return flu_sbuffer_to_string(b);
 }
 
 char *abr_p_alt_to_s(int indent, abr_parser *p)
@@ -179,6 +200,11 @@ abr_p_to_s_func *abr_p_to_s_funcs[] = { // const ?
 };
 
 char *abr_parser_to_string(abr_parser *p)
+{
+  return abr_p_to_s_funcs[p->type](0, p);
+}
+
+char *abr_p_to_s(abr_parser *p)
 {
   return abr_p_to_s_funcs[p->type](0, p);
 }
