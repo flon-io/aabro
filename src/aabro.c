@@ -32,8 +32,12 @@
 #include "flutil.h"
 #include "aabro.h"
 
+int MAX_REPS = 2048; // TODO: decide later
 
-abr_tree *abr_tree_malloc(int success, int offset, int length)
+
+abr_tree *abr_tree_malloc(
+  int success, int offset, int length, abr_tree **children
+)
 {
   abr_tree *t = malloc(sizeof(abr_tree));
 
@@ -41,7 +45,7 @@ abr_tree *abr_tree_malloc(int success, int offset, int length)
   t->success = success;
   t->offset = offset;
   t->length = length;
-  t->children = NULL;
+  t->children = children;
 
   return t;
 }
@@ -55,12 +59,16 @@ void abr_tree_free(abr_tree *t)
 
 char *abr_tree_to_string(abr_tree *t)
 {
+  if (t == NULL) return strdup("{null}");
+
   return flu_sprintf(
     "[ %s, %d, %d, %d ]",
     t->name,
     t->success,
     t->offset,
     t->length);
+
+  // TODO: display children, indent, ...
 }
 
 //
@@ -101,6 +109,7 @@ abr_parser *abr_parser_malloc(unsigned short type)
 // some declarations
 
 char *abr_p_to_s(abr_parser *p);
+  // TODO: move that to aabro.h ?
 
 //
 // the builder methods
@@ -227,7 +236,7 @@ abr_tree *abr_p_string(char *input, int offset, abr_parser *p)
     // no, it's probably a string literal...
     // let the caller free it if necessary
 
-  return abr_tree_malloc(su, offset, le);
+  return abr_tree_malloc(su, offset, le, NULL);
 }
 
 abr_tree *abr_p_regex(char *input, int offset, abr_parser *p)
@@ -237,7 +246,29 @@ abr_tree *abr_p_regex(char *input, int offset, abr_parser *p)
 
 abr_tree *abr_p_rep(char *input, int offset, abr_parser *p)
 {
-  return NULL;
+  int max = p->max;
+  if (max < 0) max = MAX_REPS;
+  int off = offset;
+  size_t count = 0;
+  int length = 0;
+  abr_tree **reps = calloc(max + 1, sizeof(abr_tree *));
+
+  for (size_t i = 0; i < p->max; i++)
+  {
+    reps[i] = abr_parse(input, off, p->children[0]);
+    if ( ! reps[i]->success) break;
+    count++;
+    off += reps[i]->length;
+    length += reps[i]->length;
+  }
+  int success = 1;
+  if (count < p->min) success = 0;
+
+  abr_tree **children = calloc(count + 1, sizeof(abr_tree *));
+  for (size_t i = 0; i < count; i++) children[i] = reps[i];
+  free(reps);
+
+  return abr_tree_malloc(success, offset, length, children);
 }
 
 abr_tree *abr_p_alt(char *input, int offset, abr_parser *p)

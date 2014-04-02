@@ -34,10 +34,9 @@ typedef struct abr_tree {
   int success;
   int offset;
   int length;
-  struct abr_tree *children;
+  struct abr_tree **children;
 } abr_tree;
 
-abr_tree *abr_tree_malloc(int success, int offset, int length);
 void abr_tree_free(abr_tree *t);
 
 char *abr_tree_to_string(abr_tree *t);
