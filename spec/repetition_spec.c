@@ -57,7 +57,10 @@ context "repetition"
       t = abr_parse("xy", 0, p);
       char *s = abr_tree_to_string(t);
 
-      ensure(s ===f "[ (null), 1, 0, 2, ... ]");
+      ensure(s ===f ""
+        "[ (null), 1, 0, 2, [\n"
+        "  [ (null), 1, 0, 2, [] ]\n"
+        "] ]");
     }
 
     it "matches twice"

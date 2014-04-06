@@ -23,7 +23,7 @@ describe "abr_tree"
   {
     it "creates a tree struct"
     {
-      t = abr_tree_malloc(0, 1, 2);
+      t = abr_tree_malloc(0, 1, 2, NULL);
 
       ensure(t != NULL);
     }
@@ -32,9 +32,9 @@ describe "abr_tree"
   {
     it "returns a string representation of the tree struct"
     {
-      t = abr_tree_malloc(0, 1, 2);
+      t = abr_tree_malloc(0, 1, 2, NULL);
 
-      ensure(abr_tree_to_string(t) ===f "[ (null), 0, 1, 2 ]");
+      ensure(abr_tree_to_string(t) ===f "[ (null), 0, 1, 2, [] ]");
     }
   }
 }

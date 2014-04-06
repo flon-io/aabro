@@ -54,21 +54,49 @@ void abr_tree_free(abr_tree *t)
 {
   if (t == NULL) return;
   if (t->name != NULL) free(t->name);
+  // TODO: free children!
   free(t);
 }
 
-char *abr_tree_to_string(abr_tree *t)
+void abr_t_to_s(abr_tree *t, flu_sbuffer *b, int indent)
 {
-  if (t == NULL) return strdup("{null}");
+  for (int i = 0; i < indent; i++) flu_sbprintf(b, "  ");
 
-  return flu_sprintf(
-    "[ %s, %d, %d, %d ]",
+  if (t == NULL)
+  {
+    flu_sbprintf(b, "{null}");
+    return;
+  }
+
+  flu_sbprintf(
+    b,
+    "[ %s, %d, %d, %d, [",
     t->name,
     t->success,
     t->offset,
     t->length);
 
-  // TODO: display children, indent, ...
+  if (t->children == NULL)
+  {
+    flu_sbprintf(b, "] ]");
+    return;
+  }
+
+  for (size_t i = 0; ;i++)
+  {
+    if (t->children[i] == NULL) break;
+    flu_sbprintf(b, "\n");
+    abr_t_to_s(t->children[i], b, indent + 1);
+  }
+
+  flu_sbprintf(b, "\n] ]");
+}
+
+char *abr_tree_to_string(abr_tree *t)
+{
+  flu_sbuffer *b = flu_sbuffer_malloc();
+  abr_t_to_s(t, b, 0);
+  return flu_sbuffer_to_string(b);
 }
 
 //
