@@ -80,16 +80,27 @@ context "repetition"
       ensure(t->children[1]->success == 1);
       ensure(t->children[1]->offset == 2);
       ensure(t->children[1]->length == 2);
+
+      char *s = abr_tree_to_string(t);
+
+      ensure(s ===f ""
+        "[ (null), 1, 0, 4, [\n"
+        "  [ (null), 1, 0, 2, [] ]\n"
+        "  [ (null), 1, 2, 2, [] ]\n"
+        "] ]");
     }
 
-    //it "fails"
-    //{
-    //  p = abr_string("xxx");
-    //  t = abr_parse("yyy", 0, p);
-    //  char *s = abr_tree_to_string(t);
+    it "doesn't match"
+    {
+      p = abr_rep(abr_string("xy"), 2, 3);
+      t = abr_parse("xy", 0, p);
+      char *s = abr_tree_to_string(t);
 
-    //  ensure(s ===f "[ (null), 0, 0, -1 ]");
-    //}
+      ensure(s ===f ""
+        "[ (null), 0, 0, 2, [\n"
+        "  [ (null), 1, 0, 2, [] ]\n"
+        "] ]");
+    }
   }
 }
 
