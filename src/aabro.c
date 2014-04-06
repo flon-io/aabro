@@ -149,12 +149,6 @@ abr_parser *abr_parser_malloc(unsigned short type)
 }
 
 //
-// some declarations
-
-char *abr_p_to_s(abr_parser *p);
-  // TODO: move that to aabro.h ?
-
-//
 // the builder methods
 
 /*
@@ -190,54 +184,45 @@ abr_parser *abr_rep(abr_parser *p, int min, int max)
 //
 // the to_s methods
 
-typedef char *abr_p_to_s_func(int indent, abr_parser *);
+typedef void abr_p_to_s_func(flu_sbuffer *, int, abr_parser *);
 
-char *abr_p_string_to_s(int indent, abr_parser *p)
+void abr_p_to_s(flu_sbuffer *b, int indent, abr_parser *p);
+
+void abr_p_string_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 {
-  flu_sbuffer *b = flu_sbuffer_malloc();
-  for (int i = 0; i < indent; i++) flu_sbprintf(b, "  ");
   flu_sbprintf(b, "abr_string(\"%s\")", p->string);
-  return flu_sbuffer_to_string(b);
 }
 
-char *abr_p_regex_to_s(int indent, abr_parser *p)
+void abr_p_regex_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 {
-  return NULL;
 }
 
-char *abr_p_rep_to_s(int indent, abr_parser *p)
+void abr_p_rep_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 {
-  flu_sbuffer *b = flu_sbuffer_malloc();
-  for (int i = 0; i < indent; i++) flu_sbprintf(b, "  ");
   flu_sbprintf(b, "abr_rep(\n");
-  flu_sbprintf(b, "  %s,\n", abr_p_to_s(p->children[0]));
+  abr_p_to_s(b, indent + 1, p->children[0]);
+  flu_sbprintf(b, ",\n");
   flu_sbprintf(b, "  %i, %i)", p->min, p->max);
-  return flu_sbuffer_to_string(b);
 }
 
-char *abr_p_alt_to_s(int indent, abr_parser *p)
+void abr_p_alt_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 {
-  return NULL;
 }
 
-char *abr_p_not_to_s(int indent, abr_parser *p)
+void abr_p_not_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 {
-  return NULL;
 }
 
-char *abr_p_name_to_s(int indent, abr_parser *p)
+void abr_p_name_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 {
-  return NULL;
 }
 
-char *abr_p_presence_to_s(int indent, abr_parser *p)
+void abr_p_presence_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 {
-  return NULL;
 }
 
-char *abr_p_absence_to_s(int indent, abr_parser *p)
+void abr_p_absence_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 {
-  return NULL;
 }
 
 abr_p_to_s_func *abr_p_to_s_funcs[] = { // const ?
@@ -251,14 +236,17 @@ abr_p_to_s_func *abr_p_to_s_funcs[] = { // const ?
   abr_p_absence_to_s
 };
 
-char *abr_parser_to_string(abr_parser *p)
+void abr_p_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 {
-  return abr_p_to_s_funcs[p->type](0, p);
+  for (int i = 0; i < indent; i++) flu_sbprintf(b, "  ");
+  abr_p_to_s_funcs[p->type](b, 0, p);
 }
 
-char *abr_p_to_s(abr_parser *p)
+char *abr_parser_to_string(abr_parser *p)
 {
-  return abr_p_to_s_funcs[p->type](0, p);
+  flu_sbuffer *b = flu_sbuffer_malloc();
+  abr_p_to_s(b, 0, p);
+  return flu_sbuffer_to_string(b);
 }
 
 //
