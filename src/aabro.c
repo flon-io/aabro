@@ -53,8 +53,22 @@ abr_tree *abr_tree_malloc(
 void abr_tree_free(abr_tree *t)
 {
   if (t == NULL) return;
-  if (t->name != NULL) free(t->name);
-  // TODO: free children!
+
+  if (t->name != NULL)
+  {
+    free(t->name);
+  }
+
+  if (t->children != NULL)
+  {
+    for (size_t i = 0; ; i++)
+    {
+      if (t->children[i] == NULL) break;
+      abr_tree_free(t->children[i]);
+    }
+    free(t->children);
+  }
+
   free(t);
 }
 
@@ -116,6 +130,7 @@ void abr_parser_free(abr_parser *p)
       if (p->children[i] == NULL) break;
       abr_parser_free(p->children[i]);
     }
+    free(p->children);
   }
   free(p);
 }
