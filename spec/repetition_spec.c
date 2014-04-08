@@ -43,9 +43,9 @@ context "repetition"
       p = abr_rep(abr_string("xy"), 1, 2);
       char *s = abr_parser_to_string(p);
 
-      ensure(s ===f "abr_rep(\n"
-        "  abr_string(\"xy\"),\n"
-        "  1, 2)");
+      ensure(s ===f ""
+        "abr_rep(\n"
+        "  abr_string(\"xy\"), 1, 2)");
     }
   }
 

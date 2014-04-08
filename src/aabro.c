@@ -80,13 +80,12 @@ void abr_t_to_s(abr_tree *t, flu_sbuffer *b, int indent)
     return;
   }
 
-  flu_sbprintf(
-    b,
-    "[ %s, %d, %d, %d, [",
-    t->name,
-    t->success,
-    t->offset,
-    t->length);
+  flu_sbprintf(b, "[ ");
+  //
+  if (t->name == NULL) flu_sbprintf(b, "(null)");
+  else flu_sbprintf(b, "\"%s\"", t->name);
+  //
+  flu_sbprintf(b, ", %d, %d, %d, [", t->success, t->offset, t->length);
 
   if (t->children == NULL)
   {
@@ -177,6 +176,16 @@ abr_parser *abr_rep(abr_parser *p, int min, int max)
   return r;
 }
 
+abr_parser *abr_name(char *name, abr_parser *p)
+{
+  abr_parser *r = abr_parser_malloc(6);
+  r->string = strdup(name);
+  r->children = calloc(2, sizeof(abr_parser *));
+  r->children[0] = p;
+  r->children[1] = NULL;
+  return r;
+}
+
 //
 // the to_s methods
 
@@ -197,11 +206,14 @@ void abr_p_rep_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 {
   flu_sbprintf(b, "abr_rep(\n");
   abr_p_to_s(b, indent + 1, p->children[0]);
-  flu_sbprintf(b, ",\n");
-  flu_sbprintf(b, "  %i, %i)", p->min, p->max);
+  flu_sbprintf(b, ", %i, %i)", p->min, p->max);
 }
 
 void abr_p_alt_to_s(flu_sbuffer *b, int indent, abr_parser *p)
+{
+}
+
+void abr_p_seq_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 {
 }
 
@@ -211,6 +223,9 @@ void abr_p_not_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 
 void abr_p_name_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 {
+  flu_sbprintf(b, "abr_name(\"%s\",\n", p->string);
+  abr_p_to_s(b, indent + 1, p->children[0]);
+  flu_sbprintf(b, ")");
 }
 
 void abr_p_presence_to_s(flu_sbuffer *b, int indent, abr_parser *p)
@@ -226,6 +241,7 @@ abr_p_to_s_func *abr_p_to_s_funcs[] = { // const ?
   abr_p_regex_to_s,
   abr_p_rep_to_s,
   abr_p_alt_to_s,
+  abr_p_seq_to_s,
   abr_p_not_to_s,
   abr_p_name_to_s,
   abr_p_presence_to_s,
@@ -303,6 +319,11 @@ abr_tree *abr_p_alt(char *input, int offset, abr_parser *p)
   return NULL;
 }
 
+abr_tree *abr_p_seq(char *input, int offset, abr_parser *p)
+{
+  return NULL;
+}
+
 abr_tree *abr_p_not(char *input, int offset, abr_parser *p)
 {
   return NULL;
@@ -310,7 +331,10 @@ abr_tree *abr_p_not(char *input, int offset, abr_parser *p)
 
 abr_tree *abr_p_name(char *input, int offset, abr_parser *p)
 {
-  return NULL;
+  abr_tree *t = abr_parse(input, offset, p->children[0]);
+  t->name = strdup(p->string);
+
+  return t;
 }
 
 abr_tree *abr_p_presence(char *input, int offset, abr_parser *p)
@@ -328,6 +352,7 @@ abr_p_func *abr_p_funcs[] = { // const ?
   abr_p_regex,
   abr_p_rep,
   abr_p_alt,
+  abr_p_seq,
   abr_p_not,
   abr_p_name,
   abr_p_presence,
