@@ -255,7 +255,7 @@ abr_tree *abr_p_string(char *input, int offset, abr_parser *p)
   char *s = p->string;
 
   int su = 1;
-  int le = strlen(s);
+  int le = strlen(s); // would it make sense to cache that?
 
   if (strncmp(input + offset, s, le) != 0) { su = 0; le = -1; }
 
@@ -282,14 +282,14 @@ abr_tree *abr_p_rep(char *input, int offset, abr_parser *p)
 
   for (size_t i = 0; i < p->max; i++)
   {
+    count++;
     reps[i] = abr_parse(input, off, p->children[0]);
     if ( ! reps[i]->success) break;
-    count++;
     off += reps[i]->length;
     length += reps[i]->length;
   }
   int success = 1;
-  if (count < p->min) success = 0;
+  if (count - 1 < p->min) success = 0;
 
   abr_tree **children = calloc(count + 1, sizeof(abr_tree *));
   for (size_t i = 0; i < count; i++) children[i] = reps[i];

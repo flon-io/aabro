@@ -99,6 +99,7 @@ context "repetition"
       ensure(s ===f ""
         "[ (null), 0, 0, 2, [\n"
         "  [ (null), 1, 0, 2, [] ]\n"
+        "  [ (null), 0, 2, -1, [] ]\n"
         "] ]");
     }
   }
