@@ -20,6 +20,7 @@ spec: s
 
 vspec: s
 	valgrind --leak-check=full -v ./s
+	#valgrind --read-var-info=yes --track-origins=yes --leak-check=full -v ./s
 
 clean:
 	rm -f *.o

@@ -52,8 +52,6 @@ abr_tree *abr_tree_malloc(
 
 void abr_tree_free(abr_tree *t)
 {
-  if (t == NULL) return;
-
   if (t->name != NULL)
   {
     free(t->name);
@@ -118,8 +116,6 @@ char *abr_tree_to_string(abr_tree *t)
 
 void abr_parser_free(abr_parser *p)
 {
-  if (p == NULL) return;
-
   if (p->string != NULL) free(p->string);
   //if (p->regex != NULL) regfree(p->regex);
 
