@@ -28,11 +28,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdarg.h>
 
 #include "flutil.h"
 #include "aabro.h"
 
 int MAX_REPS = 2048; // TODO: decide later
+int MAX_P_CHILDREN = 64;
 
 
 abr_tree *abr_tree_malloc(
@@ -176,6 +178,39 @@ abr_parser *abr_rep(abr_parser *p, int min, int max)
   return r;
 }
 
+void abr_set_children(abr_parser *p, abr_parser *child0, va_list ap)
+{
+  abr_parser **cs = calloc(MAX_P_CHILDREN, sizeof(abr_parser *));
+  cs[0] = child0;
+  size_t count = 1;
+
+  while (1)
+  {
+    abr_parser *child = va_arg(ap, abr_parser *);
+    if (child == NULL || count >= MAX_P_CHILDREN) break;
+    cs[count++] = child;
+  }
+
+  abr_parser **children = calloc(count + 1, sizeof(abr_parser *));
+  for (size_t i = 0; i < count; i++) children[i] = cs[i];
+
+  free(cs);
+
+  p->children = children;
+}
+
+abr_parser *abr_alt(abr_parser *p, ...)
+{
+  abr_parser *r = abr_parser_malloc(3);
+
+  va_list ap;
+  va_start(ap, p);
+  abr_set_children(r, p, ap);
+  va_end(ap);
+
+  return r;
+}
+
 abr_parser *abr_name(char *name, abr_parser *p)
 {
   abr_parser *r = abr_parser_malloc(6);
@@ -211,6 +246,14 @@ void abr_p_rep_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 
 void abr_p_alt_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 {
+  flu_sbprintf(b, "abr_alt(\n");
+  for (size_t i = 0; ; i++)
+  {
+    abr_p_to_s(b, indent + 1, p->children[i]);
+    if (p->children[i] == NULL) break;
+    flu_sbprintf(b, ",\n");
+  }
+  flu_sbprintf(b, ")");
 }
 
 void abr_p_seq_to_s(flu_sbuffer *b, int indent, abr_parser *p)
@@ -251,7 +294,8 @@ abr_p_to_s_func *abr_p_to_s_funcs[] = { // const ?
 void abr_p_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 {
   for (int i = 0; i < indent; i++) flu_sbprintf(b, "  ");
-  abr_p_to_s_funcs[p->type](b, 0, p);
+  if (p == NULL) flu_sbprintf(b, "NULL");
+  else abr_p_to_s_funcs[p->type](b, 0, p);
 }
 
 char *abr_parser_to_string(abr_parser *p)
