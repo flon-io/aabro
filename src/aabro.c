@@ -95,9 +95,10 @@ void abr_t_to_s(abr_tree *t, flu_sbuffer *b, int indent)
     return;
   }
 
-  for (size_t i = 0; ;i++)
+  for (size_t i = 0; ; i++)
   {
     if (t->children[i] == NULL) break;
+    if (i > 0) flu_sbprintf(b, ",");
     flu_sbprintf(b, "\n");
     abr_t_to_s(t->children[i], b, indent + 1);
   }
@@ -360,7 +361,22 @@ abr_tree *abr_p_rep(char *input, int offset, abr_parser *p)
 
 abr_tree *abr_p_alt(char *input, int offset, abr_parser *p)
 {
-  return NULL;
+  size_t c = 0; while(1) if (p->children[c++] == NULL) break;
+  abr_tree **ts = calloc(c, sizeof(abr_tree *));
+
+  int success = 0;
+  int length = -1;
+
+  for (size_t i = 0; i < c - 1; i++)
+  {
+    ts[i] = abr_parse(input, offset, p->children[i]);
+    if ( ! ts[i]->success) continue;
+    success = 1;
+    length = ts[i]->length;
+    break;
+  }
+
+  return abr_tree_malloc(success, offset, length, ts);
 }
 
 abr_tree *abr_p_seq(char *input, int offset, abr_parser *p)
