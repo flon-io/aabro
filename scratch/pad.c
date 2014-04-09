@@ -120,3 +120,9 @@ void my_parse_xs(char *s, int offset, ...)
 // => we're better served by compiled a parser tree
 //    (as opposed to a parse tree)
 
+
+//
+//
+
+abr_name X ---> abr_n_string("name", "match")
+
