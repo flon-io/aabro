@@ -84,7 +84,7 @@ void abr_t_to_s(abr_tree *t, flu_sbuffer *b, int indent)
 
   flu_sbprintf(b, "[ ");
   //
-  if (t->name == NULL) flu_sbprintf(b, "(null)");
+  if (t->name == NULL) flu_sbprintf(b, "null");
   else flu_sbprintf(b, "\"%s\"", t->name);
   //
   flu_sbprintf(b, ", %d, %d, %d, [", t->success, t->offset, t->length);
