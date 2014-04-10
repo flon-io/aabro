@@ -204,10 +204,16 @@ abr_parser *abr_alt(abr_parser *p, ...)
 {
   abr_parser *r = abr_parser_malloc(3);
 
-  va_list ap;
-  va_start(ap, p);
-  abr_set_children(r, p, ap);
-  va_end(ap);
+  va_list ap; va_start(ap, p); abr_set_children(r, p, ap); va_end(ap);
+
+  return r;
+}
+
+abr_parser *abr_seq(abr_parser *p, ...)
+{
+  abr_parser *r = abr_parser_malloc(4);
+
+  va_list ap; va_start(ap, p); abr_set_children(r, p, ap); va_end(ap);
 
   return r;
 }
@@ -245,9 +251,9 @@ void abr_p_rep_to_s(flu_sbuffer *b, int indent, abr_parser *p)
   flu_sbprintf(b, ", %i, %i)", p->min, p->max);
 }
 
-void abr_p_alt_to_s(flu_sbuffer *b, int indent, abr_parser *p)
+void abr_p_wchildren_to_s(char *name, flu_sbuffer *b, int indent, abr_parser *p)
 {
-  flu_sbprintf(b, "abr_alt(\n");
+  flu_sbprintf(b, "%s(\n", name);
   for (size_t i = 0; ; i++)
   {
     abr_p_to_s(b, indent + 1, p->children[i]);
@@ -257,8 +263,14 @@ void abr_p_alt_to_s(flu_sbuffer *b, int indent, abr_parser *p)
   flu_sbprintf(b, ")");
 }
 
+void abr_p_alt_to_s(flu_sbuffer *b, int indent, abr_parser *p)
+{
+  abr_p_wchildren_to_s("abr_alt", b, indent, p);
+}
+
 void abr_p_seq_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 {
+  abr_p_wchildren_to_s("abr_seq", b, indent, p);
 }
 
 void abr_p_not_to_s(flu_sbuffer *b, int indent, abr_parser *p)
@@ -381,7 +393,22 @@ abr_tree *abr_p_alt(char *input, int offset, abr_parser *p)
 
 abr_tree *abr_p_seq(char *input, int offset, abr_parser *p)
 {
-  return NULL;
+  size_t c = 0; while(1) if (p->children[c++] == NULL) break;
+  abr_tree **ts = calloc(c, sizeof(abr_tree *));
+
+  int success = 1;
+  int length = 0;
+  int off = offset;
+
+  for (size_t i = 0; i < c - 1; i++)
+  {
+    ts[i] = abr_parse(input, off, p->children[i]);
+    if ( ! ts[i]->success) { success = 0; length = -1; break; }
+    off += ts[i]->length;
+    length += ts[i]->length;
+  }
+
+  return abr_tree_malloc(success, offset, length, ts);
 }
 
 abr_tree *abr_p_not(char *input, int offset, abr_parser *p)
