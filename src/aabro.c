@@ -179,7 +179,7 @@ abr_parser *abr_rep(abr_parser *p, int min, int max)
   return r;
 }
 
-void abr_set_children(abr_parser *p, abr_parser *child0, va_list ap)
+abr_parser **abr_list_children(abr_parser *child0, va_list ap)
 {
   abr_parser **cs = calloc(MAX_P_CHILDREN, sizeof(abr_parser *));
   cs[0] = child0;
@@ -197,14 +197,14 @@ void abr_set_children(abr_parser *p, abr_parser *child0, va_list ap)
 
   free(cs);
 
-  p->children = children;
+  return children;
 }
 
 abr_parser *abr_alt(abr_parser *p, ...)
 {
   abr_parser *r = abr_parser_malloc(3);
 
-  va_list ap; va_start(ap, p); abr_set_children(r, p, ap); va_end(ap);
+  va_list l; va_start(l, p); r->children = abr_list_children(p, l); va_end(l);
 
   return r;
 }
@@ -213,7 +213,7 @@ abr_parser *abr_seq(abr_parser *p, ...)
 {
   abr_parser *r = abr_parser_malloc(4);
 
-  va_list ap; va_start(ap, p); abr_set_children(r, p, ap); va_end(ap);
+  va_list l; va_start(l, p); r->children = abr_list_children(p, l); va_end(l);
 
   return r;
 }
