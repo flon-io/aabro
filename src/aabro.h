@@ -27,22 +27,7 @@
 #define AABRO_H
 
 //
-// abr_node
-
-typedef struct abr_tree {
-  char *name;
-  int success;
-  int offset;
-  int length;
-  struct abr_tree **children;
-} abr_tree;
-
-void abr_tree_free(abr_tree *t);
-
-char *abr_tree_to_string(abr_tree *t);
-
-//
-// abr_parser_node
+// abr_parser
 
 typedef struct abr_parser {
   unsigned short type;
@@ -55,6 +40,22 @@ typedef struct abr_parser {
 void abr_parser_free(abr_parser *p);
 
 char *abr_parser_to_string(abr_parser *p);
+
+//
+// abr_tree
+
+typedef struct abr_tree {
+  char *name;
+  int success;
+  int offset;
+  int length;
+  abr_parser *parser;
+  struct abr_tree **children;
+} abr_tree;
+
+void abr_tree_free(abr_tree *t);
+
+char *abr_tree_to_string(abr_tree *t);
 
 //
 // abr_parser builders

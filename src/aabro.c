@@ -38,7 +38,7 @@ int MAX_P_CHILDREN = 64;
 
 
 abr_tree *abr_tree_malloc(
-  int success, int offset, int length, abr_tree **children
+  int success, int offset, int length, abr_parser *p, abr_tree **children
 )
 {
   abr_tree *t = malloc(sizeof(abr_tree));
@@ -47,6 +47,7 @@ abr_tree *abr_tree_malloc(
   t->success = success;
   t->offset = offset;
   t->length = length;
+  t->parser = p;
   t->children = children;
 
   return t;
@@ -336,7 +337,7 @@ abr_tree *abr_p_string(char *input, int offset, abr_parser *p)
     // no, it's probably a string literal...
     // let the caller free it if necessary
 
-  return abr_tree_malloc(su, offset, le, NULL);
+  return abr_tree_malloc(su, offset, le, p, NULL);
 }
 
 abr_tree *abr_p_regex(char *input, int offset, abr_parser *p)
@@ -368,7 +369,7 @@ abr_tree *abr_p_rep(char *input, int offset, abr_parser *p)
   for (size_t i = 0; i < count; i++) children[i] = reps[i];
   free(reps);
 
-  return abr_tree_malloc(success, offset, length, children);
+  return abr_tree_malloc(success, offset, length, p, children);
 }
 
 abr_tree *abr_p_alt(char *input, int offset, abr_parser *p)
@@ -388,7 +389,7 @@ abr_tree *abr_p_alt(char *input, int offset, abr_parser *p)
     break;
   }
 
-  return abr_tree_malloc(success, offset, length, ts);
+  return abr_tree_malloc(success, offset, length, p, ts);
 }
 
 abr_tree *abr_p_seq(char *input, int offset, abr_parser *p)
@@ -408,7 +409,7 @@ abr_tree *abr_p_seq(char *input, int offset, abr_parser *p)
     length += ts[i]->length;
   }
 
-  return abr_tree_malloc(success, offset, length, ts);
+  return abr_tree_malloc(success, offset, length, p, ts);
 }
 
 abr_tree *abr_p_not(char *input, int offset, abr_parser *p)
