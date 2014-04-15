@@ -51,7 +51,7 @@ context "strings"
       t = abr_parse("xxx", 0, p);
       char *s = abr_tree_to_string(t);
 
-      ensure(s ===f "[ null, 1, 0, 3, [] ]");
+      ensure(s ===f "[ null, 1, 0, 3, \"string\", [] ]");
     }
 
     it "fails"
@@ -60,7 +60,7 @@ context "strings"
       t = abr_parse("yyy", 0, p);
       char *s = abr_tree_to_string(t);
 
-      ensure(s ===f "[ null, 0, 0, -1, [] ]");
+      ensure(s ===f "[ null, 0, 0, -1, \"string\", [] ]");
     }
   }
 }

@@ -28,9 +28,9 @@ context "parser"
     char *s = abr_tree_to_string(t);
 
     ensure(s ===f ""
-      "[ null, 1, 0, 1, [\n"
-      "  [ null, 1, 0, 1, [] ],\n"
-      "  [ null, 0, 1, -1, [] ]\n"
+      "[ null, 1, 0, 1, \"rep\", [\n"
+      "  [ null, 1, 0, 1, \"string\", [] ],\n"
+      "  [ null, 0, 1, -1, \"string\", [] ]\n"
       "] ]");
   }
 
@@ -42,9 +42,9 @@ context "parser"
 
     ensure(s ===f ""
       //"[ null, 1, 0, 2, [\n"
-      "[ null, 0, 0, 2, [\n"
-      "  [ null, 1, 0, 1, [] ],\n"
-      "  [ null, 1, 1, 1, [] ]\n"
+      "[ null, 0, 0, 2, \"rep\", [\n"
+      "  [ null, 1, 0, 1, \"string\", [] ],\n"
+      "  [ null, 1, 1, 1, \"string\", [] ]\n"
       "] ]");
   }
 }

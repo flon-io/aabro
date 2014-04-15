@@ -73,6 +73,10 @@ void abr_tree_free(abr_tree *t)
   free(t);
 }
 
+char *abr_p_names[] = { // const ?
+  "string", "regex", "rep", "alt", "seq", "not", "name", "presence", "absence"
+};
+
 void abr_t_to_s(abr_tree *t, flu_sbuffer *b, int indent)
 {
   for (int i = 0; i < indent; i++) flu_sbprintf(b, "  ");
@@ -88,7 +92,10 @@ void abr_t_to_s(abr_tree *t, flu_sbuffer *b, int indent)
   if (t->name == NULL) flu_sbprintf(b, "null");
   else flu_sbprintf(b, "\"%s\"", t->name);
   //
-  flu_sbprintf(b, ", %d, %d, %d, [", t->success, t->offset, t->length);
+  flu_sbprintf(
+    b,
+    ", %d, %d, %d, \"%s\", [",
+    t->success, t->offset, t->length, abr_p_names[t->parser->type]);
 
   if (t->children == NULL)
   {

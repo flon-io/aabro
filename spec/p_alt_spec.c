@@ -58,8 +58,8 @@ context "alternative"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 1, 0, 1, [\n"
-        "  [ null, 1, 0, 1, [] ]\n"
+        "[ null, 1, 0, 1, \"alt\", [\n"
+        "  [ null, 1, 0, 1, \"string\", [] ]\n"
         "] ]");
     }
 
@@ -70,9 +70,9 @@ context "alternative"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 1, 0, 1, [\n"
-        "  [ null, 0, 0, -1, [] ],\n"
-        "  [ null, 1, 0, 1, [] ]\n"
+        "[ null, 1, 0, 1, \"alt\", [\n"
+        "  [ null, 0, 0, -1, \"string\", [] ],\n"
+        "  [ null, 1, 0, 1, \"string\", [] ]\n"
         "] ]");
     }
 
@@ -83,12 +83,10 @@ context "alternative"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 0, 0, -1, [\n"
-        "  [ null, 0, 0, -1, [] ],\n"
-        "  [ null, 0, 0, -1, [] ]\n"
+        "[ null, 0, 0, -1, \"alt\", [\n"
+        "  [ null, 0, 0, -1, \"string\", [] ],\n"
+        "  [ null, 0, 0, -1, \"string\", [] ]\n"
         "] ]");
-
-      // well not very instructive... should I point to the failed parser?
     }
   }
 }
