@@ -147,6 +147,7 @@ abr_parser *abr_parser_malloc(unsigned short type)
 
   p->type = type;
   p->string = NULL;
+  p->string_length = -1;
   //p->regex = NULL;
   p->min = -1; p->max = -1;
   p->children = NULL;
@@ -173,6 +174,7 @@ abr_parser *abr_string(char *s)
 {
   abr_parser *p = abr_parser_malloc(0);
   p->string = strdup(s);
+  p->string_length = strlen(s);
   return p;
 }
 
@@ -334,9 +336,9 @@ typedef abr_tree *abr_p_func(char *, int, abr_parser *);
 abr_tree *abr_p_string(char *input, int offset, abr_parser *p)
 {
   char *s = p->string;
+  int le = p->string_length;
 
   int su = 1;
-  int le = strlen(s); // would it make sense to cache that?
 
   if (strncmp(input + offset, s, le) != 0) { su = 0; le = -1; }
 
