@@ -33,7 +33,7 @@
 #include "flutil.h"
 #include "aabro.h"
 
-int MAX_REPS = 2048; // TODO: decide later
+int MAX_REPS = 2048; // TODO: decide
 int MAX_P_CHILDREN = 64;
 
 
@@ -126,8 +126,17 @@ char *abr_tree_to_string(abr_tree *t)
 
 void abr_parser_free(abr_parser *p)
 {
-  if (p->string != NULL) free(p->string);
-  //if (p->regex != NULL) regfree(p->regex);
+  // free the regex if it was created with abr_regex_s(char *s)
+  if (p->regex != NULL && p->string != NULL)
+  {
+     regfree(p->regex);
+     free(p->regex);
+  }
+
+  if (p->string != NULL)
+  {
+    free(p->string);
+  }
 
   if (p->children != NULL)
   {
@@ -148,7 +157,7 @@ abr_parser *abr_parser_malloc(unsigned short type)
   p->type = type;
   p->string = NULL;
   p->string_length = -1;
-  //p->regex = NULL;
+  p->regex = NULL;
   p->min = -1; p->max = -1;
   p->children = NULL;
 
@@ -175,6 +184,22 @@ abr_parser *abr_string(char *s)
   abr_parser *p = abr_parser_malloc(0);
   p->string = strdup(s);
   p->string_length = strlen(s);
+  return p;
+}
+
+abr_parser *abr_regex(regex_t *r)
+{
+  abr_parser *p = abr_parser_malloc(1);
+  p->regex = r;
+  return p;
+}
+
+abr_parser *abr_regex_s(char *s)
+{
+  abr_parser *p = abr_parser_malloc(1);
+  p->string = strdup(s); // keep a copy of the original
+  p->regex = malloc(sizeof(regex_t));
+  regcomp(p->regex, p->string, REG_EXTENDED);
   return p;
 }
 
@@ -252,6 +277,14 @@ void abr_p_string_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 
 void abr_p_regex_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 {
+  if (p->string == NULL)
+  {
+    flu_sbprintf(b, "abr_regex(%p)", p->regex);
+  }
+  else
+  {
+    flu_sbprintf(b, "abr_regex_s(\"%s\")", p->string);
+  }
 }
 
 void abr_p_rep_to_s(flu_sbuffer *b, int indent, abr_parser *p)
@@ -351,7 +384,16 @@ abr_tree *abr_p_string(char *input, int offset, abr_parser *p)
 
 abr_tree *abr_p_regex(char *input, int offset, abr_parser *p)
 {
-  return NULL;
+  regmatch_t ms[1];
+
+  if (regexec(p->regex, input + offset, 1, ms, 0))
+  {
+    // failure
+    return abr_tree_malloc(0, offset, -1, p, NULL);
+  }
+
+  // success
+  return abr_tree_malloc(1, offset, ms[0].rm_eo - ms[0].rm_so, p, NULL);
 }
 
 abr_tree *abr_p_rep(char *input, int offset, abr_parser *p)

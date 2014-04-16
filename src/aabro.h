@@ -26,6 +26,8 @@
 #ifndef AABRO_H
 #define AABRO_H
 
+#include <regex.h>
+
 //
 // abr_parser
 
@@ -33,7 +35,7 @@ typedef struct abr_parser {
   unsigned short type;
   char *string;
   int string_length;
-  //regex_t *regex;
+  regex_t *regex;
   int min; int max;
   struct abr_parser **children;
 } abr_parser;
@@ -62,7 +64,8 @@ char *abr_tree_to_string(abr_tree *t);
 // abr_parser builders
 
 abr_parser *abr_string(char *s);
-//abr_parser *abr_regex(regex_t *r);
+abr_parser *abr_regex(regex_t *r);
+abr_parser *abr_regex_s(char *s);
 
 abr_parser *abr_rep(abr_parser *p, int min, int max);
 abr_parser *abr_alt(abr_parser *p, ...);
