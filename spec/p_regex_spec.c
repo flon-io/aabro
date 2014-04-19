@@ -14,11 +14,13 @@ context "regular expressions"
   {
     abr_tree *t = NULL;
     abr_parser *p = NULL;
+    regex_t *r = NULL;
   }
   after each
   {
     if (t != NULL) abr_tree_free(t);
     if (p != NULL) abr_parser_free(p);
+    if (r != NULL) { regfree(r); free(r); }
   }
 
   describe "abr_regex_s(s)"
@@ -28,10 +30,24 @@ context "regular expressions"
       p = abr_regex_s("a+");
 
       ensure(p != NULL);
-
       ensure(p->regex != NULL);
-
       ensure(p->string === "a+");
+      ensure(p->string_length == -1);
+    }
+  }
+
+  describe "abr_regex(r)"
+  {
+    it "creates a regex parser struct with a borrowed regex"
+    {
+      r = malloc(sizeof(regex_t));
+      regcomp(r, "^a+", REG_EXTENDED);
+
+      p = abr_regex(r);
+
+      ensure(p != NULL);
+      ensure(p->regex == r);
+      ensure(p->string == NULL);
       ensure(p->string_length == -1);
     }
   }
