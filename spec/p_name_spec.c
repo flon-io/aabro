@@ -28,7 +28,8 @@ context "name"
       p = abr_name("x", abr_string("x"));
 
       ensure(p != NULL);
-      ensure(p->string === "x");
+      ensure(p->name === "x");
+      ensure(p->string == NULL);
     }
   }
 
@@ -40,7 +41,8 @@ context "name"
       char *s = abr_parser_to_string(p);
 
       ensure(s ===f ""
-        "abr_name(\"y\",\n"
+        "abr_name(\n"
+        "  \"y\",\n"
         "  abr_string(\"x\"))");
     }
   }

@@ -32,6 +32,7 @@
 // abr_parser
 
 typedef struct abr_parser {
+  char *name;
   unsigned short type;
   char *string;
   int string_length;
@@ -71,6 +72,8 @@ abr_parser *abr_rep(abr_parser *p, int min, int max);
 abr_parser *abr_alt(abr_parser *p, ...);
 abr_parser *abr_seq(abr_parser *p, ...);
 abr_parser *abr_not(abr_parser *p);
+
+abr_parser *abr_n_alt(char *name, abr_parser *p, ...);
 
 abr_parser *abr_name(char *name, abr_parser *p);
 

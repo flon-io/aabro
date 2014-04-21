@@ -43,7 +43,7 @@ abr_tree *abr_tree_malloc(
 {
   abr_tree *t = malloc(sizeof(abr_tree));
 
-  t->name = NULL;
+  t->name = NULL; if (p->name != NULL) t->name = strdup(p->name);
   t->success = success;
   t->offset = offset;
   t->length = length;
@@ -126,6 +126,11 @@ char *abr_tree_to_string(abr_tree *t)
 
 void abr_parser_free(abr_parser *p)
 {
+  if (p->name != NULL)
+  {
+    free(p->name);
+  }
+
   // free the regex if it was created with abr_regex_s(char *s)
   if (p->regex != NULL && p->string != NULL)
   {
@@ -154,6 +159,7 @@ abr_parser *abr_parser_malloc(unsigned short type)
 {
   abr_parser *p = malloc(sizeof(abr_parser));
 
+  p->name = NULL;
   p->type = type;
   p->string = NULL;
   p->string_length = -1;
@@ -244,6 +250,16 @@ abr_parser *abr_alt(abr_parser *p, ...)
   return r;
 }
 
+abr_parser *abr_n_alt(char *name, abr_parser *p, ...)
+{
+  abr_parser *r = abr_parser_malloc(3);
+  r->name = strdup(name);
+
+  va_list l; va_start(l, p); r->children = abr_list_children(p, l); va_end(l);
+
+  return r;
+}
+
 abr_parser *abr_seq(abr_parser *p, ...)
 {
   abr_parser *r = abr_parser_malloc(4);
@@ -256,7 +272,7 @@ abr_parser *abr_seq(abr_parser *p, ...)
 abr_parser *abr_name(char *name, abr_parser *p)
 {
   abr_parser *r = abr_parser_malloc(6);
-  r->string = strdup(name);
+  r->name = strdup(name);
   r->children = calloc(2, sizeof(abr_parser *));
   r->children[0] = p;
   r->children[1] = NULL;
@@ -294,9 +310,18 @@ void abr_p_rep_to_s(flu_sbuffer *b, int indent, abr_parser *p)
   flu_sbprintf(b, ", %i, %i)", p->min, p->max);
 }
 
-void abr_p_wchildren_to_s(char *name, flu_sbuffer *b, int indent, abr_parser *p)
+void abr_p_wchildren_to_s(char *n, flu_sbuffer *b, int indent, abr_parser *p)
 {
-  flu_sbprintf(b, "%s(\n", name);
+  if (p->name == NULL)
+  {
+    flu_sbprintf(b, "abr_%s(\n", n);
+  }
+  else
+  {
+    flu_sbprintf(b, "abr_n_%s(\n", n);
+    for (int i = 0; i < indent + 1; i++) flu_sbprintf(b, "  ");
+    flu_sbprintf(b, "\"%s\",\n", p->name);
+  }
   for (size_t i = 0; ; i++)
   {
     abr_p_to_s(b, indent + 1, p->children[i]);
@@ -308,12 +333,12 @@ void abr_p_wchildren_to_s(char *name, flu_sbuffer *b, int indent, abr_parser *p)
 
 void abr_p_alt_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 {
-  abr_p_wchildren_to_s("abr_alt", b, indent, p);
+  abr_p_wchildren_to_s("alt", b, indent, p);
 }
 
 void abr_p_seq_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 {
-  abr_p_wchildren_to_s("abr_seq", b, indent, p);
+  abr_p_wchildren_to_s("seq", b, indent, p);
 }
 
 void abr_p_not_to_s(flu_sbuffer *b, int indent, abr_parser *p)
@@ -322,7 +347,9 @@ void abr_p_not_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 
 void abr_p_name_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 {
-  flu_sbprintf(b, "abr_name(\"%s\",\n", p->string);
+  flu_sbprintf(b, "abr_name(\n");
+  for (int i = 0; i < indent + 1; i++) flu_sbprintf(b, "  ");
+  flu_sbprintf(b, "\"%s\",\n", p->name);
   abr_p_to_s(b, indent + 1, p->children[0]);
   flu_sbprintf(b, ")");
 }
@@ -471,7 +498,7 @@ abr_tree *abr_p_not(char *input, int offset, abr_parser *p)
 abr_tree *abr_p_name(char *input, int offset, abr_parser *p)
 {
   abr_tree *t = abr_parse(input, offset, p->children[0]);
-  t->name = strdup(p->string);
+  t->name = strdup(p->name);
 
   return t;
 }
