@@ -65,8 +65,8 @@ char *abr_tree_to_string(abr_tree *t);
 // abr_parser builders
 
 abr_parser *abr_string(char *s);
-abr_parser *abr_regex(regex_t *r);
-abr_parser *abr_regex_s(char *s);
+abr_parser *abr_regex(char *s);
+abr_parser *abr_regex_r(regex_t *r);
 
 abr_parser *abr_rep(abr_parser *p, int min, int max);
 abr_parser *abr_alt(abr_parser *p, ...);

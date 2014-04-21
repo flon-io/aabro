@@ -193,19 +193,19 @@ abr_parser *abr_string(char *s)
   return p;
 }
 
-abr_parser *abr_regex(regex_t *r)
-{
-  abr_parser *p = abr_parser_malloc(1);
-  p->regex = r;
-  return p;
-}
-
-abr_parser *abr_regex_s(char *s)
+abr_parser *abr_regex(char *s)
 {
   abr_parser *p = abr_parser_malloc(1);
   p->string = strdup(s); // keep a copy of the original
   p->regex = malloc(sizeof(regex_t));
   regcomp(p->regex, p->string, REG_EXTENDED);
+  return p;
+}
+
+abr_parser *abr_regex_r(regex_t *r)
+{
+  abr_parser *p = abr_parser_malloc(1);
+  p->regex = r;
   return p;
 }
 
@@ -295,11 +295,11 @@ void abr_p_regex_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 {
   if (p->string == NULL)
   {
-    flu_sbprintf(b, "abr_regex(%p)", p->regex);
+    flu_sbprintf(b, "abr_regex_r(%p)", p->regex);
   }
   else
   {
-    flu_sbprintf(b, "abr_regex_s(\"%s\")", p->string);
+    flu_sbprintf(b, "abr_regex(\"%s\")", p->string);
   }
 }
 

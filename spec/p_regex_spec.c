@@ -23,11 +23,11 @@ context "regular expressions"
     if (r != NULL) { regfree(r); free(r); }
   }
 
-  describe "abr_regex_s(s)"
+  describe "abr_regex(s)"
   {
     it "creates a regex parser struct"
     {
-      p = abr_regex_s("a+");
+      p = abr_regex("a+");
 
       ensure(p != NULL);
       ensure(p->regex != NULL);
@@ -36,14 +36,14 @@ context "regular expressions"
     }
   }
 
-  describe "abr_regex(r)"
+  describe "abr_regex_r(r)"
   {
     it "creates a regex parser struct with a borrowed regex"
     {
       r = malloc(sizeof(regex_t));
       regcomp(r, "^a+", REG_EXTENDED);
 
-      p = abr_regex(r);
+      p = abr_regex_r(r);
 
       ensure(p != NULL);
       ensure(p->regex == r);
@@ -56,18 +56,26 @@ context "regular expressions"
   {
     it "returns a string representation of the parser struct"
     {
-      p = abr_regex_s("^a+");
+      p = abr_regex("^a+");
       char *s = abr_parser_to_string(p);
 
-      ensure(s ===f "abr_regex_s(\"^a+\")");
+      ensure(s ===f "abr_regex(\"^a+\")");
     }
+    //it "returns a string representation of the parser struct (_r)"
+    //{
+    //  r = malloc(sizeof(regex_t));
+    //  regcomp(r, "^a+", REG_EXTENDED);
+    //  p = abr_regex_r(r);
+    //  char *s = abr_parser_to_string(p);
+    //  ensure(s ===f "abr_regex_r(\"^a+\")");
+    //}
   }
 
   context "parsing"
   {
     it "succeeds"
     {
-      p = abr_regex_s("^x+");
+      p = abr_regex("^x+");
       t = abr_parse("xxx", 0, p);
       char *s = abr_tree_to_string(t);
 
@@ -76,7 +84,7 @@ context "regular expressions"
 
     it "fails"
     {
-      p = abr_regex_s("^x+");
+      p = abr_regex("^x+");
       t = abr_parse("yyy", 0, p);
       char *s = abr_tree_to_string(t);
 
