@@ -202,9 +202,27 @@ abr_parser *abr_regex(char *s)
   return p;
 }
 
+abr_parser *abr_n_regex(char *name, char *s)
+{
+  abr_parser *p = abr_parser_malloc(1);
+  p->name = strdup(name);
+  p->string = strdup(s); // keep a copy of the original
+  p->regex = malloc(sizeof(regex_t));
+  regcomp(p->regex, p->string, REG_EXTENDED);
+  return p;
+}
+
 abr_parser *abr_regex_r(regex_t *r)
 {
   abr_parser *p = abr_parser_malloc(1);
+  p->regex = r;
+  return p;
+}
+
+abr_parser *abr_n_regex_r(char *name, regex_t *r)
+{
+  abr_parser *p = abr_parser_malloc(1);
+  p->name = strdup(name);
   p->regex = r;
   return p;
 }
@@ -295,11 +313,13 @@ void abr_p_regex_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 {
   if (p->string == NULL)
   {
-    flu_sbprintf(b, "abr_regex_r(%p)", p->regex);
+    if (p->name == NULL) flu_sbprintf(b, "abr_regex_r(%p)", p->regex);
+    else flu_sbprintf(b, "abr_n_regex_r(\"%s\", %p)", p->name, p->regex);
   }
   else
   {
-    flu_sbprintf(b, "abr_regex(\"%s\")", p->string);
+    if (p->name == NULL) flu_sbprintf(b, "abr_regex(\"%s\")", p->string);
+    else flu_sbprintf(b, "abr_n_regex(\"%s\", \"%s\")", p->name, p->string);
   }
 }
 

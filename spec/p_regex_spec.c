@@ -30,6 +30,20 @@ context "regular expressions"
       p = abr_regex("a+");
 
       ensure(p != NULL);
+      ensure(p->name == NULL);
+      ensure(p->regex != NULL);
+      ensure(p->string === "a+");
+      ensure(p->string_length == -1);
+    }
+  }
+  describe "abr_n_regex(name, s)"
+  {
+    it "creates a named regex parser struct"
+    {
+      p = abr_n_regex("aaa...", "a+");
+
+      ensure(p != NULL);
+      ensure(p->name === "aaa...");
       ensure(p->regex != NULL);
       ensure(p->string === "a+");
       ensure(p->string_length == -1);
@@ -46,6 +60,24 @@ context "regular expressions"
       p = abr_regex_r(r);
 
       ensure(p != NULL);
+      ensure(p->name == NULL);
+      ensure(p->regex == r);
+      ensure(p->string == NULL);
+      ensure(p->string_length == -1);
+    }
+  }
+
+  describe "abr_n_regex_r(name, r)"
+  {
+    it "creates a named regex parser struct with a borrowed regex"
+    {
+      r = malloc(sizeof(regex_t));
+      regcomp(r, "^a+", REG_EXTENDED);
+
+      p = abr_n_regex_r("aaas", r);
+
+      ensure(p != NULL);
+      ensure(p->name === "aaas");
       ensure(p->regex == r);
       ensure(p->string == NULL);
       ensure(p->string_length == -1);
@@ -61,6 +93,14 @@ context "regular expressions"
 
       ensure(s ===f "abr_regex(\"^a+\")");
     }
+
+    it "returns a string representation of the named parser struct"
+    {
+      p = abr_n_regex("aas", "^a+");
+      char *s = abr_parser_to_string(p);
+
+      ensure(s ===f "abr_n_regex(\"aas\", \"^a+\")");
+    }
     //it "returns a string representation of the parser struct (_r)"
     //{
     //  r = malloc(sizeof(regex_t));
@@ -69,6 +109,7 @@ context "regular expressions"
     //  char *s = abr_parser_to_string(p);
     //  ensure(s ===f "abr_regex_r(\"^a+\")");
     //}
+    // idea: s=== e=== startsWith / endsWith in rodzo...
   }
 
   context "parsing"
