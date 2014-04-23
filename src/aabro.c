@@ -229,7 +229,13 @@ abr_parser *abr_n_regex_r(char *name, regex_t *r)
 
 abr_parser *abr_rep(abr_parser *p, int min, int max)
 {
+  return abr_n_rep(NULL, p, min, max);
+}
+
+abr_parser *abr_n_rep(char *name, abr_parser *p, int min, int max)
+{
   abr_parser *r = abr_parser_malloc(2);
+  if (name != NULL) r->name = strdup(name);
   r->min = min;
   r->max = max;
   r->children = calloc(2, sizeof(abr_parser *));
@@ -325,7 +331,16 @@ void abr_p_regex_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 
 void abr_p_rep_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 {
-  flu_sbprintf(b, "abr_rep(\n");
+  if (p->name == NULL)
+  {
+    flu_sbprintf(b, "abr_rep(\n");
+  }
+  else
+  {
+    flu_sbprintf(b, "abr_n_rep(\n");
+    for (int i = 0; i < indent + 1; i++) flu_sbprintf(b, "  ");
+    flu_sbprintf(b, "\"%s\",\n", p->name);
+  }
   abr_p_to_s(b, indent + 1, p->children[0]);
   flu_sbprintf(b, ", %i, %i)", p->min, p->max);
 }

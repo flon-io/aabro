@@ -28,6 +28,22 @@ context "repetition"
       p = abr_rep(abr_string("xy"), 1, 2);
 
       ensure(p != NULL);
+      ensure(p->name == NULL);
+      ensure(p->min == 1);
+      ensure(p->max == 2);
+      ensure(p->children != NULL);
+      ensure(p->children[0] != NULL);
+      ensure(p->children[1] == NULL);
+    }
+  }
+  describe "abr_n_rep(s)"
+  {
+    it "creates a named rep parser struct"
+    {
+      p = abr_n_rep("xandy", abr_string("xy"), 1, 2);
+
+      ensure(p != NULL);
+      ensure(p->name === "xandy");
       ensure(p->min == 1);
       ensure(p->max == 2);
       ensure(p->children != NULL);
@@ -47,6 +63,16 @@ context "repetition"
         "abr_rep(\n"
         "  abr_string(\"xy\"), 1, 2)");
     }
+    it "returns a string representation of the named parser struct"
+    {
+      p = abr_n_rep("xandy", abr_string("xy"), 1, 2);
+      char *s = abr_parser_to_string(p);
+
+      ensure(s ===f ""
+        "abr_n_rep(\n"
+        "  \"xandy\",\n"
+        "  abr_string(\"xy\"), 1, 2)");
+    }
   }
 
   context "parsing"
@@ -59,6 +85,18 @@ context "repetition"
 
       ensure(s ===f ""
         "[ null, 1, 0, 2, \"rep\", [\n"
+        "  [ null, 1, 0, 2, \"string\", [] ]\n"
+        "] ]");
+    }
+
+    it "matches once (and names)"
+    {
+      p = abr_n_rep("xandy", abr_string("xy"), 0, 1);
+      t = abr_parse("xy", 0, p);
+      char *s = abr_tree_to_string(t);
+
+      ensure(s ===f ""
+        "[ \"xandy\", 1, 0, 2, \"rep\", [\n"
         "  [ null, 1, 0, 2, \"string\", [] ]\n"
         "] ]");
     }
