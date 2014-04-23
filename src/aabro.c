@@ -195,17 +195,13 @@ abr_parser *abr_string(char *s)
 
 abr_parser *abr_regex(char *s)
 {
-  abr_parser *p = abr_parser_malloc(1);
-  p->string = strdup(s); // keep a copy of the original
-  p->regex = malloc(sizeof(regex_t));
-  regcomp(p->regex, p->string, REG_EXTENDED);
-  return p;
+  return abr_n_regex(NULL, s);
 }
 
 abr_parser *abr_n_regex(char *name, char *s)
 {
   abr_parser *p = abr_parser_malloc(1);
-  p->name = strdup(name);
+  if (name != NULL) p->name = strdup(name);
   p->string = strdup(s); // keep a copy of the original
   p->regex = malloc(sizeof(regex_t));
   regcomp(p->regex, p->string, REG_EXTENDED);
@@ -214,15 +210,13 @@ abr_parser *abr_n_regex(char *name, char *s)
 
 abr_parser *abr_regex_r(regex_t *r)
 {
-  abr_parser *p = abr_parser_malloc(1);
-  p->regex = r;
-  return p;
+  return abr_n_regex_r(NULL, r);
 }
 
 abr_parser *abr_n_regex_r(char *name, regex_t *r)
 {
   abr_parser *p = abr_parser_malloc(1);
-  p->name = strdup(name);
+  if (name != NULL) p->name = strdup(name);
   p->regex = r;
   return p;
 }
