@@ -187,7 +187,12 @@ abr_parser *abr_parser_malloc(unsigned short type, char *name)
 
 abr_parser *abr_string(char *s)
 {
-  abr_parser *p = abr_parser_malloc(0, NULL);
+  return abr_n_string(NULL, s);
+}
+
+abr_parser *abr_n_string(char *name, char *s)
+{
+  abr_parser *p = abr_parser_malloc(0, name);
   p->string = strdup(s);
   p->string_length = strlen(s);
   return p;
@@ -310,7 +315,8 @@ void abr_p_to_s(flu_sbuffer *b, int indent, abr_parser *p);
 
 void abr_p_string_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 {
-  flu_sbprintf(b, "abr_string(\"%s\")", p->string);
+  if (p->name == NULL) flu_sbprintf(b, "abr_string(\"%s\")", p->string);
+  else flu_sbprintf(b, "abr_n_string(\"%s\", \"%s\")", p->name, p->string);
 }
 
 void abr_p_regex_to_s(flu_sbuffer *b, int indent, abr_parser *p)

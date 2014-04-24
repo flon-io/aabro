@@ -28,6 +28,18 @@ context "strings"
       p = abr_string("beowulf");
 
       ensure(p != NULL);
+      ensure(p->name == NULL);
+      ensure(p->string === "beowulf");
+    }
+  }
+  describe "abr_n_string(name, s)"
+  {
+    it "creates a named string parser struct"
+    {
+      p = abr_n_string("bf", "beowulf");
+
+      ensure(p != NULL);
+      ensure(p->name === "bf");
       ensure(p->string === "beowulf");
     }
   }
@@ -41,6 +53,14 @@ context "strings"
 
       ensure(s ===f "abr_string(\"toto\")");
     }
+
+    it "returns a string representation of the named parser struct"
+    {
+      p = abr_n_string("to", "toto");
+      char *s = abr_parser_to_string(p);
+
+      ensure(s ===f "abr_n_string(\"to\", \"toto\")");
+    }
   }
 
   context "parsing"
@@ -52,6 +72,15 @@ context "strings"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f "[ null, 1, 0, 3, \"string\", [] ]");
+    }
+
+    it "succeeds (named parser)"
+    {
+      p = abr_n_string("3x", "xxx");
+      t = abr_parse("xxx", 0, p);
+      char *s = abr_tree_to_string(t);
+
+      ensure(s ===f "[ \"3x\", 1, 0, 3, \"string\", [] ]");
     }
 
     it "fails"

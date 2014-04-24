@@ -78,6 +78,7 @@ abr_parser *abr_n_regex(char *name, char *s);
 abr_parser *abr_n_regex_r(char *name, regex_t *r);
 abr_parser *abr_n_rep(char *name, abr_parser *p, int min, int max);
 abr_parser *abr_n_seq(char *name, abr_parser *p, ...);
+abr_parser *abr_n_string(char *name, char *s);
 
 abr_parser *abr_name(char *name, abr_parser *p);
 
