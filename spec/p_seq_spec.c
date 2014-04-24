@@ -28,6 +28,20 @@ context "sequence"
       p = abr_seq(abr_string("x"), abr_string("y"), NULL);
 
       ensure(p != NULL);
+      ensure(p->name == NULL);
+      ensure(p->children[0] != NULL);
+      ensure(p->children[1] != NULL);
+      ensure(p->children[2] == NULL);
+    }
+  }
+  describe "abr_n_seq(name, s)"
+  {
+    it "creates a named sequence parser struct"
+    {
+      p = abr_n_seq("xtheny", abr_string("x"), abr_string("y"), NULL);
+
+      ensure(p != NULL);
+      ensure(p->name === "xtheny");
       ensure(p->children[0] != NULL);
       ensure(p->children[1] != NULL);
       ensure(p->children[2] == NULL);
@@ -47,6 +61,19 @@ context "sequence"
         "  abr_string(\"y\"),\n"
         "  NULL)");
     }
+
+    it "returns a string representation of the named seq parser struct"
+    {
+      p = abr_n_seq("xtheny", abr_string("x"), abr_string("y"), NULL);
+      char *s = abr_parser_to_string(p);
+
+      ensure(s ===f ""
+        "abr_n_seq(\n"
+        "  \"xtheny\",\n"
+        "  abr_string(\"x\"),\n"
+        "  abr_string(\"y\"),\n"
+        "  NULL)");
+    }
   }
 
   context "parsing"
@@ -59,6 +86,19 @@ context "sequence"
 
       ensure(s ===f ""
         "[ null, 1, 0, 2, \"seq\", [\n"
+        "  [ null, 1, 0, 1, \"string\", [] ],\n"
+        "  [ null, 1, 1, 1, \"string\", [] ]\n"
+        "] ]");
+    }
+
+    it "succeeds (named parser)"
+    {
+      p = abr_n_seq("xtheny", abr_string("x"), abr_string("y"), NULL);
+      t = abr_parse("xy", 0, p);
+      char *s = abr_tree_to_string(t);
+
+      ensure(s ===f ""
+        "[ \"xtheny\", 1, 0, 2, \"seq\", [\n"
         "  [ null, 1, 0, 1, \"string\", [] ],\n"
         "  [ null, 1, 1, 1, \"string\", [] ]\n"
         "] ]");

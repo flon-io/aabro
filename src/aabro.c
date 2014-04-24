@@ -287,6 +287,16 @@ abr_parser *abr_seq(abr_parser *p, ...)
   return r;
 }
 
+abr_parser *abr_n_seq(char *name, abr_parser *p, ...)
+{
+  abr_parser *r = abr_parser_malloc(4);
+  r->name = strdup(name);
+
+  va_list l; va_start(l, p); r->children = abr_list_children(p, l); va_end(l);
+
+  return r;
+}
+
 abr_parser *abr_name(char *name, abr_parser *p)
 {
   abr_parser *r = abr_parser_malloc(6);
