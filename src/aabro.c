@@ -155,11 +155,11 @@ void abr_parser_free(abr_parser *p)
   free(p);
 }
 
-abr_parser *abr_parser_malloc(unsigned short type)
+abr_parser *abr_parser_malloc(unsigned short type, char *name)
 {
   abr_parser *p = malloc(sizeof(abr_parser));
 
-  p->name = NULL;
+  p->name = (name == NULL) ? NULL : strdup(name);
   p->type = type;
   p->string = NULL;
   p->string_length = -1;
@@ -187,7 +187,7 @@ abr_parser *abr_parser_malloc(unsigned short type)
 
 abr_parser *abr_string(char *s)
 {
-  abr_parser *p = abr_parser_malloc(0);
+  abr_parser *p = abr_parser_malloc(0, NULL);
   p->string = strdup(s);
   p->string_length = strlen(s);
   return p;
@@ -200,8 +200,7 @@ abr_parser *abr_regex(char *s)
 
 abr_parser *abr_n_regex(char *name, char *s)
 {
-  abr_parser *p = abr_parser_malloc(1);
-  if (name != NULL) p->name = strdup(name);
+  abr_parser *p = abr_parser_malloc(1, name);
   p->string = strdup(s); // keep a copy of the original
   p->regex = malloc(sizeof(regex_t));
   regcomp(p->regex, p->string, REG_EXTENDED);
@@ -215,8 +214,7 @@ abr_parser *abr_regex_r(regex_t *r)
 
 abr_parser *abr_n_regex_r(char *name, regex_t *r)
 {
-  abr_parser *p = abr_parser_malloc(1);
-  if (name != NULL) p->name = strdup(name);
+  abr_parser *p = abr_parser_malloc(1, name);
   p->regex = r;
   return p;
 }
@@ -228,8 +226,7 @@ abr_parser *abr_rep(abr_parser *p, int min, int max)
 
 abr_parser *abr_n_rep(char *name, abr_parser *p, int min, int max)
 {
-  abr_parser *r = abr_parser_malloc(2);
-  if (name != NULL) r->name = strdup(name);
+  abr_parser *r = abr_parser_malloc(2, name);
   r->min = min;
   r->max = max;
   r->children = calloc(2, sizeof(abr_parser *));
@@ -261,7 +258,7 @@ abr_parser **abr_list_children(abr_parser *child0, va_list ap)
 
 abr_parser *abr_alt(abr_parser *p, ...)
 {
-  abr_parser *r = abr_parser_malloc(3);
+  abr_parser *r = abr_parser_malloc(3, NULL);
 
   va_list l; va_start(l, p); r->children = abr_list_children(p, l); va_end(l);
 
@@ -270,8 +267,7 @@ abr_parser *abr_alt(abr_parser *p, ...)
 
 abr_parser *abr_n_alt(char *name, abr_parser *p, ...)
 {
-  abr_parser *r = abr_parser_malloc(3);
-  r->name = strdup(name);
+  abr_parser *r = abr_parser_malloc(3, name);
 
   va_list l; va_start(l, p); r->children = abr_list_children(p, l); va_end(l);
 
@@ -280,7 +276,7 @@ abr_parser *abr_n_alt(char *name, abr_parser *p, ...)
 
 abr_parser *abr_seq(abr_parser *p, ...)
 {
-  abr_parser *r = abr_parser_malloc(4);
+  abr_parser *r = abr_parser_malloc(4, NULL);
 
   va_list l; va_start(l, p); r->children = abr_list_children(p, l); va_end(l);
 
@@ -289,8 +285,7 @@ abr_parser *abr_seq(abr_parser *p, ...)
 
 abr_parser *abr_n_seq(char *name, abr_parser *p, ...)
 {
-  abr_parser *r = abr_parser_malloc(4);
-  r->name = strdup(name);
+  abr_parser *r = abr_parser_malloc(4, name);
 
   va_list l; va_start(l, p); r->children = abr_list_children(p, l); va_end(l);
 
@@ -299,8 +294,7 @@ abr_parser *abr_n_seq(char *name, abr_parser *p, ...)
 
 abr_parser *abr_name(char *name, abr_parser *p)
 {
-  abr_parser *r = abr_parser_malloc(6);
-  r->name = strdup(name);
+  abr_parser *r = abr_parser_malloc(6, name);
   r->children = calloc(2, sizeof(abr_parser *));
   r->children[0] = p;
   r->children[1] = NULL;
