@@ -101,15 +101,30 @@ context "regular expressions"
 
       ensure(s ===f "abr_n_regex(\"aas\", \"^a+\")");
     }
-    //it "returns a string representation of the parser struct (_r)"
-    //{
-    //  r = malloc(sizeof(regex_t));
-    //  regcomp(r, "^a+", REG_EXTENDED);
-    //  p = abr_regex_r(r);
-    //  char *s = abr_parser_to_string(p);
-    //  ensure(s ===f "abr_regex_r(\"^a+\")");
-    //}
-    // idea: s=== e=== startsWith / endsWith in rodzo...
+
+    it "returns a string representation of the parser struct (_r)"
+    {
+      r = malloc(sizeof(regex_t));
+      regcomp(r, "^a+", REG_EXTENDED);
+      p = abr_regex_r(r);
+
+      char *s = abr_parser_to_string(p);
+
+      ensure(s ~==f "^abr_regex_r.0x[0-9a-f]+.$");
+        // why can't I use \( and \) ??? investigate
+    }
+
+    it "returns a string representation of the named parser struct (_r)"
+    {
+      r = malloc(sizeof(regex_t));
+      regcomp(r, "^a+", REG_EXTENDED);
+      p = abr_n_regex_r("as", r);
+
+      char *s = abr_parser_to_string(p);
+
+      ensure(s ~==f "^abr_n_regex_r.\"as\", 0x[0-9a-f]+.$");
+        // why can't I use \( and \) ??? investigate
+    }
   }
 
   context "parsing"
