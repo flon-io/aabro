@@ -21,33 +21,34 @@ context "parser"
     if (p != NULL) abr_parser_free(p);
   }
 
-  it "parses everything"
+  describe "abr_parse(input, offset, parser)"
   {
-    p = abr_rep(abr_string("x"), 1, 4);
-    t = abr_parse("x", 0, p);
-    char *s = abr_tree_to_string(t);
 
-    ensure(s ===f ""
-      "[ null, 1, 0, 1, \"rep\", [\n"
-      "  [ null, 1, 0, 1, \"string\", [] ],\n"
-      "  [ null, 0, 1, -1, \"string\", [] ]\n"
-      "] ]");
-  }
+    it "parses as much as it can"
+    {
+      p = abr_rep(abr_string("x"), 1, 4);
+      t = abr_parse("x", 0, p);
+      char *s = abr_tree_to_string(t);
 
-  it "fails when there is too much to parse"
-  {
-    p = abr_rep(abr_string("x"), 1, 2);
-    t = abr_parse("xxy", 0, p);
-    char *s = abr_tree_to_string(t);
+      ensure(s ===f ""
+        "[ null, 1, 0, 1, \"rep\", [\n"
+        "  [ null, 1, 0, 1, \"string\", [] ],\n"
+        "  [ null, 0, 1, -1, \"string\", [] ]\n"
+        "] ]");
+    }
 
-    ensure(s ===f ""
-      //"[ null, 1, 0, 2, [\n"
-      "[ null, 0, 0, 2, \"rep\", [\n"
-      "  [ null, 1, 0, 1, \"string\", [] ],\n"
-      "  [ null, 1, 1, 1, \"string\", [] ]\n"
-      "] ]");
+    it "is successful even if it didn't parse all the input"
+    {
+      p = abr_rep(abr_string("x"), 1, 2);
+      t = abr_parse("xxy", 0, p);
+      char *s = abr_tree_to_string(t);
 
-    // abr_parse_all(input, offset, parser) ???
+      ensure(s ===f ""
+        "[ null, 1, 0, 2, \"rep\", [\n"
+        "  [ null, 1, 0, 1, \"string\", [] ],\n"
+        "  [ null, 1, 1, 1, \"string\", [] ]\n"
+        "] ]");
+    }
   }
 }
 
