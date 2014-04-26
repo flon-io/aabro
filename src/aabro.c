@@ -569,3 +569,11 @@ abr_tree *abr_parse(char *input, int offset, abr_parser *p)
   return abr_p_funcs[p->type](input, offset, p);
 }
 
+abr_tree *abr_parse_all(char *input, int offset, abr_parser *p)
+{
+  abr_tree *t = abr_parse(input, offset, p);
+  if (t->success && t->length != strlen(input)) t->success = 0;
+
+  return t;
+}
+

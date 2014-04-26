@@ -88,6 +88,7 @@ abr_parser *abr_absence(abr_parser *p);
 //
 // entry point
 
+abr_tree *abr_parse_all(char *input, int offset, abr_parser *p);
 abr_tree *abr_parse(char *input, int offset, abr_parser *p);
 
 #endif // AABRO_H
