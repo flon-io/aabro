@@ -85,6 +85,8 @@ abr_parser *abr_name(char *name, abr_parser *p);
 abr_parser *abr_presence(abr_parser *p);
 abr_parser *abr_absence(abr_parser *p);
 
+abr_parser *abr_n(char *name);
+
 //
 // entry point
 

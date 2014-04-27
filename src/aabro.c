@@ -74,7 +74,9 @@ void abr_tree_free(abr_tree *t)
 }
 
 char *abr_p_names[] = { // const ?
-  "string", "regex", "rep", "alt", "seq", "not", "name", "presence", "absence"
+  "string", "regex",
+  "rep", "alt", "seq",
+  "not", "name", "presence", "absence", "n"
 };
 
 void abr_t_to_s(abr_tree *t, flu_sbuffer *b, int indent)
@@ -183,6 +185,7 @@ abr_parser *abr_parser_malloc(unsigned short type, char *name)
  * name
  * presence
  * absence
+ * placeholder (abr_n)
  */
 
 abr_parser *abr_string(char *s)
@@ -306,6 +309,11 @@ abr_parser *abr_name(char *name, abr_parser *p)
   return r;
 }
 
+abr_parser *abr_n(char *name)
+{
+  return abr_parser_malloc(9, name);
+}
+
 //
 // the to_s methods
 
@@ -401,6 +409,11 @@ void abr_p_absence_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 {
 }
 
+void abr_p_n_to_s(flu_sbuffer *b, int indent, abr_parser *p)
+{
+  flu_sbprintf(b, "abr_n(\"%s\")", p->name);
+}
+
 abr_p_to_s_func *abr_p_to_s_funcs[] = { // const ?
   abr_p_string_to_s,
   abr_p_regex_to_s,
@@ -410,7 +423,8 @@ abr_p_to_s_func *abr_p_to_s_funcs[] = { // const ?
   abr_p_not_to_s,
   abr_p_name_to_s,
   abr_p_presence_to_s,
-  abr_p_absence_to_s
+  abr_p_absence_to_s,
+  abr_p_n_to_s
 };
 
 void abr_p_to_s(flu_sbuffer *b, int indent, abr_parser *p)
@@ -552,6 +566,14 @@ abr_tree *abr_p_absence(char *input, int offset, abr_parser *p)
   return NULL;
 }
 
+abr_tree *abr_p_n(char *input, int offset, abr_parser *p)
+{
+  // When a placeholder is called for parsing, it means the parser tree
+  // is incomplete. Do fail.
+
+  return abr_tree_malloc(0, offset, -1, p, NULL);
+}
+
 abr_p_func *abr_p_funcs[] = { // const ?
   abr_p_string,
   abr_p_regex,
@@ -561,7 +583,8 @@ abr_p_func *abr_p_funcs[] = { // const ?
   abr_p_not,
   abr_p_name,
   abr_p_presence,
-  abr_p_absence
+  abr_p_absence,
+  abr_p_n
 };
 
 abr_tree *abr_parse(char *input, int offset, abr_parser *p)
