@@ -9,8 +9,17 @@
 
 context "sample, arith"
 {
+  // from wikipedia "parsing expression grammar"
+  //
+  // Value   ← [0-9.]+ / '(' Expr ')'
+  // Product ← Expr (('*' / '/') Expr)*
+  // Sum     ← Expr (('+' / '-') Expr)*
+  // Expr    ← Product / Sum / Value
+
   before all
   {
+    // NOTE: the star after Product/Sum is not dealt with for now
+
     //abr_parser *number =
     //  abr_regex_s("^-?[0-9]+");
     //abr_parser *parentheses =
@@ -36,8 +45,16 @@ context "sample, arith"
     //  abr_n_seq("operation", value, abr_rep(abr_seq(operator, value), 0, -1));
     //abr_parser *expression =
     //  abr_name("expression", operation);
-        //
-        // need a placeholder parser and various abr_n_*
+
+    abr_parser *val =
+      abr_n_alt(
+        "val",
+        abr_regex("^-?[0-9]+"),
+        abr_seq(abr_string("("), abr_n("exp"), abr_string(")")));
+    abr_parser *op =
+      abr_n_seq("op", abr_n("exp"), abr_regex("^[\+\-\*\/]"), abr_n("exp"));
+    abr_parser *exp =
+      abr_n_alt("exp", op, val);
   }
 
   it "parses numbers"
