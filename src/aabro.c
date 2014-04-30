@@ -186,11 +186,7 @@ void abr_do_name(abr_parser *named, abr_parser *target)
 
     if (child == NULL) break;
 
-    if (
-      child->type == 9 &&
-      child->name != NULL &&
-      strcmp(child->name, named->name) == 0
-    )
+    if (child->type == 9 && strcmp(child->name, named->name) == 0)
     {
       target->children[i] = named;
       abr_parser_free(child);
