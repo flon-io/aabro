@@ -128,6 +128,9 @@ char *abr_tree_to_string(abr_tree *t)
 
 void abr_parser_free(abr_parser *p)
 {
+  if (p->type < 0) return;
+  p->type = -1;
+
   if (p->name != NULL)
   {
     free(p->name);
