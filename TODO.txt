@@ -1,4 +1,5 @@
 
-[ ] abr_parser *abr_n(name)
+[o] abr_parser *abr_n(name)
 [ ] prevent recursion in abr_p_to_s and co
+[ ] tree: 0 fail, 1 success, -1 error
 
