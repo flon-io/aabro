@@ -50,11 +50,17 @@ context "sample, arith"
       abr_n_alt(
         "val",
         abr_regex("^-?[0-9]+"),
-        abr_seq(abr_string("("), abr_n("exp"), abr_string(")")));
+        abr_seq(abr_string("("), abr_n("exp"), abr_string(")"), NULL),
+        NULL);
     abr_parser *op =
-      abr_n_seq("op", abr_n("exp"), abr_regex("^[\+\-\*\/]"), abr_n("exp"));
+      abr_n_seq(
+        "op",
+        abr_n("exp"),
+        abr_regex("^[\+\-\*\/]"),
+        abr_n("exp"),
+        NULL);
     abr_parser *exp =
-      abr_n_alt("exp", op, val);
+      abr_n_alt("exp", op, val, NULL);
   }
 
   it "parses numbers"
