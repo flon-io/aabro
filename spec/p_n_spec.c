@@ -63,12 +63,11 @@ context "name"
   {
     it "resolves abr_n() when the name is defined"
     {
-      abr_parser *p0 = abr_n_alt("p0", abr_string("p0"), abr_n("p0"), NULL);
+      p = abr_n_alt("p", abr_string("p"), abr_n("p"), NULL);
         // yes, I know, it's a joke
 
-      ensure(p0->children[1] == p0);
-
-      abr_parser_free(p0);
+      ensure(p->children[1]->children[0] == p);
+      ensure(p->children[1]->children[1] == NULL);
     }
   }
 }

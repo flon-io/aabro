@@ -191,8 +191,9 @@ void abr_do_name(abr_parser *named, abr_parser *target)
 
     if (child->type == 9 && strcmp(child->name, named->name) == 0)
     {
-      target->children[i] = named;
-      abr_parser_free(child);
+      //target->children[i] = named;
+      //abr_parser_free(child);
+      child->children[0] = named;
     }
     else
     {
@@ -334,14 +335,16 @@ abr_parser *abr_name(char *name, abr_parser *p)
   abr_parser *r = abr_parser_malloc(6, name);
   r->children = calloc(2, sizeof(abr_parser *));
   r->children[0] = p;
-  r->children[1] = NULL;
+  //r->children[1] = NULL;
   abr_do_name(r, r);
   return r;
 }
 
 abr_parser *abr_n(char *name)
 {
-  return abr_parser_malloc(9, name);
+   abr_parser *r = abr_parser_malloc(9, name);
+   r->children = calloc(2, sizeof(abr_parser *));
+   return r;
 }
 
 //
