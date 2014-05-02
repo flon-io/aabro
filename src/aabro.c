@@ -444,6 +444,8 @@ void abr_p_absence_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 void abr_p_n_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 {
   flu_sbprintf(b, "abr_n(\"%s\")", p->name);
+  if (p->children[0] == NULL) flu_sbprintf(b, " /* not linked */", p->name);
+  //else flu_sbprintf(b, " /* linked */", p->name);
 }
 
 abr_p_to_s_func *abr_p_to_s_funcs[] = { // const ?

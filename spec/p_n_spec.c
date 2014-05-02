@@ -35,12 +35,24 @@ context "name"
 
   describe "abr_parser_to_string(p)"
   {
-    it "returns a string representation of the parser struct"
+    it "returns a string representation of the parser struct (not linked)"
     {
       p = abr_n("y");
       char *s = abr_parser_to_string(p);
 
-      ensure(s ===f "abr_n(\"y\")");
+      ensure(s ===f "abr_n(\"y\") /* not linked */");
+    }
+    it "returns a string representation of the parser struct (linked)"
+    {
+      p = abr_n_alt("p", abr_string("p"), abr_n("p"), NULL); // snake
+      char *s = abr_parser_to_string(p);
+
+      ensure(s ===f ""
+        "abr_n_alt(\n"
+        "  \"p\",\n"
+        "  abr_string(\"p\"),\n"
+        "  abr_n(\"p\"),\n"
+        "  NULL)");
     }
   }
 
