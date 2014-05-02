@@ -128,9 +128,6 @@ char *abr_tree_to_string(abr_tree *t)
 
 void abr_parser_free(abr_parser *p)
 {
-  if (p->type < 0) return;
-  p->type = -1;
-
   if (p->name != NULL)
   {
     free(p->name);
@@ -150,7 +147,9 @@ void abr_parser_free(abr_parser *p)
 
   if (p->children != NULL)
   {
-    for(size_t i = 0; ; i++)
+    // do not free children themselves for abr_n()...
+
+    if (p->type != 9) for(size_t i = 0; ; i++)
     {
       if (p->children[i] == NULL) break;
       abr_parser_free(p->children[i]);
