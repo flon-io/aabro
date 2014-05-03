@@ -66,14 +66,16 @@ context "name"
     // error when unliked
     // else delegate to linked parser...
 
-    it "fails, always"
+    it "returns an error (not linked)"
     {
       p = abr_n("z");
       t = abr_parse("x", 0, p);
       char *s = abr_tree_to_string(t);
 
-      ensure(s ===f "[ \"z\", 0, 0, -1, \"n\", [] ]");
+      ensure(s ===f "[ \"z\", -1, 0, -1, \"n\", [] ]");
     }
+
+    it "parses (linked)"
   }
 
   context "linking"

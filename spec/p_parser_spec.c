@@ -80,5 +80,10 @@ context "parser"
         "] ]");
     }
   }
+
+  //describe "errors"
+  //{
+  //  they "propagate down the abr_tree"
+  //}
 }
 

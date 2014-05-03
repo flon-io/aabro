@@ -38,7 +38,7 @@ int MAX_P_CHILDREN = 64;
 
 
 abr_tree *abr_tree_malloc(
-  int result, int offset, int length, abr_parser *p, abr_tree **children
+  short result, int offset, int length, abr_parser *p, abr_tree **children
 )
 {
   abr_tree *t = malloc(sizeof(abr_tree));
@@ -602,10 +602,8 @@ abr_tree *abr_p_absence(char *input, int offset, abr_parser *p)
 
 abr_tree *abr_p_n(char *input, int offset, abr_parser *p)
 {
-  // When a placeholder is called for parsing, it means the parser tree
-  // is incomplete. Do fail.
-
-  return abr_tree_malloc(0, offset, -1, p, NULL);
+  if (p->children[0] == NULL) return abr_tree_malloc(-1, offset, -1, p, NULL);
+  return abr_parse(input, offset, p->children[0]);
 }
 
 abr_p_func *abr_p_funcs[] = { // const ?
