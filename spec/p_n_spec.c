@@ -61,6 +61,11 @@ context "name"
     // When a placeholder is called for parsing, it means the parser tree
     // is incomplete. Do fail.
 
+    // TODO: return -1 (error) instead of 0 (failure)
+    //
+    // error when unliked
+    // else delegate to linked parser...
+
     it "fails, always"
     {
       p = abr_n("z");

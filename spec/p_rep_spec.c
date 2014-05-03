@@ -106,16 +106,16 @@ context "repetition"
       p = abr_rep(abr_string("xy"), 0, 2);
       t = abr_parse("xyxy", 0, p);
 
-      ensure(t->success == 1);
+      ensure(t->result == 1);
       ensure(t->offset == 0);
       ensure(t->length == 4);
       ensure(t->children[0] != NULL);
       ensure(t->children[1] != NULL);
       ensure(t->children[2] == NULL);
-      ensure(t->children[0]->success == 1);
+      ensure(t->children[0]->result == 1);
       ensure(t->children[0]->offset == 0);
       ensure(t->children[0]->length == 2);
-      ensure(t->children[1]->success == 1);
+      ensure(t->children[1]->result == 1);
       ensure(t->children[1]->offset == 2);
       ensure(t->children[1]->length == 2);
 

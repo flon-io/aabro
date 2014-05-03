@@ -50,7 +50,7 @@ char *abr_parser_to_string(abr_parser *p);
 
 typedef struct abr_tree {
   char *name;
-  int success;
+  short result; // -1 error, 0 failure, 1 success
   int offset;
   int length;
   abr_parser *parser;

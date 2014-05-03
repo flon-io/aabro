@@ -38,13 +38,13 @@ int MAX_P_CHILDREN = 64;
 
 
 abr_tree *abr_tree_malloc(
-  int success, int offset, int length, abr_parser *p, abr_tree **children
+  int result, int offset, int length, abr_parser *p, abr_tree **children
 )
 {
   abr_tree *t = malloc(sizeof(abr_tree));
 
   t->name = (p->name == NULL) ? NULL : strdup(p->name);
-  t->success = success;
+  t->result = result;
   t->offset = offset;
   t->length = length;
   t->parser = p;
@@ -97,7 +97,7 @@ void abr_t_to_s(abr_tree *t, flu_sbuffer *b, int indent)
   flu_sbprintf(
     b,
     ", %d, %d, %d, \"%s\", [",
-    t->success, t->offset, t->length, abr_p_names[t->parser->type]);
+    t->result, t->offset, t->length, abr_p_names[t->parser->type]);
 
   if (t->children == NULL)
   {
@@ -523,18 +523,18 @@ abr_tree *abr_p_rep(char *input, int offset, abr_parser *p)
   {
     count++;
     reps[i] = abr_parse(input, off, p->children[0]);
-    if ( ! reps[i]->success) break;
+    if (reps[i]->result != 1) break;
     off += reps[i]->length;
     length += reps[i]->length;
   }
-  int success = 1;
-  if (count - 1 < p->min) success = 0;
+  int result = 1;
+  if (count - 1 < p->min) result = 0;
 
   abr_tree **children = calloc(count + 1, sizeof(abr_tree *));
   for (size_t i = 0; i < count; i++) children[i] = reps[i];
   free(reps);
 
-  return abr_tree_malloc(success, offset, length, p, children);
+  return abr_tree_malloc(result, offset, length, p, children);
 }
 
 abr_tree *abr_p_alt(char *input, int offset, abr_parser *p)
@@ -542,19 +542,19 @@ abr_tree *abr_p_alt(char *input, int offset, abr_parser *p)
   size_t c = 0; while(1) if (p->children[c++] == NULL) break;
   abr_tree **ts = calloc(c, sizeof(abr_tree *));
 
-  int success = 0;
+  int result = 0;
   int length = -1;
 
   for (size_t i = 0; i < c - 1; i++)
   {
     ts[i] = abr_parse(input, offset, p->children[i]);
-    if ( ! ts[i]->success) continue;
-    success = 1;
+    if (ts[i]->result != 1) continue;
+    result = 1;
     length = ts[i]->length;
     break;
   }
 
-  return abr_tree_malloc(success, offset, length, p, ts);
+  return abr_tree_malloc(result, offset, length, p, ts);
 }
 
 abr_tree *abr_p_seq(char *input, int offset, abr_parser *p)
@@ -562,19 +562,19 @@ abr_tree *abr_p_seq(char *input, int offset, abr_parser *p)
   size_t c = 0; while(1) if (p->children[c++] == NULL) break;
   abr_tree **ts = calloc(c, sizeof(abr_tree *));
 
-  int success = 1;
+  int result = 1;
   int length = 0;
   int off = offset;
 
   for (size_t i = 0; i < c - 1; i++)
   {
     ts[i] = abr_parse(input, off, p->children[i]);
-    if ( ! ts[i]->success) { success = 0; length = -1; break; }
+    if (ts[i]->result != 1) { result = 0; length = -1; break; }
     off += ts[i]->length;
     length += ts[i]->length;
   }
 
-  return abr_tree_malloc(success, offset, length, p, ts);
+  return abr_tree_malloc(result, offset, length, p, ts);
 }
 
 abr_tree *abr_p_not(char *input, int offset, abr_parser *p)
@@ -629,7 +629,7 @@ abr_tree *abr_parse(char *input, int offset, abr_parser *p)
 abr_tree *abr_parse_all(char *input, int offset, abr_parser *p)
 {
   abr_tree *t = abr_parse(input, offset, p);
-  if (t->success && t->length != strlen(input)) t->success = 0;
+  if (t->result == 1 && t->length != strlen(input)) t->result = 0;
 
   return t;
 }
