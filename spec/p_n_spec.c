@@ -59,14 +59,9 @@ context "name"
   context "parsing"
   {
     // When a placeholder is called for parsing, it means the parser tree
-    // is incomplete. Do fail.
+    // is incomplete. Do return -1 (error).
 
-    // TODO: return -1 (error) instead of 0 (failure)
-    //
-    // error when unliked
-    // else delegate to linked parser...
-
-    it "returns an error (not linked)"
+    it "returns -1 (error) (not linked)"
     {
       p = abr_n("z");
       t = abr_parse("x", 0, p);
@@ -75,7 +70,28 @@ context "name"
       ensure(s ===f "[ \"z\", -1, 0, -1, \"n\", [] ]");
     }
 
-    it "parses (linked)"
+    //it "parses (linked)"
+    //{
+    //  abr_parser *val =
+    //    abr_n_alt(
+    //      "val",
+    //      abr_regex("^-?[0-9]+"),
+    //      abr_seq(abr_string("("), abr_n("exp"), abr_string(")"), NULL),
+    //      NULL);
+    //  abr_parser *op =
+    //    abr_n_seq(
+    //      "op",
+    //      abr_n("exp"),
+    //      abr_regex("^[\+\-\*\/]"),
+    //      abr_n("exp"),
+    //      NULL);
+    //  abr_parser *exp =
+    //    abr_n_alt("exp", op, val, NULL);
+
+    //  //abr_parser_free(val);
+    //  //abr_parser_free(op);
+    //  //abr_parser_free(exp);
+    //}
   }
 
   context "linking"

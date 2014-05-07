@@ -64,8 +64,8 @@ context "sample, arith"
   }
 
   it "parses numbers"
-  {
-    ensure(1 == 1);
-  }
+  //{
+  //  ensure(1 == 1);
+  //}
 }
 
