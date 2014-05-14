@@ -149,7 +149,7 @@ void abr_parser_free(abr_parser *p)
   {
     // do not free children themselves for abr_n()...
 
-    if (p->type != 9) for(size_t i = 0; ; i++)
+    if (p->type != 9) for (size_t i = 0; ; i++)
     {
       if (p->children[i] == NULL) break;
       abr_parser_free(p->children[i]);
@@ -203,6 +203,8 @@ void abr_do_name(abr_parser *named, abr_parser *target)
 
 void abr_list_children(abr_parser *p, abr_parser *child0, va_list ap)
 {
+  // TODO: if MAX_P_CHILDREN is reached, then insert abr_err("xxx")...
+
   abr_parser **cs = calloc(MAX_P_CHILDREN, sizeof(abr_parser *));
   cs[0] = child0;
   size_t count = 1;

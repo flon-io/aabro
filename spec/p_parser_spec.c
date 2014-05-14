@@ -81,9 +81,19 @@ context "parser"
     }
   }
 
-  //describe "errors"
-  //{
-  //  they "propagate down the abr_tree"
-  //}
+  describe "errors"
+  {
+    they "propagate down the abr_tree"
+    {
+      p = abr_seq(abr_n("p0"), abr_n("p1"), NULL);
+      t = abr_parse_all("x", 0, p);
+      char *s = abr_tree_to_string(t);
+
+      ensure(s ===f ""
+        "[ null, -1, 0, -1, \"seq\", [\n"
+        "  [ \"p0\", -1, 0, -1, \"n\", [] ],\n"
+        "] ]");
+    }
+  }
 }
 
