@@ -136,6 +136,19 @@ context "alternative"
         "  [ null, 0, 0, -1, \"string\", [] ]\n"
         "] ]");
     }
+
+    it "propagates errors"
+    {
+      p = abr_alt(abr_string("x"), abr_n("y"), NULL);
+      t = abr_parse("z", 0, p);
+      char *s = abr_tree_to_string(t);
+
+      ensure(s ===f ""
+        "[ null, -1, 0, -1, \"alt\", [\n"
+        "  [ null, 0, 0, -1, \"string\", [] ],\n"
+        "  [ \"y\", -1, 0, -1, \"n\", [] ]\n"
+        "] ]");
+    }
   }
 }
 

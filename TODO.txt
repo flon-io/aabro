@@ -2,5 +2,5 @@
 [o] abr_parser *abr_n(name)
 [o] prevent recursion in abr_p_to_s and co
   [o] prevent abr_parser_free() from freeing abr_n() children
-[ ] tree: 0 fail, 1 success, -1 error (be careful with ```if (t->success)```
+[o] tree: 0 fail, 1 success, -1 error (be careful with ```if (t->success)```
 

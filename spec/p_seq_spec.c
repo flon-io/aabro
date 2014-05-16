@@ -128,6 +128,19 @@ context "sequence"
         "  [ null, 0, 1, -1, \"string\", [] ]\n"
         "] ]");
     }
+
+    it "propagates errors"
+    {
+      p = abr_seq(abr_string("x"), abr_n("y"), NULL);
+      t = abr_parse("xz", 0, p);
+      char *s = abr_tree_to_string(t);
+
+      ensure(s ===f ""
+        "[ null, -1, 0, -1, \"seq\", [\n"
+        "  [ null, 1, 0, 1, \"string\", [] ],\n"
+        "  [ \"y\", -1, 1, -1, \"n\", [] ]\n"
+        "] ]");
+    }
   }
 }
 

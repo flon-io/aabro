@@ -521,16 +521,19 @@ abr_tree *abr_p_rep(char *input, int offset, abr_parser *p)
   int length = 0;
   abr_tree **reps = calloc(max + 1, sizeof(abr_tree *));
 
+  int result = 1;
+
   for (size_t i = 0; i < p->max; i++)
   {
     count++;
     reps[i] = abr_parse(input, off, p->children[0]);
+    if (reps[i]->result < 0) result = -1;
     if (reps[i]->result != 1) break;
     off += reps[i]->length;
     length += reps[i]->length;
   }
-  int result = 1;
-  if (count - 1 < p->min) result = 0;
+  if (result == 1 && count - 1 < p->min) result = 0;
+  if (result < 0) length = -1;
 
   abr_tree **children = calloc(count + 1, sizeof(abr_tree *));
   for (size_t i = 0; i < count; i++) children[i] = reps[i];
@@ -550,8 +553,9 @@ abr_tree *abr_p_alt(char *input, int offset, abr_parser *p)
   for (size_t i = 0; i < c - 1; i++)
   {
     ts[i] = abr_parse(input, offset, p->children[i]);
-    if (ts[i]->result != 1) continue;
-    result = 1;
+    result = ts[i]->result;
+    if (result < 0) break;
+    if (result != 1) continue;
     length = ts[i]->length;
     break;
   }
@@ -571,7 +575,7 @@ abr_tree *abr_p_seq(char *input, int offset, abr_parser *p)
   for (size_t i = 0; i < c - 1; i++)
   {
     ts[i] = abr_parse(input, off, p->children[i]);
-    if (ts[i]->result != 1) { result = 0; length = -1; break; }
+    if (ts[i]->result != 1) { result = ts[i]->result; length = -1; break; }
     off += ts[i]->length;
     length += ts[i]->length;
   }

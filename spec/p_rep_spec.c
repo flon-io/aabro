@@ -140,6 +140,18 @@ context "repetition"
         "  [ null, 0, 2, -1, \"string\", [] ]\n"
         "] ]");
     }
+
+    it "propagates errors"
+    {
+      p = abr_rep(abr_n("x"), 2, 3);
+      t = abr_parse("x", 0, p);
+      char *s = abr_tree_to_string(t);
+
+      ensure(s ===f ""
+        "[ null, -1, 0, -1, \"rep\", [\n"
+        "  [ \"x\", -1, 0, -1, \"n\", [] ]\n"
+        "] ]");
+    }
   }
 }
 
