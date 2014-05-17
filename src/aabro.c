@@ -627,6 +627,7 @@ abr_p_func *abr_p_funcs[] = { // const ?
 
 abr_tree *abr_parse(char *input, int offset, abr_parser *p)
 {
+  //printf("abr_parse() \"%s\" %i %s\n", input, offset, p->name);
   return abr_p_funcs[p->type](input, offset, p);
 }
 

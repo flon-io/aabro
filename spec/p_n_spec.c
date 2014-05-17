@@ -70,28 +70,35 @@ context "name"
       ensure(s ===f "[ \"z\", -1, 0, -1, \"n\", [] ]");
     }
 
-    //it "parses (linked)"
-    //{
-    //  abr_parser *val =
-    //    abr_n_alt(
-    //      "val",
-    //      abr_regex("^-?[0-9]+"),
-    //      abr_seq(abr_string("("), abr_n("exp"), abr_string(")"), NULL),
-    //      NULL);
-    //  abr_parser *op =
-    //    abr_n_seq(
-    //      "op",
-    //      abr_n("exp"),
-    //      abr_regex("^[\+\-\*\/]"),
-    //      abr_n("exp"),
-    //      NULL);
-    //  abr_parser *exp =
-    //    abr_n_alt("exp", op, val, NULL);
+    it "parses (linked)"
+    {
+      abr_parser *val =
+        abr_n_alt(
+          "val",
+          abr_regex("^-?[0-9]+"),
+          abr_seq(abr_string("("), abr_n("exp"), abr_string(")"), NULL),
+          NULL);
+      abr_parser *op =
+        abr_n_seq(
+          "op",
+          abr_n("exp"),
+          abr_regex("^[\+\-\*\/]"),
+          abr_n("exp"),
+          NULL);
+      abr_parser *exp =
+        abr_n_alt("exp", val, op, NULL);
+      p = exp;
 
-    //  //abr_parser_free(val);
-    //  //abr_parser_free(op);
-    //  //abr_parser_free(exp);
-    //}
+      t = abr_parse("0", 0, p);
+      char *s = abr_tree_to_string(t);
+
+      ensure(s ===f ""
+        "[ \"exp\", 1, 0, 1, \"alt\", [\n"
+        "  [ \"val\", 1, 0, 1, \"alt\", [\n"
+        "    [ null, 1, 0, 1, \"regex\", [] ]\n"
+        "  ] ]\n"
+        "] ]");
+    }
   }
 
   context "linking"
