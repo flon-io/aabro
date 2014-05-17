@@ -113,7 +113,9 @@ void abr_t_to_s(abr_tree *t, flu_sbuffer *b, int indent)
     abr_t_to_s(t->children[i], b, indent + 1);
   }
 
-  flu_sbprintf(b, "\n] ]");
+  flu_sbprintf(b, "\n");
+  for (int i = 0; i < indent; i++) flu_sbprintf(b, "  ");
+  flu_sbprintf(b, "] ]");
 }
 
 char *abr_tree_to_string(abr_tree *t)
