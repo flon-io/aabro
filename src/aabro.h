@@ -53,6 +53,7 @@ typedef struct abr_tree {
   short result; // -1 error, 0 failure, 1 success
   int offset;
   int length;
+  char *note; // set in case of error
   abr_parser *parser;
   struct abr_tree **children;
 } abr_tree;

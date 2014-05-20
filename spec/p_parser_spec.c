@@ -31,9 +31,9 @@ context "parser"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 1, 0, 1, \"rep\", [\n"
-        "  [ null, 1, 0, 1, \"string\", [] ],\n"
-        "  [ null, 0, 1, -1, \"string\", [] ]\n"
+        "[ null, 1, 0, 1, null, \"rep\", [\n"
+        "  [ null, 1, 0, 1, null, \"string\", [] ],\n"
+        "  [ null, 0, 1, -1, null, \"string\", [] ]\n"
         "] ]");
     }
 
@@ -44,9 +44,9 @@ context "parser"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 1, 0, 2, \"rep\", [\n"
-        "  [ null, 1, 0, 1, \"string\", [] ],\n"
-        "  [ null, 1, 1, 1, \"string\", [] ]\n"
+        "[ null, 1, 0, 2, null, \"rep\", [\n"
+        "  [ null, 1, 0, 1, null, \"string\", [] ],\n"
+        "  [ null, 1, 1, 1, null, \"string\", [] ]\n"
         "] ]");
     }
   }
@@ -61,9 +61,9 @@ context "parser"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 1, 0, 1, \"rep\", [\n"
-        "  [ null, 1, 0, 1, \"string\", [] ],\n"
-        "  [ null, 0, 1, -1, \"string\", [] ]\n"
+        "[ null, 1, 0, 1, null, \"rep\", [\n"
+        "  [ null, 1, 0, 1, null, \"string\", [] ],\n"
+        "  [ null, 0, 1, -1, null, \"string\", [] ]\n"
         "] ]");
     }
 
@@ -74,9 +74,9 @@ context "parser"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 0, 0, 2, \"rep\", [\n"
-        "  [ null, 1, 0, 1, \"string\", [] ],\n"
-        "  [ null, 1, 1, 1, \"string\", [] ]\n"
+        "[ null, 0, 0, 2, null, \"rep\", [\n"
+        "  [ null, 1, 0, 1, null, \"string\", [] ],\n"
+        "  [ null, 1, 1, 1, null, \"string\", [] ]\n"
         "] ]");
     }
   }
@@ -90,8 +90,8 @@ context "parser"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, -1, 0, -1, \"seq\", [\n"
-        "  [ \"p0\", -1, 0, -1, \"n\", [] ]\n"
+        "[ null, -1, 0, -1, null, \"seq\", [\n"
+        "  [ \"p0\", -1, 0, -1, \"unlinked abr_n(\"p0\")\", \"n\", [] ]\n"
         "] ]");
     }
   }

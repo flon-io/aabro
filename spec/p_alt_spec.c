@@ -83,8 +83,8 @@ context "alternative"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 1, 0, 1, \"alt\", [\n"
-        "  [ null, 1, 0, 1, \"string\", [] ]\n"
+        "[ null, 1, 0, 1, null, \"alt\", [\n"
+        "  [ null, 1, 0, 1, null, \"string\", [] ]\n"
         "] ]");
     }
     it "succeeds (named parser)"
@@ -94,8 +94,8 @@ context "alternative"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ \"xory\", 1, 0, 1, \"alt\", [\n"
-        "  [ null, 1, 0, 1, \"string\", [] ]\n"
+        "[ \"xory\", 1, 0, 1, null, \"alt\", [\n"
+        "  [ null, 1, 0, 1, null, \"string\", [] ]\n"
         "] ]");
     }
 
@@ -106,9 +106,9 @@ context "alternative"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 1, 0, 1, \"alt\", [\n"
-        "  [ null, 0, 0, -1, \"string\", [] ],\n"
-        "  [ null, 1, 0, 1, \"string\", [] ]\n"
+        "[ null, 1, 0, 1, null, \"alt\", [\n"
+        "  [ null, 0, 0, -1, null, \"string\", [] ],\n"
+        "  [ null, 1, 0, 1, null, \"string\", [] ]\n"
         "] ]");
     }
 
@@ -119,9 +119,9 @@ context "alternative"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 0, 0, -1, \"alt\", [\n"
-        "  [ null, 0, 0, -1, \"string\", [] ],\n"
-        "  [ null, 0, 0, -1, \"string\", [] ]\n"
+        "[ null, 0, 0, -1, null, \"alt\", [\n"
+        "  [ null, 0, 0, -1, null, \"string\", [] ],\n"
+        "  [ null, 0, 0, -1, null, \"string\", [] ]\n"
         "] ]");
     }
     it "fails (named parser)"
@@ -131,9 +131,9 @@ context "alternative"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ \"xory\", 0, 0, -1, \"alt\", [\n"
-        "  [ null, 0, 0, -1, \"string\", [] ],\n"
-        "  [ null, 0, 0, -1, \"string\", [] ]\n"
+        "[ \"xory\", 0, 0, -1, null, \"alt\", [\n"
+        "  [ null, 0, 0, -1, null, \"string\", [] ],\n"
+        "  [ null, 0, 0, -1, null, \"string\", [] ]\n"
         "] ]");
     }
 
@@ -144,9 +144,9 @@ context "alternative"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, -1, 0, -1, \"alt\", [\n"
-        "  [ null, 0, 0, -1, \"string\", [] ],\n"
-        "  [ \"y\", -1, 0, -1, \"n\", [] ]\n"
+        "[ null, -1, 0, -1, null, \"alt\", [\n"
+        "  [ null, 0, 0, -1, null, \"string\", [] ],\n"
+        "  [ \"y\", -1, 0, -1, \"unlinked abr_n(\"y\")\", \"n\", [] ]\n"
         "] ]");
     }
   }

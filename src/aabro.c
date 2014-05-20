@@ -38,7 +38,12 @@ int MAX_P_CHILDREN = 64;
 
 
 abr_tree *abr_tree_malloc(
-  short result, int offset, int length, abr_parser *p, abr_tree **children
+  short result,
+  int offset,
+  int length,
+  char *note,
+  abr_parser *p,
+  abr_tree **children
 )
 {
   abr_tree *t = malloc(sizeof(abr_tree));
@@ -47,6 +52,7 @@ abr_tree *abr_tree_malloc(
   t->result = result;
   t->offset = offset;
   t->length = length;
+  t->note = (note == NULL) ? NULL : strdup(note);
   t->parser = p;
   t->children = children;
 
@@ -55,10 +61,8 @@ abr_tree *abr_tree_malloc(
 
 void abr_tree_free(abr_tree *t)
 {
-  if (t->name != NULL)
-  {
-    free(t->name);
-  }
+  if (t->name != NULL) free(t->name);
+  if (t->note != NULL) free(t->note);
 
   if (t->children != NULL)
   {
@@ -89,15 +93,15 @@ void abr_t_to_s(abr_tree *t, flu_sbuffer *b, int indent)
     return;
   }
 
-  flu_sbprintf(b, "[ ");
-  //
-  if (t->name == NULL) flu_sbprintf(b, "null");
-  else flu_sbprintf(b, "\"%s\"", t->name);
+  char *name = "null";
+  char *note = "null";
+  if (t->name) name = flu_sprintf("\"%s\"", t->name);
+  if (t->note) note = flu_sprintf("\"%s\"", t->note);
   //
   flu_sbprintf(
     b,
-    ", %d, %d, %d, \"%s\", [",
-    t->result, t->offset, t->length, abr_p_names[t->parser->type]);
+    "[ %s, %d, %d, %d, %s, \"%s\", [",
+    name, t->result, t->offset, t->length, note, abr_p_names[t->parser->type]);
 
   if (t->children == NULL)
   {
@@ -497,7 +501,7 @@ abr_tree *abr_p_string(char *input, int offset, abr_parser *p)
     // no, it's probably a string literal...
     // let the caller free it if necessary
 
-  return abr_tree_malloc(su, offset, le, p, NULL);
+  return abr_tree_malloc(su, offset, le, NULL, p, NULL);
 }
 
 abr_tree *abr_p_regex(char *input, int offset, abr_parser *p)
@@ -507,11 +511,11 @@ abr_tree *abr_p_regex(char *input, int offset, abr_parser *p)
   if (regexec(p->regex, input + offset, 1, ms, 0))
   {
     // failure
-    return abr_tree_malloc(0, offset, -1, p, NULL);
+    return abr_tree_malloc(0, offset, -1, NULL, p, NULL);
   }
 
   // success
-  return abr_tree_malloc(1, offset, ms[0].rm_eo - ms[0].rm_so, p, NULL);
+  return abr_tree_malloc(1, offset, ms[0].rm_eo - ms[0].rm_so, NULL, p, NULL);
 }
 
 abr_tree *abr_p_rep(char *input, int offset, abr_parser *p)
@@ -541,7 +545,7 @@ abr_tree *abr_p_rep(char *input, int offset, abr_parser *p)
   for (size_t i = 0; i < count; i++) children[i] = reps[i];
   free(reps);
 
-  return abr_tree_malloc(result, offset, length, p, children);
+  return abr_tree_malloc(result, offset, length, NULL, p, children);
 }
 
 abr_tree *abr_p_alt(char *input, int offset, abr_parser *p)
@@ -562,7 +566,7 @@ abr_tree *abr_p_alt(char *input, int offset, abr_parser *p)
     break;
   }
 
-  return abr_tree_malloc(result, offset, length, p, ts);
+  return abr_tree_malloc(result, offset, length, NULL, p, ts);
 }
 
 abr_tree *abr_p_seq(char *input, int offset, abr_parser *p)
@@ -582,7 +586,7 @@ abr_tree *abr_p_seq(char *input, int offset, abr_parser *p)
     length += ts[i]->length;
   }
 
-  return abr_tree_malloc(result, offset, length, p, ts);
+  return abr_tree_malloc(result, offset, length, NULL, p, ts);
 }
 
 abr_tree *abr_p_not(char *input, int offset, abr_parser *p)
@@ -610,7 +614,13 @@ abr_tree *abr_p_absence(char *input, int offset, abr_parser *p)
 
 abr_tree *abr_p_n(char *input, int offset, abr_parser *p)
 {
-  if (p->children[0] == NULL) return abr_tree_malloc(-1, offset, -1, p, NULL);
+  if (p->children[0] == NULL)
+  {
+    char *note = flu_sprintf("unlinked abr_n(\"%s\")", p->name);
+    abr_tree *t = abr_tree_malloc(-1, offset, -1, note, p, NULL);
+    free(note);
+    return t;
+  }
   return abr_parse(input, offset, p->children[0]);
 }
 

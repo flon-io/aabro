@@ -84,8 +84,8 @@ context "repetition"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 1, 0, 2, \"rep\", [\n"
-        "  [ null, 1, 0, 2, \"string\", [] ]\n"
+        "[ null, 1, 0, 2, null, \"rep\", [\n"
+        "  [ null, 1, 0, 2, null, \"string\", [] ]\n"
         "] ]");
     }
 
@@ -96,8 +96,8 @@ context "repetition"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ \"xandy\", 1, 0, 2, \"rep\", [\n"
-        "  [ null, 1, 0, 2, \"string\", [] ]\n"
+        "[ \"xandy\", 1, 0, 2, null, \"rep\", [\n"
+        "  [ null, 1, 0, 2, null, \"string\", [] ]\n"
         "] ]");
     }
 
@@ -122,9 +122,9 @@ context "repetition"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 1, 0, 4, \"rep\", [\n"
-        "  [ null, 1, 0, 2, \"string\", [] ],\n"
-        "  [ null, 1, 2, 2, \"string\", [] ]\n"
+        "[ null, 1, 0, 4, null, \"rep\", [\n"
+        "  [ null, 1, 0, 2, null, \"string\", [] ],\n"
+        "  [ null, 1, 2, 2, null, \"string\", [] ]\n"
         "] ]");
     }
 
@@ -135,9 +135,9 @@ context "repetition"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 0, 0, 2, \"rep\", [\n"
-        "  [ null, 1, 0, 2, \"string\", [] ],\n"
-        "  [ null, 0, 2, -1, \"string\", [] ]\n"
+        "[ null, 0, 0, 2, null, \"rep\", [\n"
+        "  [ null, 1, 0, 2, null, \"string\", [] ],\n"
+        "  [ null, 0, 2, -1, null, \"string\", [] ]\n"
         "] ]");
     }
 
@@ -148,8 +148,8 @@ context "repetition"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, -1, 0, -1, \"rep\", [\n"
-        "  [ \"x\", -1, 0, -1, \"n\", [] ]\n"
+        "[ null, -1, 0, -1, null, \"rep\", [\n"
+        "  [ \"x\", -1, 0, -1, \"unlinked abr_n(\"x\")\", \"n\", [] ]\n"
         "] ]");
     }
   }
