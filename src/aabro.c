@@ -646,7 +646,19 @@ abr_tree *abr_parse(char *input, int offset, abr_parser *p)
 abr_tree *abr_parse_all(char *input, int offset, abr_parser *p)
 {
   abr_tree *t = abr_parse(input, offset, p);
-  if (t->result == 1 && t->length != strlen(input)) t->result = 0;
+
+  if (t->result == 1 && t->length < strlen(input))
+  {
+    t->result = 0;
+    t->note = strdup(""
+      "not all the input could be parsed");
+  }
+  else if (t->result == 1 && t->length > strlen(input))
+  {
+    t->result = -1;
+    t->note = strdup(""
+      "something wrong happened, something longer than the input got parsed");
+  }
 
   return t;
 }
