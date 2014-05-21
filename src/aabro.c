@@ -35,6 +35,7 @@
 
 int MAX_REPS = 2048; // TODO: decide
 int MAX_P_CHILDREN = 64;
+#define MAX_DEPTH 2048
 
 
 abr_tree *abr_tree_malloc(
@@ -486,9 +487,10 @@ char *abr_parser_to_string(abr_parser *p)
 //
 // the parse methods
 
-typedef abr_tree *abr_p_func(char *, int, abr_parser *);
+typedef abr_tree *abr_p_func(char *, int, int, abr_parser *);
+abr_tree *abr_do_parse(char *input, int offset, int depth, abr_parser *p);
 
-abr_tree *abr_p_string(char *input, int offset, abr_parser *p)
+abr_tree *abr_p_string(char *input, int offset, int depth, abr_parser *p)
 {
   char *s = p->string;
   int le = p->string_length;
@@ -504,7 +506,7 @@ abr_tree *abr_p_string(char *input, int offset, abr_parser *p)
   return abr_tree_malloc(su, offset, le, NULL, p, NULL);
 }
 
-abr_tree *abr_p_regex(char *input, int offset, abr_parser *p)
+abr_tree *abr_p_regex(char *input, int offset, int depth, abr_parser *p)
 {
   regmatch_t ms[1];
 
@@ -518,7 +520,7 @@ abr_tree *abr_p_regex(char *input, int offset, abr_parser *p)
   return abr_tree_malloc(1, offset, ms[0].rm_eo - ms[0].rm_so, NULL, p, NULL);
 }
 
-abr_tree *abr_p_rep(char *input, int offset, abr_parser *p)
+abr_tree *abr_p_rep(char *input, int offset, int depth, abr_parser *p)
 {
   int max = p->max;
   if (max < 0) max = MAX_REPS;
@@ -532,7 +534,7 @@ abr_tree *abr_p_rep(char *input, int offset, abr_parser *p)
   for (size_t i = 0; i < p->max; i++)
   {
     count++;
-    reps[i] = abr_parse(input, off, p->children[0]);
+    reps[i] = abr_do_parse(input, off, depth + 1, p->children[0]);
     if (reps[i]->result < 0) result = -1;
     if (reps[i]->result != 1) break;
     off += reps[i]->length;
@@ -548,7 +550,7 @@ abr_tree *abr_p_rep(char *input, int offset, abr_parser *p)
   return abr_tree_malloc(result, offset, length, NULL, p, children);
 }
 
-abr_tree *abr_p_alt(char *input, int offset, abr_parser *p)
+abr_tree *abr_p_alt(char *input, int offset, int depth, abr_parser *p)
 {
   size_t c = 0; while(1) if (p->children[c++] == NULL) break;
   abr_tree **ts = calloc(c, sizeof(abr_tree *));
@@ -558,7 +560,7 @@ abr_tree *abr_p_alt(char *input, int offset, abr_parser *p)
 
   for (size_t i = 0; i < c - 1; i++)
   {
-    ts[i] = abr_parse(input, offset, p->children[i]);
+    ts[i] = abr_do_parse(input, offset, depth + 1, p->children[i]);
     result = ts[i]->result;
     if (result < 0) break;
     if (result != 1) continue;
@@ -569,7 +571,7 @@ abr_tree *abr_p_alt(char *input, int offset, abr_parser *p)
   return abr_tree_malloc(result, offset, length, NULL, p, ts);
 }
 
-abr_tree *abr_p_seq(char *input, int offset, abr_parser *p)
+abr_tree *abr_p_seq(char *input, int offset, int depth, abr_parser *p)
 {
   size_t c = 0; while(1) if (p->children[c++] == NULL) break;
   abr_tree **ts = calloc(c, sizeof(abr_tree *));
@@ -580,7 +582,7 @@ abr_tree *abr_p_seq(char *input, int offset, abr_parser *p)
 
   for (size_t i = 0; i < c - 1; i++)
   {
-    ts[i] = abr_parse(input, off, p->children[i]);
+    ts[i] = abr_do_parse(input, off, depth + 1, p->children[i]);
     if (ts[i]->result != 1) { result = ts[i]->result; length = -1; break; }
     off += ts[i]->length;
     length += ts[i]->length;
@@ -589,30 +591,30 @@ abr_tree *abr_p_seq(char *input, int offset, abr_parser *p)
   return abr_tree_malloc(result, offset, length, NULL, p, ts);
 }
 
-abr_tree *abr_p_not(char *input, int offset, abr_parser *p)
+abr_tree *abr_p_not(char *input, int offset, int depth, abr_parser *p)
 {
   return NULL;
 }
 
-abr_tree *abr_p_name(char *input, int offset, abr_parser *p)
+abr_tree *abr_p_name(char *input, int offset, int depth, abr_parser *p)
 {
-  abr_tree *t = abr_parse(input, offset, p->children[0]);
+  abr_tree *t = abr_do_parse(input, offset, depth + 1, p->children[0]);
   t->name = strdup(p->name);
 
   return t;
 }
 
-abr_tree *abr_p_presence(char *input, int offset, abr_parser *p)
+abr_tree *abr_p_presence(char *input, int offset, int depth, abr_parser *p)
 {
   return NULL;
 }
 
-abr_tree *abr_p_absence(char *input, int offset, abr_parser *p)
+abr_tree *abr_p_absence(char *input, int offset, int depth, abr_parser *p)
 {
   return NULL;
 }
 
-abr_tree *abr_p_n(char *input, int offset, abr_parser *p)
+abr_tree *abr_p_n(char *input, int offset, int depth, abr_parser *p)
 {
   if (p->children[0] == NULL)
   {
@@ -621,7 +623,7 @@ abr_tree *abr_p_n(char *input, int offset, abr_parser *p)
     free(note);
     return t;
   }
-  return abr_parse(input, offset, p->children[0]);
+  return abr_do_parse(input, offset, depth, p->children[0]);
 }
 
 abr_p_func *abr_p_funcs[] = { // const ?
@@ -637,15 +639,25 @@ abr_p_func *abr_p_funcs[] = { // const ?
   abr_p_n
 };
 
+abr_tree *abr_do_parse(char *input, int offset, int depth, abr_parser *p)
+{
+  if (depth > MAX_DEPTH)
+  {
+    return abr_tree_malloc(
+      -1, offset, -1, "too much recursion, parser loop?", p, NULL);
+  }
+
+  return abr_p_funcs[p->type](input, offset, depth, p);
+}
+
 abr_tree *abr_parse(char *input, int offset, abr_parser *p)
 {
-  //printf("abr_parse() \"%s\" %i %s\n", input, offset, p->name);
-  return abr_p_funcs[p->type](input, offset, p);
+  return abr_do_parse(input, offset, 0, p);
 }
 
 abr_tree *abr_parse_all(char *input, int offset, abr_parser *p)
 {
-  abr_tree *t = abr_parse(input, offset, p);
+  abr_tree *t = abr_do_parse(input, offset, 0, p);
 
   if (t->result == 1 && t->length < strlen(input))
   {
