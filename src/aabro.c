@@ -33,8 +33,8 @@
 #include "flutil.h"
 #include "aabro.h"
 
-int MAX_REPS = 2048; // TODO: decide
-int MAX_P_CHILDREN = 64;
+#define MAX_REPS 2048 // TODO: decide
+#define MAX_P_CHILDREN 64
 #define MAX_DEPTH 2048
 
 
