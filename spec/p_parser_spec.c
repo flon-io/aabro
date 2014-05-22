@@ -123,5 +123,30 @@ context "parser"
         "] ]");
     }
   }
+
+  describe "abr_error_message()"
+  {
+    it "returns the error message"
+    {
+      p = abr_seq(abr_n("p0"), abr_n("p1"), NULL);
+      t = abr_parse_all("x", 0, p);
+
+      char *s = abr_error_message(t);
+
+      // for now, the returned string belongs to the tree
+
+      ensure(s === "unlinked abr_n(\"p0\")");
+    }
+
+    it "returns NULL if there are no errors"
+    {
+      p = abr_rep(abr_string("x"), 1, 4);
+      t = abr_parse_all("x", 0, p);
+
+      char *s = abr_error_message(t);
+
+      ensure(s == NULL);
+    }
+  }
 }
 

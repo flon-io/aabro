@@ -94,5 +94,7 @@ abr_parser *abr_n(char *name);
 abr_tree *abr_parse_all(char *input, int offset, abr_parser *p);
 abr_tree *abr_parse(char *input, int offset, abr_parser *p);
 
+char *abr_error_message(abr_tree *t);
+
 #endif // AABRO_H
 

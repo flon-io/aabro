@@ -675,3 +675,19 @@ abr_tree *abr_parse_all(char *input, int offset, abr_parser *p)
   return t;
 }
 
+char *abr_error_message(abr_tree *t)
+{
+  if (t->result == -1 && t->note != NULL) return t->note;
+
+  if (t->children == NULL) return NULL;
+
+  for (size_t i = 0; ; i++)
+  {
+    if (t->children[i] == NULL) break;
+    char *s = abr_error_message(t->children[i]);
+    if (s != NULL) return s;
+  }
+
+  return NULL;
+}
+
