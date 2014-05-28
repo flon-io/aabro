@@ -35,7 +35,7 @@ typedef struct abr_parser {
   char *name;
   short type;
   char *string;
-  int string_length;
+  size_t string_length;
   regex_t *regex;
   int min; int max;
   struct abr_parser **children;

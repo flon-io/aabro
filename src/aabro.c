@@ -173,7 +173,7 @@ abr_parser *abr_parser_malloc(unsigned short type, char *name)
   p->name = (name == NULL) ? NULL : strdup(name);
   p->type = type;
   p->string = NULL;
-  p->string_length = -1;
+  p->string_length = 0;
   p->regex = NULL;
   p->min = -1; p->max = -1;
   p->children = NULL;
