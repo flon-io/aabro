@@ -51,7 +51,7 @@ char *abr_parser_to_string(abr_parser *p);
 typedef struct abr_tree {
   char *name;
   short result; // -1 error, 0 failure, 1 success
-  int offset;
+  size_t offset;
   int length;
   char *note; // set in case of error
   abr_parser *parser;
@@ -91,8 +91,8 @@ abr_parser *abr_n(char *name);
 //
 // entry point
 
-abr_tree *abr_parse_all(char *input, int offset, abr_parser *p);
-abr_tree *abr_parse(char *input, int offset, abr_parser *p);
+abr_tree *abr_parse_all(char *input, size_t offset, abr_parser *p);
+abr_tree *abr_parse(char *input, size_t offset, abr_parser *p);
 
 char *abr_error_message(abr_tree *t);
 
