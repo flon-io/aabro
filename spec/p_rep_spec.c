@@ -137,7 +137,7 @@ context "repetition"
       ensure(s ===f ""
         "[ null, 0, 0, 2, null, \"rep\", [\n"
         "  [ null, 1, 0, 2, null, \"string\", [] ],\n"
-        "  [ null, 0, 2, -1, null, \"string\", [] ]\n"
+        "  [ null, 0, 2, 0, null, \"string\", [] ]\n"
         "] ]");
     }
 
@@ -148,8 +148,8 @@ context "repetition"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, -1, 0, -1, null, \"rep\", [\n"
-        "  [ \"x\", -1, 0, -1, \"unlinked abr_n(\"x\")\", \"n\", [] ]\n"
+        "[ null, -1, 0, 0, null, \"rep\", [\n"
+        "  [ \"x\", -1, 0, 0, \"unlinked abr_n(\"x\")\", \"n\", [] ]\n"
         "] ]");
     }
   }

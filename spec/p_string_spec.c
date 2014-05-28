@@ -89,7 +89,7 @@ context "strings"
       t = abr_parse("yyy", 0, p);
       char *s = abr_tree_to_string(t);
 
-      ensure(s ===f "[ null, 0, 0, -1, null, \"string\", [] ]");
+      ensure(s ===f "[ null, 0, 0, 0, null, \"string\", [] ]");
     }
   }
 }

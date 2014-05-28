@@ -33,7 +33,7 @@ context "parser"
       ensure(s ===f ""
         "[ null, 1, 0, 1, null, \"rep\", [\n"
         "  [ null, 1, 0, 1, null, \"string\", [] ],\n"
-        "  [ null, 0, 1, -1, null, \"string\", [] ]\n"
+        "  [ null, 0, 1, 0, null, \"string\", [] ]\n"
         "] ]");
     }
 
@@ -91,7 +91,7 @@ context "parser"
       ensure(s ===f ""
         "[ null, 1, 0, 1, null, \"rep\", [\n"
         "  [ null, 1, 0, 1, null, \"string\", [] ],\n"
-        "  [ null, 0, 1, -1, null, \"string\", [] ]\n"
+        "  [ null, 0, 1, 0, null, \"string\", [] ]\n"
         "] ]");
     }
 
@@ -118,8 +118,8 @@ context "parser"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, -1, 0, -1, null, \"seq\", [\n"
-        "  [ \"p0\", -1, 0, -1, \"unlinked abr_n(\"p0\")\", \"n\", [] ]\n"
+        "[ null, -1, 0, 0, null, \"seq\", [\n"
+        "  [ \"p0\", -1, 0, 0, \"unlinked abr_n(\"p0\")\", \"n\", [] ]\n"
         "] ]");
     }
   }

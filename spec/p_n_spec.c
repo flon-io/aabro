@@ -68,7 +68,7 @@ context "name"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ \"z\", -1, 0, -1, \"unlinked abr_n(\"z\")\", \"n\", [] ]");
+        "[ \"z\", -1, 0, 0, \"unlinked abr_n(\"z\")\", \"n\", [] ]");
     }
 
     it "parses (linked)"

@@ -111,8 +111,8 @@ context "sequence"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 0, 0, -1, null, \"seq\", [\n"
-        "  [ null, 0, 0, -1, null, \"string\", [] ]\n"
+        "[ null, 0, 0, 0, null, \"seq\", [\n"
+        "  [ null, 0, 0, 0, null, \"string\", [] ]\n"
         "] ]");
     }
 
@@ -123,9 +123,9 @@ context "sequence"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 0, 0, -1, null, \"seq\", [\n"
+        "[ null, 0, 0, 0, null, \"seq\", [\n"
         "  [ null, 1, 0, 1, null, \"string\", [] ],\n"
-        "  [ null, 0, 1, -1, null, \"string\", [] ]\n"
+        "  [ null, 0, 1, 0, null, \"string\", [] ]\n"
         "] ]");
     }
 
@@ -136,9 +136,9 @@ context "sequence"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, -1, 0, -1, null, \"seq\", [\n"
+        "[ null, -1, 0, 0, null, \"seq\", [\n"
         "  [ null, 1, 0, 1, null, \"string\", [] ],\n"
-        "  [ \"y\", -1, 1, -1, \"unlinked abr_n(\"y\")\", \"n\", [] ]\n"
+        "  [ \"y\", -1, 1, 0, \"unlinked abr_n(\"y\")\", \"n\", [] ]\n"
         "] ]");
     }
   }
