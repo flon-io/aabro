@@ -47,7 +47,7 @@ abr_tree *abr_tree_malloc(
   abr_tree **children
 )
 {
-  abr_tree *t = malloc(sizeof(abr_tree));
+  abr_tree *t = calloc(1, sizeof(abr_tree));
 
   t->name = (p->name == NULL) ? NULL : strdup(p->name);
   t->result = result;
@@ -168,7 +168,7 @@ void abr_parser_free(abr_parser *p)
 
 abr_parser *abr_parser_malloc(unsigned short type, char *name)
 {
-  abr_parser *p = malloc(sizeof(abr_parser));
+  abr_parser *p = calloc(1, sizeof(abr_parser));
 
   p->name = (name == NULL) ? NULL : strdup(name);
   p->type = type;
@@ -266,7 +266,7 @@ abr_parser *abr_n_regex(char *name, char *s)
 {
   abr_parser *p = abr_parser_malloc(1, name);
   p->string = strdup(s); // keep a copy of the original
-  p->regex = malloc(sizeof(regex_t));
+  p->regex = calloc(1, sizeof(regex_t));
   regcomp(p->regex, p->string, REG_EXTENDED);
   return p;
 }
