@@ -103,6 +103,9 @@ void abr_t_to_s(abr_tree *t, flu_sbuffer *b, int indent)
     b,
     "[ %s, %d, %d, %d, %s, \"%s\", [",
     name, t->result, t->offset, t->length, note, abr_p_names[t->parser->type]);
+  //
+  if (t->name) free(name);
+  if (t->note) free(note);
 
   if (t->children == NULL)
   {
