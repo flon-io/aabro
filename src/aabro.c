@@ -78,6 +78,11 @@ void abr_tree_free(abr_tree *t)
   free(t);
 }
 
+char *abr_tree_string(char *input, abr_tree *t)
+{
+  return strndup(input + t->offset, t->length);
+}
+
 char *abr_p_names[] = { // const ?
   "string", "regex",
   "rep", "alt", "seq",
@@ -653,6 +658,10 @@ abr_tree *abr_do_parse(char *input, size_t offset, int depth, abr_parser *p)
   return abr_p_funcs[p->type](input, offset, depth, p);
 }
 
+
+//
+// entry point
+
 abr_tree *abr_parse(char *input, size_t offset, abr_parser *p)
 {
   return abr_do_parse(input, offset, 0, p);
@@ -678,6 +687,10 @@ abr_tree *abr_parse_all(char *input, size_t offset, abr_parser *p)
   return t;
 }
 
+
+//
+// helper functions
+
 char *abr_error_message(abr_tree *t)
 {
   if (t->result == -1 && t->note != NULL) return t->note;
@@ -692,5 +705,55 @@ char *abr_error_message(abr_tree *t)
   }
 
   return NULL;
+}
+
+size_t abr_t_count(abr_tree *t, abr_tree_func *f)
+{
+  int r = f(t);
+
+  if (r < 0) return 0;
+  if (r > 0) return 1;
+
+  if (t->children == NULL) return 0;
+
+  size_t c = 0;
+
+  for (size_t i = 0; t->children[i] != NULL; i++)
+  {
+    c += abr_t_count(t->children[i], f);
+  }
+
+  return c;
+}
+
+abr_tree **abr_t_collect(abr_tree **ts, abr_tree *t, abr_tree_func *f)
+{
+  int r = f(t);
+
+  if (r < 0) { return ts; }
+  if (r > 0) { *ts = t; return ++ts; }
+
+  if (t->children == NULL) return ts;
+
+  for (size_t i = 0; t->children[i] != NULL; i++)
+  {
+    ts = abr_t_collect(ts, t->children[i], f);
+  }
+
+  return ts;
+}
+
+abr_tree **abr_tree_collect(abr_tree *t, abr_tree_func *f)
+{
+  // count pass
+
+  size_t c = abr_t_count(t, f);
+
+  // collect pass
+
+  abr_tree **ts = calloc(c + 1, sizeof(abr_tree *));
+  abr_t_collect(ts, t, f);
+
+  return ts;
 }
 

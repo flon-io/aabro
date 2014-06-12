@@ -60,7 +60,15 @@ typedef struct abr_tree {
 
 void abr_tree_free(abr_tree *t);
 
+/*
+ * Returns a string representation (JSON) of the abr_tree.
+ */
 char *abr_tree_to_string(abr_tree *t);
+
+/*
+ * Returns a copy of the string behind the abr_tree.
+ */
+char *abr_tree_string(char *input, abr_tree *t);
 
 //
 // abr_parser builders
@@ -94,7 +102,25 @@ abr_parser *abr_n(char *name);
 abr_tree *abr_parse_all(char *input, size_t offset, abr_parser *p);
 abr_tree *abr_parse(char *input, size_t offset, abr_parser *p);
 
+//
+// helper functions
+
 char *abr_error_message(abr_tree *t);
+
+/*
+ * The model for a function that, given a tree, returns an integer.
+ *
+ * -1: no, don't go on with my children
+ *  0: no, but please go on with my children if I have any
+ *  1: success (collect me, but not any of my children)
+ */
+typedef int abr_tree_func(abr_tree *);
+
+/*
+ * given a tree (starting point) and an abr_tree_func, collects all the
+ * [sub-trees] that return 1 when the function is called on them.
+ */
+abr_tree **abr_tree_collect(abr_tree *t, abr_tree_func *f);
 
 #endif // AABRO_H
 
