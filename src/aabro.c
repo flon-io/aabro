@@ -67,9 +67,8 @@ void abr_tree_free(abr_tree *t)
 
   if (t->children != NULL)
   {
-    for (size_t i = 0; ; i++)
+    for (size_t i = 0; t->children[i] != NULL; i++)
     {
-      if (t->children[i] == NULL) break;
       abr_tree_free(t->children[i]);
     }
     free(t->children);

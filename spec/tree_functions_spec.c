@@ -82,7 +82,9 @@ context "tree functions"
         "] ]"
       );
 
-      //abr_trees_free(ts);
+      free(ts);
+        // NB: only freeing this list of pointers,
+        //     the trees themselves are freed in the "after each"
     }
   }
 }
