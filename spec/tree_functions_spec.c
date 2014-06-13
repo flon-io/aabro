@@ -105,7 +105,46 @@ context "tree functions"
 
   describe "abr_tree_to_string_with_leaves()"
   {
-    it "works"
+    it "returns a string representation of an abr_tree with string leaves"
+    {
+      char *in = "[-1,0,1]";
+      t = abr_parse_all(in, 0, p);
+      char *s = abr_tree_to_string_with_leaves(in, t);
+
+      //puts(s);
+      ensure(s ===f ""
+        "[ \"value\", 1, 0, 8, null, \"alt\", [\n"
+        "  [ \"number\", 0, 0, 0, null, \"regex\", [] ],\n"
+        "  [ \"array\", 1, 0, 8, null, \"seq\", [\n"
+        "    [ null, 1, 0, 1, null, \"string\", \"[\" ],\n"
+        "    [ \"values\", 1, 1, 6, null, \"rep\", [\n"
+        "      [ null, 1, 1, 6, null, \"seq\", [\n"
+        "        [ \"value\", 1, 1, 2, null, \"alt\", [\n"
+        "          [ \"number\", 1, 1, 2, null, \"regex\", \"-1\" ]\n"
+        "        ] ],\n"
+        "        [ null, 1, 3, 4, null, \"rep\", [\n"
+        "          [ null, 1, 3, 2, null, \"seq\", [\n"
+        "            [ null, 1, 3, 1, null, \"string\", \",\" ],\n"
+        "            [ \"value\", 1, 4, 1, null, \"alt\", [\n"
+        "              [ \"number\", 1, 4, 1, null, \"regex\", \"0\" ]\n"
+        "            ] ]\n"
+        "          ] ],\n"
+        "          [ null, 1, 5, 2, null, \"seq\", [\n"
+        "            [ null, 1, 5, 1, null, \"string\", \",\" ],\n"
+        "            [ \"value\", 1, 6, 1, null, \"alt\", [\n"
+        "              [ \"number\", 1, 6, 1, null, \"regex\", \"1\" ]\n"
+        "            ] ]\n"
+        "          ] ],\n"
+        "          [ null, 0, 7, 0, null, \"seq\", [\n"
+        "            [ null, 0, 7, 0, null, \"string\", [] ]\n"
+        "          ] ]\n"
+        "        ] ]\n"
+        "      ] ]\n"
+        "    ] ],\n"
+        "    [ null, 1, 7, 1, null, \"string\", \"]\" ]\n"
+        "  ] ]\n"
+        "] ]");
+    }
   }
 }
 

@@ -88,7 +88,7 @@ char *abr_p_names[] = { // const ?
   "not", "name", "presence", "absence", "n"
 };
 
-void abr_t_to_s(abr_tree *t, flu_sbuffer *b, int indent)
+void abr_t_to_s(abr_tree *t, char *input, flu_sbuffer *b, int indent)
 {
   for (int i = 0; i < indent; i++) flu_sbprintf(b, "  ");
 
@@ -105,7 +105,7 @@ void abr_t_to_s(abr_tree *t, flu_sbuffer *b, int indent)
   //
   flu_sbprintf(
     b,
-    "[ %s, %d, %d, %d, %s, \"%s\", [",
+    "[ %s, %d, %d, %d, %s, \"%s\", ",
     name, t->result, t->offset, t->length, note, abr_p_names[t->parser->type]);
   //
   if (t->name) free(name);
@@ -113,16 +113,27 @@ void abr_t_to_s(abr_tree *t, flu_sbuffer *b, int indent)
 
   if (t->children == NULL)
   {
-    flu_sbprintf(b, "] ]");
+    if (input == NULL || t->result != 1)
+    {
+      flu_sbprintf(b, "[] ]");
+    }
+    else
+    {
+      char *s = strndup(input + t->offset, t->length);
+      flu_sbprintf(b, "\"%s\" ]", s);
+      free(s);
+    }
     return;
   }
+
+  flu_sbprintf(b, "[");
 
   for (size_t i = 0; ; i++)
   {
     if (t->children[i] == NULL) break;
     if (i > 0) flu_sbprintf(b, ",");
     flu_sbprintf(b, "\n");
-    abr_t_to_s(t->children[i], b, indent + 1);
+    abr_t_to_s(t->children[i], input, b, indent + 1);
   }
 
   flu_sbprintf(b, "\n");
@@ -133,7 +144,14 @@ void abr_t_to_s(abr_tree *t, flu_sbuffer *b, int indent)
 char *abr_tree_to_string(abr_tree *t)
 {
   flu_sbuffer *b = flu_sbuffer_malloc();
-  abr_t_to_s(t, b, 0);
+  abr_t_to_s(t, NULL, b, 0);
+  return flu_sbuffer_to_string(b);
+}
+
+char *abr_tree_to_string_with_leaves(char *input, abr_tree *t)
+{
+  flu_sbuffer *b = flu_sbuffer_malloc();
+  abr_t_to_s(t, input, b, 0);
   return flu_sbuffer_to_string(b);
 }
 

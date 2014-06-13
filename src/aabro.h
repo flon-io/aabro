@@ -66,6 +66,13 @@ void abr_tree_free(abr_tree *t);
 char *abr_tree_to_string(abr_tree *t);
 
 /*
+ * Same as abr_tree_to_string(), but successful leaves have their text
+ * printed, instead of the "[]" standing for "no children".
+ * Useful when debugging a parser.
+ */
+char *abr_tree_to_string_with_leaves(char *input, abr_tree *t);
+
+/*
  * Returns a copy of the string behind the abr_tree.
  */
 char *abr_tree_string(char *input, abr_tree *t);
