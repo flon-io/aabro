@@ -121,6 +121,19 @@ int flu_sbputs(flu_sbuffer *b, char *s)
   return fputs(s, b->stream);
 }
 
+int flu_sbputs_n(flu_sbuffer *b, char *s, size_t n)
+{
+  int r = 1;
+  for (size_t i = 0; i < n; i++)
+  {
+    if (s[i] == '\0') break;
+    r = putc(s[i], b->stream);
+    if (r == EOF) return EOF;
+  }
+
+  return r;
+}
+
 int flu_sbuffer_close(flu_sbuffer *b)
 {
   int r = 0;

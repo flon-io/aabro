@@ -92,6 +92,13 @@ int flu_sbputc(flu_sbuffer *b, int c);
 int flu_sbputs(flu_sbuffer *b, char *s);
 
 /*
+ * Puts the n first chars of s to the buffer. Return a non-negative int
+ * on success, EOF in case of error.
+ * Stops upon encountering a \0.
+ */
+int flu_sbputs_n(flu_sbuffer *b, char *s, size_t n);
+
+/*
  * Closes the buffer (stream) which causes the string to be made available.
  *
  * Doesn't not free the buffer, it still is around for further reading
