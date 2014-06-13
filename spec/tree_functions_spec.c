@@ -58,9 +58,9 @@ context "tree functions"
   {
     it "works"
     {
-      char *in = "[1,2,3]";
-      t = abr_parse_all(in, 0, p);
-      //char *s = abr_tree_to_string(t); puts(s); free(s);
+      char *s = "[1,2,3]";
+      t = abr_parse_all(s, 0, p);
+      //char *st = abr_tree_to_string(t); puts(st); free(st);
 
       abr_tree **ts = abr_tree_collect(t->children[1], is_value);
 
@@ -70,11 +70,11 @@ context "tree functions"
       ensure(ts[3] == NULL);
 
       ensure(ts[0]->name === "value");
-      ensure(abr_tree_string(in, ts[0]) ===f "1");
+      ensure(abr_tree_string(s, ts[0]) ===f "1");
       ensure(ts[1]->name === "value");
-      ensure(abr_tree_string(in, ts[1]) ===f "2");
+      ensure(abr_tree_string(s, ts[1]) ===f "2");
       ensure(ts[2]->name === "value");
-      ensure(abr_tree_string(in, ts[2]) ===f "3");
+      ensure(abr_tree_string(s, ts[2]) ===f "3");
 
       ensure(abr_tree_to_string(ts[0]) ===f ""
         "[ \"value\", 1, 1, 1, null, \"alt\", [\n"
@@ -86,6 +86,26 @@ context "tree functions"
         // NB: only freeing this list of pointers,
         //     the trees themselves are freed in the "after each"
     }
+  }
+
+  describe "abr_tree_to_string()"
+  {
+    it "returns a string representation of an abr_tree"
+    {
+      t = abr_parse_all("-1", 0, p);
+      char *s = abr_tree_to_string(t);
+
+      //puts(s);
+      ensure(s ===f ""
+        "[ \"value\", 1, 0, 2, null, \"alt\", [\n"
+        "  [ \"number\", 1, 0, 2, null, \"regex\", [] ]\n"
+        "] ]");
+    }
+  }
+
+  describe "abr_tree_to_string_with_leaves()"
+  {
+    it "works"
   }
 }
 
