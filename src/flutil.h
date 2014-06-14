@@ -132,5 +132,22 @@ char *flu_sprintf(const char *format, ...);
 void flu_die(int exit_value, const char *format, ...);
 
 
+//
+// escape
+
+/*
+ * Returns an escaped copy of the given string.
+ * Only escapes \ " \b \f \n \r \t. It doesn't escape UTF-8 chars (the
+ * ones above ASCII).
+ */
+char *flu_escape(char *s);
+char *flu_n_escape(char *s, size_t n);
+
+/*
+ * Returns an unescaped copy of the given string.
+ */
+char *flu_unescape(char *s);
+char *flu_n_unescape(char *s, size_t n);
+
 #endif // FLON_FLUTIL_H
 
