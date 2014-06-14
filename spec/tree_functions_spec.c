@@ -14,6 +14,16 @@ context "tree functions"
   {
     abr_tree *t = NULL;
 
+    abr_parser *string =
+      abr_n_regex(
+        "string",
+        "^\"("
+          //"\\\\." "|"
+          "\\\\[\"\\/\\\\bfnrt]" "|"
+          "\\\\u[0-9a-fA-F]{4}" "|"
+          "[^\"\\]"
+        ")*\"");
+
     abr_parser *values =
       abr_n_rep(
         "values",
@@ -29,11 +39,15 @@ context "tree functions"
     abr_parser *array =
       abr_n_seq("array", abr_string("["), values, abr_string("]"), NULL);
 
+    abr_parser *number =
+      abr_n_regex("number", "^-?[0-9]+(\\.[0-9]+)?");
+
     abr_parser *p=
       abr_n_alt(
         "value",
-        abr_n_regex("number", "^-?[0-9]+(\\.[0-9]+)?"),
+        number,
         array,
+        string,
         NULL);
   }
   after each
@@ -56,7 +70,7 @@ context "tree functions"
 
   describe "abr_tree_collect()"
   {
-    it "works"
+    it "collects the trees that match the given function"
     {
       char *s = "[1,2,3]";
       t = abr_parse_all(s, 0, p);
@@ -143,6 +157,23 @@ context "tree functions"
         "    ] ],\n"
         "    [ null, 1, 7, 1, null, \"string\", \"]\" ]\n"
         "  ] ]\n"
+        "] ]");
+    }
+
+    it "escapes the leave string"
+    {
+      char *in = "\"hello\nworld\"";
+      t = abr_parse_all(in, 0, p);
+      char *s = abr_tree_to_string_with_leaves(in, t);
+
+      //puts(s);
+      ensure(s ===f ""
+        "[ \"value\", 1, 0, 13, null, \"alt\", [\n"
+        "  [ \"number\", 0, 0, 0, null, \"regex\", [] ],\n"
+        "  [ \"array\", 0, 0, 0, null, \"seq\", [\n"
+        "    [ null, 0, 0, 0, null, \"string\", [] ]\n"
+        "  ] ],\n"
+        "  [ \"string\", 1, 0, 13, null, \"regex\", \"\\\"hello\\nworld\\\"\" ]\n"
         "] ]");
     }
   }
