@@ -37,7 +37,7 @@
 //
 // str functions
 
-int flu_strends(char *s, char *end)
+int flu_strends(const char *s, const char *end)
 {
   size_t ls = strlen(s);
   size_t le = strlen(end);
@@ -47,7 +47,7 @@ int flu_strends(char *s, char *end)
   return (strncmp(s + ls - le, end, le) == 0);
 }
 
-char *flu_strrtrim(char *s)
+char *flu_strrtrim(const char *s)
 {
   char *r = strdup(s);
   for (size_t l = strlen(r); l > 0; l--)
@@ -60,7 +60,7 @@ char *flu_strrtrim(char *s)
   return r;
 }
 
-char *flu_strtrim(char *s)
+char *flu_strtrim(const char *s)
 {
   char *s1 = flu_strrtrim(s);
   char *s2 = s1;
@@ -116,12 +116,12 @@ int flu_sbputc(flu_sbuffer *b, int c)
   return putc(c, b->stream);
 }
 
-int flu_sbputs(flu_sbuffer *b, char *s)
+int flu_sbputs(flu_sbuffer *b, const char *s)
 {
   return fputs(s, b->stream);
 }
 
-int flu_sbputs_n(flu_sbuffer *b, char *s, size_t n)
+int flu_sbputs_n(flu_sbuffer *b, const char *s, size_t n)
 {
   int r = 1;
   for (size_t i = 0; i < n; i++)
@@ -197,12 +197,12 @@ void flu_die(int exit_value, const char *format, ...)
 //
 // escape
 
-char *flu_escape(char *s)
+char *flu_escape(const char *s)
 {
   return flu_n_escape(s, strlen(s));
 }
 
-char *flu_n_escape(char *s, size_t n)
+char *flu_n_escape(const char *s, size_t n)
 {
   flu_sbuffer *b = flu_sbuffer_malloc();
 
@@ -223,14 +223,14 @@ char *flu_n_escape(char *s, size_t n)
   return flu_sbuffer_to_string(b);
 }
 
-char *flu_unescape(char *s)
+char *flu_unescape(const char *s)
 {
   return flu_n_unescape(s, strlen(s));
 }
 
 // based on cutef8 by Jeff Bezanson
 //
-char *flu_n_unescape(char *s, size_t n)
+char *flu_n_unescape(const char *s, size_t n)
 {
   char *d = calloc(n + 1, sizeof(char));
 

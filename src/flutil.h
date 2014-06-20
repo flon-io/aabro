@@ -39,17 +39,17 @@
 /*
  * Returns 1 if the string s ends with the end string. Returns 0 else.
  */
-int flu_strends(char *s, char *end);
+int flu_strends(const char *s, const char *end);
 
 /*
  * Returns a copy of the string, trimmed on the right.
  */
-char *flu_strrtrim(char *s);
+char *flu_strrtrim(const char *s);
 
 /*
  * Returns a trimmed copy of the string, left and right.
  */
-char *flu_strtrim(char *s);
+char *flu_strtrim(const char *s);
 
 
 //
@@ -89,14 +89,14 @@ int flu_sbputc(flu_sbuffer *b, int c);
 /*
  * The equivalent of fputs(). Warning: the buffer is the first argument.
  */
-int flu_sbputs(flu_sbuffer *b, char *s);
+int flu_sbputs(flu_sbuffer *b, const char *s);
 
 /*
  * Puts the n first chars of s to the buffer. Return a non-negative int
  * on success, EOF in case of error.
  * Stops upon encountering a \0.
  */
-int flu_sbputs_n(flu_sbuffer *b, char *s, size_t n);
+int flu_sbputs_n(flu_sbuffer *b, const char *s, size_t n);
 
 /*
  * Closes the buffer (stream) which causes the string to be made available.
@@ -140,14 +140,14 @@ void flu_die(int exit_value, const char *format, ...);
  * Only escapes \ " \b \f \n \r \t. It doesn't escape UTF-8 chars (the
  * ones above ASCII).
  */
-char *flu_escape(char *s);
-char *flu_n_escape(char *s, size_t n);
+char *flu_escape(const char *s);
+char *flu_n_escape(const char *s, size_t n);
 
 /*
  * Returns an unescaped copy of the given string.
  */
-char *flu_unescape(char *s);
-char *flu_n_unescape(char *s, size_t n);
+char *flu_unescape(const char *s);
+char *flu_n_unescape(const char *s, size_t n);
 
 #endif // FLON_FLUTIL_H
 
