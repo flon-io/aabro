@@ -70,18 +70,18 @@ char *abr_tree_to_string(abr_tree *t);
  * printed, instead of the "[]" standing for "no children".
  * Useful when debugging a parser.
  */
-char *abr_tree_to_string_with_leaves(char *input, abr_tree *t);
+char *abr_tree_to_string_with_leaves(const char *input, abr_tree *t);
 
 /*
  * Returns a copy of the string behind the abr_tree.
  */
-char *abr_tree_string(char *input, abr_tree *t);
+char *abr_tree_string(const char *input, abr_tree *t);
 
 //
 // abr_parser builders
 
-abr_parser *abr_string(char *s);
-abr_parser *abr_regex(char *s);
+abr_parser *abr_string(const char *s);
+abr_parser *abr_regex(const char *s);
 abr_parser *abr_regex_r(regex_t *r);
 
 abr_parser *abr_rep(abr_parser *p, int min, int max);
@@ -89,25 +89,25 @@ abr_parser *abr_alt(abr_parser *p, ...);
 abr_parser *abr_seq(abr_parser *p, ...);
 abr_parser *abr_not(abr_parser *p);
 
-abr_parser *abr_n_alt(char *name, abr_parser *p, ...);
-abr_parser *abr_n_regex(char *name, char *s);
-abr_parser *abr_n_regex_r(char *name, regex_t *r);
-abr_parser *abr_n_rep(char *name, abr_parser *p, int min, int max);
-abr_parser *abr_n_seq(char *name, abr_parser *p, ...);
-abr_parser *abr_n_string(char *name, char *s);
+abr_parser *abr_n_alt(const char *name, abr_parser *p, ...);
+abr_parser *abr_n_regex(const char *name, const char *s);
+abr_parser *abr_n_regex_r(const char *name, regex_t *r);
+abr_parser *abr_n_rep(const char *name, abr_parser *p, int min, int max);
+abr_parser *abr_n_seq(const char *name, abr_parser *p, ...);
+abr_parser *abr_n_string(const char *name, const char *s);
 
-abr_parser *abr_name(char *name, abr_parser *p);
+abr_parser *abr_name(const char *name, abr_parser *p);
 
 abr_parser *abr_presence(abr_parser *p);
 abr_parser *abr_absence(abr_parser *p);
 
-abr_parser *abr_n(char *name);
+abr_parser *abr_n(const char *name);
 
 //
 // entry point
 
-abr_tree *abr_parse_all(char *input, size_t offset, abr_parser *p);
-abr_tree *abr_parse(char *input, size_t offset, abr_parser *p);
+abr_tree *abr_parse_all(const char *input, size_t offset, abr_parser *p);
+abr_tree *abr_parse(const char *input, size_t offset, abr_parser *p);
 
 //
 // helper functions
