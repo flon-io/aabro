@@ -455,10 +455,6 @@ void abr_p_seq_to_s(flu_sbuffer *b, int indent, abr_parser *p)
   abr_p_wchildren_to_s("seq", b, indent, p);
 }
 
-void abr_p_not_to_s(flu_sbuffer *b, int indent, abr_parser *p)
-{
-}
-
 void abr_p_name_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 {
   flu_sbprintf(b, "abr_name(\n");
@@ -466,6 +462,10 @@ void abr_p_name_to_s(flu_sbuffer *b, int indent, abr_parser *p)
   flu_sbprintf(b, "\"%s\",\n", p->name);
   abr_p_to_s(b, indent + 1, p->children[0]);
   flu_sbprintf(b, ")");
+}
+
+void abr_p_not_to_s(flu_sbuffer *b, int indent, abr_parser *p)
+{
 }
 
 void abr_p_presence_to_s(flu_sbuffer *b, int indent, abr_parser *p)

@@ -87,7 +87,6 @@ abr_parser *abr_regex_r(regex_t *r);
 abr_parser *abr_rep(abr_parser *p, int min, int max);
 abr_parser *abr_alt(abr_parser *p, ...);
 abr_parser *abr_seq(abr_parser *p, ...);
-abr_parser *abr_not(abr_parser *p);
 
 abr_parser *abr_n_alt(const char *name, abr_parser *p, ...);
 abr_parser *abr_n_regex(const char *name, const char *s);
@@ -98,6 +97,7 @@ abr_parser *abr_n_string(const char *name, const char *s);
 
 abr_parser *abr_name(const char *name, abr_parser *p);
 
+abr_parser *abr_not(abr_parser *p);
 abr_parser *abr_presence(abr_parser *p);
 abr_parser *abr_absence(abr_parser *p);
 
