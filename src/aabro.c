@@ -29,11 +29,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
+#include <stdint.h>
 
 #include "flutil.h"
 #include "aabro.h"
 
-#define MAX_REPS 2048 // TODO: decide
 #define MAX_P_CHILDREN 64
 #define MAX_DEPTH 2048
 
@@ -554,7 +554,7 @@ abr_tree *abr_p_rep(
   const char *input, size_t offset, int depth, abr_parser *p)
 {
   int max = p->max;
-  if (max < 0) max = MAX_REPS;
+  if (max < 0) max = SIZE_MAX;
   size_t off = offset;
   size_t count = 0;
   size_t length = 0;
