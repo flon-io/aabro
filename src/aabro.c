@@ -119,8 +119,8 @@ void abr_t_to_s(abr_tree *t, const char *input, flu_sbuffer *b, int indent)
     }
     else
     {
-      char *s = strndup(input + t->offset, t->length);
-      flu_sbprintf(b, "\"%s\" ]", flu_escape(s));
+      char *s = flu_n_escape(input + t->offset, t->length);
+      flu_sbprintf(b, "\"%s\" ]", s);
       free(s);
     }
     return;
