@@ -55,7 +55,10 @@ context "name"
       t = abr_parse("x", 0, p);
       char *s = abr_tree_to_string(t);
 
-      ensure(s ===f "[ \"y\", 1, 0, 1, null, \"string\", [] ]");
+      ensure(s ===f ""
+        "[ \"y\", 1, 0, 1, null, \"name\", [\n"
+        "  [ null, 1, 0, 1, null, \"string\", [] ]\n"
+        "] ]");
     }
 
     it "fails"
@@ -64,7 +67,10 @@ context "name"
       t = abr_parse("z", 0, p);
       char *s = abr_tree_to_string(t);
 
-      ensure(s ===f "[ \"y\", 0, 0, 0, null, \"string\", [] ]");
+      ensure(s ===f ""
+        "[ \"y\", 0, 0, 0, null, \"name\", [\n"
+        "  [ null, 0, 0, 0, null, \"string\", [] ]\n"
+        "] ]");
     }
   }
 }

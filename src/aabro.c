@@ -634,10 +634,11 @@ abr_tree *abr_p_not(
 abr_tree *abr_p_name(
   const char *input, size_t offset, int depth, abr_parser *p)
 {
-  abr_tree *t = abr_do_parse(input, offset, depth + 1, p->children[0]);
-  t->name = strdup(p->name);
+  abr_tree **ts = calloc(2, sizeof(abr_tree *));
+  ts[0] = abr_do_parse(input, offset, depth + 1, p->children[0]);
 
-  return t;
+  return abr_tree_malloc(
+    ts[0]->result, ts[0]->offset, ts[0]->length, NULL, p, ts);
 }
 
 abr_tree *abr_p_presence(
