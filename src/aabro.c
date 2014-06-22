@@ -30,10 +30,12 @@
 #include <string.h>
 #include <stdarg.h>
 #include <stdint.h>
+#include <limits.h>
 
 #include "flutil.h"
 #include "aabro.h"
 
+#define MAX_REPS 100 * 1024
 #define MAX_P_CHILDREN 64
 #define MAX_DEPTH 2048
 
@@ -554,7 +556,7 @@ abr_tree *abr_p_rep(
   const char *input, size_t offset, int depth, abr_parser *p)
 {
   int max = p->max;
-  if (max < 0) max = SIZE_MAX;
+  if (max < 0) max = MAX_REPS;
   size_t off = offset;
   size_t count = 0;
   size_t length = 0;
@@ -562,7 +564,7 @@ abr_tree *abr_p_rep(
 
   int result = 1;
 
-  for (size_t i = 0; i < p->max; i++)
+  for (size_t i = 0; i < max; i++)
   {
     count++;
     reps[i] = abr_do_parse(input, off, depth + 1, p->children[0]);
