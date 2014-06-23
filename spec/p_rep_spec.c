@@ -73,6 +73,24 @@ context "repetition"
     }
   }
 
+  describe "abr_parser_to_s(p)"
+  {
+    it "returns a string representation of the parser"
+    {
+      p = abr_rep(abr_string("xy"), 1, 2);
+      char *s = abr_parser_to_s(p);
+
+      ensure(s ===f "rep t2 c1 mn1 mx2");
+    }
+    it "returns a string representation of the named parser"
+    {
+      p = abr_n_rep("xandy", abr_string("xy"), 1, 2);
+      char *s = abr_parser_to_s(p);
+
+      ensure(s ===f "rep 'xandy' t2 c1 mn1 mx2");
+    }
+  }
+
   context "parsing"
   {
     it "matches once"

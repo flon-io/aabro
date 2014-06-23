@@ -74,6 +74,24 @@ context "alternative"
     }
   }
 
+  describe "abr_parser_to_s(p)"
+  {
+    it "returns a string representation of the parser"
+    {
+      p = abr_alt(abr_string("x"), abr_string("y"), NULL);
+      char *s = abr_parser_to_s(p);
+
+      ensure(s ===f "alt t3 c2");
+    }
+    it "returns a string representation of the named parser"
+    {
+      p = abr_n_alt("xory", abr_string("x"), abr_string("y"), NULL);
+      char *s = abr_parser_to_s(p);
+
+      ensure(s ===f "alt 'xory' t3 c2");
+    }
+  }
+
   context "parsing"
   {
     it "succeeds"

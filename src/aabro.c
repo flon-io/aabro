@@ -492,6 +492,27 @@ char *abr_parser_to_string(abr_parser *p)
   return flu_sbuffer_to_string(b);
 }
 
+char *abr_parser_to_s(abr_parser *p)
+{
+  size_t ccount = 0;
+  for (abr_parser *c = p->child; c != NULL; c = c->sibling) { ++ccount; }
+
+  char *name = "";
+  if (p->name) name = flu_sprintf("'%s' ", p->name);
+
+  char *minmax = "";
+  if (p->type == 2) minmax = flu_sprintf(" mn%i mx%i", p->min, p->max);
+
+  char *s = flu_sprintf(
+    "%s %st%i c%i%s",
+    abr_p_names[p->type], name, p->type, ccount, minmax);
+
+  if (*name != '\0') free(name);
+  if (*minmax != '\0') free(minmax);
+
+  return s;
+}
+
 //
 // the parse methods
 
