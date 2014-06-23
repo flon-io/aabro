@@ -31,9 +31,8 @@ context "repetition"
       ensure(p->name == NULL);
       ensure(p->min == 1);
       ensure(p->max == 2);
-      ensure(p->children != NULL);
-      ensure(p->children[0] != NULL);
-      ensure(p->children[1] == NULL);
+      ensure(abr_p_child(p, 0) != NULL);
+      ensure(abr_p_child(p, 1) == NULL);
     }
   }
   describe "abr_n_rep(s)"
@@ -46,9 +45,8 @@ context "repetition"
       ensure(p->name === "xandy");
       ensure(p->min == 1);
       ensure(p->max == 2);
-      ensure(p->children != NULL);
-      ensure(p->children[0] != NULL);
-      ensure(p->children[1] == NULL);
+      ensure(abr_p_child(p, 0) != NULL);
+      ensure(abr_p_child(p, 1) == NULL);
     }
   }
 
@@ -109,15 +107,14 @@ context "repetition"
       ensure(t->result == 1);
       ensure(t->offset == 0);
       ensure(t->length == 4);
-      ensure(t->children[0] != NULL);
-      ensure(t->children[1] != NULL);
-      ensure(t->children[2] == NULL);
-      ensure(t->children[0]->result == 1);
-      ensure(t->children[0]->offset == 0);
-      ensure(t->children[0]->length == 2);
-      ensure(t->children[1]->result == 1);
-      ensure(t->children[1]->offset == 2);
-      ensure(t->children[1]->length == 2);
+      ensure(abr_t_child(t, 0) != NULL);
+      ensure(abr_t_child(t, 1) != NULL);
+      ensure(abr_t_child(t, 0)->result == 1);
+      ensure(abr_t_child(t, 0)->offset == 0);
+      ensure(abr_t_child(t, 0)->length == 2);
+      ensure(abr_t_child(t, 1)->result == 1);
+      ensure(abr_t_child(t, 1)->offset == 2);
+      ensure(abr_t_child(t, 1)->length == 2);
 
       char *s = abr_tree_to_string(t);
 

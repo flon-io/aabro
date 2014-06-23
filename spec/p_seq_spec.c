@@ -29,9 +29,9 @@ context "sequence"
 
       ensure(p != NULL);
       ensure(p->name == NULL);
-      ensure(p->children[0] != NULL);
-      ensure(p->children[1] != NULL);
-      ensure(p->children[2] == NULL);
+      ensure(abr_p_child(p, 0) != NULL);
+      ensure(abr_p_child(p, 1) != NULL);
+      ensure(abr_p_child(p, 2) == NULL);
     }
   }
   describe "abr_n_seq(name, s)"
@@ -42,9 +42,9 @@ context "sequence"
 
       ensure(p != NULL);
       ensure(p->name === "xtheny");
-      ensure(p->children[0] != NULL);
-      ensure(p->children[1] != NULL);
-      ensure(p->children[2] == NULL);
+      ensure(abr_p_child(p, 0) != NULL);
+      ensure(abr_p_child(p, 1) != NULL);
+      ensure(abr_p_child(p, 2) == NULL);
     }
   }
 

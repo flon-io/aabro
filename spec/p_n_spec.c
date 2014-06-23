@@ -109,8 +109,8 @@ context "name"
       p = abr_n_alt("p", abr_string("p"), abr_n("p"), NULL);
         // yes, I know, it's a joke
 
-      ensure(p->children[1]->children[0] == p);
-      ensure(p->children[1]->children[1] == NULL);
+      abr_parser *c = abr_p_child(p, 1);
+      ensure(abr_p_child(c, 0) == p);
     }
   }
 }

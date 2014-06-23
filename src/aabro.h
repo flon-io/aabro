@@ -38,7 +38,8 @@ typedef struct abr_parser {
   size_t string_length;
   regex_t *regex;
   int min; int max;
-  struct abr_parser **children;
+  struct abr_parser *sibling;
+  struct abr_parser *child;
 } abr_parser;
 
 void abr_parser_free(abr_parser *p);
@@ -55,7 +56,8 @@ typedef struct abr_tree {
   size_t length;
   char *note; // set in case of error
   abr_parser *parser;
-  struct abr_tree **children;
+  struct abr_tree *sibling;
+  struct abr_tree *child;
 } abr_tree;
 
 void abr_tree_free(abr_tree *t);
@@ -121,13 +123,23 @@ char *abr_error_message(abr_tree *t);
  *  0: no, but please go on with my children if I have any
  *  1: success (collect me, but not any of my children)
  */
-typedef int abr_tree_func(abr_tree *);
+typedef short abr_tree_func(abr_tree *);
 
 /*
- * given a tree (starting point) and an abr_tree_func, collects all the
+ * Given a tree (starting point) and an abr_tree_func, collects all the
  * [sub-trees] that return 1 when the function is called on them.
  */
 abr_tree **abr_tree_collect(abr_tree *t, abr_tree_func *f);
+
+/*
+ * Returns the child at the given index, or NULL if there is none there.
+ */
+abr_parser *abr_p_child(abr_parser *p, size_t index);
+
+/*
+ * Returns the child at the given index, or NULL if there is none there.
+ */
+abr_tree *abr_t_child(abr_tree *t, size_t index);
 
 #endif // AABRO_H
 

@@ -28,9 +28,9 @@ context "alternative"
       p = abr_alt(abr_string("x"), abr_string("y"), NULL);
 
       ensure(p != NULL);
-      ensure(p->children[0] != NULL);
-      ensure(p->children[1] != NULL);
-      ensure(p->children[2] == NULL);
+      ensure(abr_p_child(p, 0) != NULL);
+      ensure(abr_p_child(p, 1) != NULL);
+      ensure(abr_p_child(p, 2) == NULL);
     }
   }
   describe "abr_n_alt(s, p0, p1, ...)"
@@ -41,9 +41,9 @@ context "alternative"
 
       ensure(p != NULL);
       ensure(p->name === "letter");
-      ensure(p->children[0] != NULL);
-      ensure(p->children[1] != NULL);
-      ensure(p->children[2] == NULL);
+      ensure(abr_p_child(p, 0) != NULL);
+      ensure(abr_p_child(p, 1) != NULL);
+      ensure(abr_p_child(p, 2) == NULL);
     }
   }
 

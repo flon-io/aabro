@@ -58,7 +58,7 @@ context "tree functions"
 
   //typedef int abr_tree_func(abr_tree *);
   //
-  int is_value(abr_tree *t)
+  short is_value(abr_tree *t)
   {
     // -1: fail, do not continue
     //  0: fail, please check my children
@@ -76,7 +76,7 @@ context "tree functions"
       t = abr_parse_all(s, 0, p);
       //char *st = abr_tree_to_string(t); puts(st); free(st);
 
-      abr_tree **ts = abr_tree_collect(t->children[1], is_value);
+      abr_tree **ts = abr_tree_collect(abr_t_child(t, 1), is_value);
 
       ensure(ts[0] != NULL);
       ensure(ts[1] != NULL);
