@@ -22,7 +22,7 @@ vspec: s
 	valgrind --leak-check=full -v ./s
 	#valgrind --read-var-info=yes --track-origins=yes --leak-check=full -v ./s
 
-gspec: s
+dspec: s
 	gdb ./s
 
 clean:
@@ -31,5 +31,5 @@ clean:
 	rm -f *.c
 	rm -f s
 
-.PHONY: spec vspec gspec clean
+.PHONY: spec vspec dspec clean
 
