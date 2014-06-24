@@ -504,8 +504,8 @@ char *abr_parser_to_s(abr_parser *p)
   if (p->type == 2) minmax = flu_sprintf(" mn%i mx%i", p->min, p->max);
 
   char *s = flu_sprintf(
-    "%s %st%i c%i%s",
-    abr_p_names[p->type], name, p->type, ccount, minmax);
+    "%s t%i %sc%i%s",
+    abr_p_names[p->type], p->type, name, ccount, minmax);
 
   if (*name != '\0') free(name);
   if (*minmax != '\0') free(minmax);

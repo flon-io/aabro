@@ -87,7 +87,7 @@ context "repetition"
       p = abr_n_rep("xandy", abr_string("xy"), 1, 2);
       char *s = abr_parser_to_s(p);
 
-      ensure(s ===f "rep 'xandy' t2 c1 mn1 mx2");
+      ensure(s ===f "rep t2 'xandy' c1 mn1 mx2");
     }
   }
 
