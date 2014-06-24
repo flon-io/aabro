@@ -115,3 +115,42 @@ context "name"
   }
 }
 
+context "abr_do_name"
+{
+  it "avoids loops"
+  {
+    abr_parser *entry =
+      abr_n_seq(
+        "entry",
+        abr_n_regex("symbol", "^[a-zA-Z_]+"),
+        abr_string(":"),
+        abr_n("value"),
+        NULL);
+
+    //puts(abr_parser_to_string(entry));
+
+    abr_parser *entries =
+      abr_n_rep(
+        "entries",
+        abr_seq(
+          entry,
+          abr_rep(
+            abr_seq(abr_string(","), entry, NULL),
+            0, -1),
+          NULL
+        ),
+        0, 1);
+
+    abr_parser *p =
+      abr_n_alt(
+        "value",
+        abr_n_regex("number", "^-?[0-9]+(\\.[0-9]+)?([eE][+-]?[0-9]+)?"),
+        abr_n_seq("object", abr_string("{"), entries, abr_string("}"), NULL),
+        NULL);
+
+    // ...
+
+    abr_parser_free(p);
+  }
+}
+

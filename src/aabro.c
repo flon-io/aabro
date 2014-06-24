@@ -210,6 +210,11 @@ abr_parser *abr_parser_malloc(unsigned short type, const char *name)
 
 void abr_do_name(abr_parser *named, abr_parser *target)
 {
+  printf(
+    ">>> named: %s target: %s\n",
+    abr_parser_to_s(named), abr_parser_to_s(target));
+  //puts(abr_parser_to_string(target));
+
   if (named->name == NULL) return;
 
   for (abr_parser *c = target->child; c != NULL; c = c->sibling)
@@ -219,6 +224,7 @@ void abr_do_name(abr_parser *named, abr_parser *target)
 
     if (c->type == 9 && strcmp(c->name, named->name) == 0)
     {
+      puts("linking!");
       c->child = named;
     }
     else
