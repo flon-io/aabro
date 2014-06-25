@@ -176,11 +176,9 @@ void abr_parser_free(abr_parser *p)
     free(p->string);
   }
 
-  // do not free children themselves for abr_n()...
-  //
-  if (p->type != 9 && p->children != NULL)
+  if (p->children != NULL)
   {
-    for (size_t i = 0; p->children[i] != NULL; ++i)
+    if (p->type != 9) for (size_t i = 0; p->children[i] != NULL; ++i)
     {
       abr_parser_free(p->children[i]);
     }
@@ -226,7 +224,7 @@ void abr_do_name(abr_parser *named, abr_parser *target)
   if (target->type == 9)
   {
     if (strcmp(target->name, named->name) != 0) return;
-    target->children = abr_single_child(named);
+    if (target->children == NULL) target->children = abr_single_child(named);
     return;
   }
 

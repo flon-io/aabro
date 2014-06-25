@@ -117,8 +117,19 @@ context "name"
 
 context "abr_n_xxx"
 {
+  before each
+  {
+    abr_parser *p = NULL;
+  }
+  after each
+  {
+    if (p != NULL) abr_parser_free(p);
+  }
+
   it "doesn't fall in an infinite loop when resolving names"
   {
+    ensure(0 == 1); // break visibly...
+
     abr_parser *entry =
       abr_n_seq(
         "entry",
@@ -140,7 +151,7 @@ context "abr_n_xxx"
         ),
         0, 1);
 
-    abr_parser *p =
+    p =
       abr_n_alt(
         "value",
         abr_n_regex("number", "^-?[0-9]+(\\.[0-9]+)?([eE][+-]?[0-9]+)?"),
@@ -149,8 +160,6 @@ context "abr_n_xxx"
 
     ensure(abr_parser_to_string(p) ===f ""
       "nada");
-
-    abr_parser_free(p);
   }
 }
 
