@@ -115,19 +115,17 @@ context "name"
   }
 }
 
-context "abr_do_name"
+context "abr_n_xxx"
 {
-  it "avoids loops"
+  it "doesn't fall in an infinite loop when resolving names"
   {
     abr_parser *entry =
       abr_n_seq(
         "entry",
-        abr_n_regex("symbol", "^[a-zA-Z_]+"),
-        abr_string(":"),
+        //abr_n_regex("symbol", "^[a-zA-Z_]+"),
+        //abr_string(":"),
         abr_n("value"),
         NULL);
-
-    //puts(abr_parser_to_string(entry));
 
     abr_parser *entries =
       abr_n_rep(
@@ -135,7 +133,8 @@ context "abr_do_name"
         abr_seq(
           entry,
           abr_rep(
-            abr_seq(abr_string(","), entry, NULL),
+            //abr_seq(abr_string(","), entry, NULL),
+            entry,
             0, -1),
           NULL
         ),
@@ -148,7 +147,8 @@ context "abr_do_name"
         abr_n_seq("object", abr_string("{"), entries, abr_string("}"), NULL),
         NULL);
 
-    // ...
+    ensure(abr_parser_to_string(p) ===f ""
+      "nada");
 
     abr_parser_free(p);
   }

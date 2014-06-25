@@ -35,7 +35,7 @@
 #include "flutil.h"
 #include "aabro.h"
 
-#define MAX_P_CHILDREN 64
+#define MAX_P_CHILDREN 128
 #define MAX_DEPTH 2048
 
 
@@ -178,14 +178,13 @@ void abr_parser_free(abr_parser *p)
 
   // do not free children themselves for abr_n()...
   //
-  if (p->type != 9)
+  if (p->type != 9 && p->children != NULL)
   {
-    for (abr_parser *c = p->child; c != NULL; )
+    for (size_t i = 0; p->children[i] != NULL; ++i)
     {
-      abr_parser *s = c->sibling;
-      abr_parser_free(c);
-      c = s;
+      abr_parser_free(p->children[i]);
     }
+    free(p->children);
   }
   free(p);
 }
@@ -200,7 +199,7 @@ abr_parser *abr_parser_malloc(unsigned short type, const char *name)
   p->string_length = 0;
   p->regex = NULL;
   p->min = -1; p->max = -1;
-  p->child = NULL;
+  p->children = NULL;
 
   return p;
 }
@@ -208,46 +207,59 @@ abr_parser *abr_parser_malloc(unsigned short type, const char *name)
 //
 // the builder methods
 
+/*static*/ abr_parser **abr_single_child(abr_parser *p)
+{
+  abr_parser **children = calloc(2, sizeof(abr_parser *));
+  children[0] = p;
+  return children;
+}
+
 void abr_do_name(abr_parser *named, abr_parser *target)
 {
-  printf(
-    ">>> named: %s target: %s\n",
-    abr_parser_to_s(named), abr_parser_to_s(target));
+  //printf(
+  //  ">>> named: %s target: %s\n",
+  //  abr_parser_to_s(named), abr_parser_to_s(target));
   //puts(abr_parser_to_string(target));
 
   if (named->name == NULL) return;
 
-  for (abr_parser *c = target->child; c != NULL; c = c->sibling)
+  if (target->type == 9)
   {
-    // named may have a sibling, but it should be OK, since abr_name
-    // is special (x->type == 9)...
+    if (strcmp(target->name, named->name) != 0) return;
+    target->children = abr_single_child(named);
+    return;
+  }
 
-    if (c->type == 9 && strcmp(c->name, named->name) == 0)
-    {
-      puts("linking!");
-      c->child = named;
-    }
-    else
-    {
-      abr_do_name(named, c);
-    }
+  if (target->children == NULL) return;
+
+  for (size_t i = 0; target->children[i] != NULL; i++)
+  {
+    abr_do_name(named, target->children[i]);
   }
 }
 
-abr_parser *abr_list_children(abr_parser *p, abr_parser *child0, va_list ap)
+abr_parser **abr_list_children(abr_parser *p, abr_parser *child0, va_list ap)
 {
-  // TODO: eventually, choke on MAX_CHILDREN
+  // TODO: eventually, *choke* on MAX_P_CHILDREN
+  //       idea: introduce a parser that stands for a [parser building] error...
 
-  abr_parser *first = child0;
-  abr_parser *prev = child0;
-  while (1)
+  abr_parser **ps = calloc(MAX_P_CHILDREN + 1, sizeof(abr_parser *));
+
+  ps[0] = child0;
+
+  size_t i = 1;
+  for (; i < MAX_P_CHILDREN; i++)
   {
-    abr_parser *child = va_arg(ap, abr_parser *);
-    if (child == NULL) break;
-    if (prev != NULL) prev->sibling = child;
-    prev = child;
+    ps[i] = va_arg(ap, abr_parser *);
+    if (ps[i] == NULL) break;
   }
-  return first;
+
+  abr_parser **children = calloc(i + 1, sizeof(abr_parser *));
+  for (size_t j = 0; j < i; j++) children[j] = ps[j];
+
+  free(ps);
+
+  return children;
 }
 
 /*
@@ -312,8 +324,8 @@ abr_parser *abr_n_rep(const char *name, abr_parser *p, int min, int max)
   abr_parser *r = abr_parser_malloc(2, name);
   r->min = min;
   r->max = max;
-  r->child = p;
-  abr_do_name(r, r);
+  r->children = abr_single_child(p);
+  abr_do_name(r, p);
   return r;
 }
 
@@ -321,7 +333,9 @@ abr_parser *abr_alt(abr_parser *p, ...)
 {
   abr_parser *r = abr_parser_malloc(3, NULL);
 
-  va_list l; va_start(l, p); r->child = abr_list_children(r, p, l); va_end(l);
+  va_list l; va_start(l, p);
+  r->children = abr_list_children(r, p, l);
+  va_end(l);
 
   return r;
 }
@@ -330,7 +344,9 @@ abr_parser *abr_n_alt(const char *name, abr_parser *p, ...)
 {
   abr_parser *r = abr_parser_malloc(3, name);
 
-  va_list l; va_start(l, p); r->child = abr_list_children(r, p, l); va_end(l);
+  va_list l; va_start(l, p);
+  r->children = abr_list_children(r, p, l);
+  va_end(l);
   abr_do_name(r, r);
 
   return r;
@@ -340,7 +356,9 @@ abr_parser *abr_seq(abr_parser *p, ...)
 {
   abr_parser *r = abr_parser_malloc(4, NULL);
 
-  va_list l; va_start(l, p); r->child = abr_list_children(r, p, l); va_end(l);
+  va_list l; va_start(l, p);
+  r->children = abr_list_children(r, p, l);
+  va_end(l);
 
   return r;
 }
@@ -349,7 +367,9 @@ abr_parser *abr_n_seq(const char *name, abr_parser *p, ...)
 {
   abr_parser *r = abr_parser_malloc(4, name);
 
-  va_list l; va_start(l, p); r->child = abr_list_children(r, p, l); va_end(l);
+  va_list l; va_start(l, p);
+  r->children = abr_list_children(r, p, l);
+  va_end(l);
   abr_do_name(r, r);
 
   return r;
@@ -358,7 +378,7 @@ abr_parser *abr_n_seq(const char *name, abr_parser *p, ...)
 abr_parser *abr_name(const char *name, abr_parser *p)
 {
   abr_parser *r = abr_parser_malloc(6, name);
-  r->child = p;
+  r->children = abr_single_child(p);
   abr_do_name(r, r);
   return r;
 }
@@ -407,7 +427,7 @@ void abr_p_rep_to_s(flu_sbuffer *b, int indent, abr_parser *p)
     for (int i = 0; i < indent + 1; i++) flu_sbprintf(b, "  ");
     flu_sbprintf(b, "\"%s\",\n", p->name);
   }
-  abr_p_to_s(b, indent + 1, p->child);
+  abr_p_to_s(b, indent + 1, p->children[0]);
   flu_sbprintf(b, ", %i, %i)", p->min, p->max);
 }
 
@@ -424,8 +444,9 @@ void abr_p_wchildren_to_s(
     for (int i = 0; i < indent + 1; i++) flu_sbprintf(b, "  ");
     flu_sbprintf(b, "\"%s\",\n", p->name);
   }
-  for (abr_parser *c = p->child; ; c = c->sibling)
+  if (p->children != NULL) for (size_t i = 0; ; i++)
   {
+    abr_parser *c = p->children[i];
     abr_p_to_s(b, indent + 1, c);
     if (c == NULL) break;
     flu_sbprintf(b, ",\n");
@@ -448,7 +469,7 @@ void abr_p_name_to_s(flu_sbuffer *b, int indent, abr_parser *p)
   flu_sbprintf(b, "abr_name(\n");
   for (int i = 0; i < indent + 1; i++) flu_sbprintf(b, "  ");
   flu_sbprintf(b, "\"%s\",\n", p->name);
-  abr_p_to_s(b, indent + 1, p->child);
+  abr_p_to_s(b, indent + 1, p->children[0]);
   flu_sbprintf(b, ")");
 }
 
@@ -467,7 +488,7 @@ void abr_p_absence_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 void abr_p_n_to_s(flu_sbuffer *b, int indent, abr_parser *p)
 {
   flu_sbprintf(b, "abr_n(\"%s\")", p->name);
-  if (p->child == NULL) flu_sbprintf(b, " /* not linked */", p->name);
+  if (p->children == NULL) flu_sbprintf(b, " /* not linked */", p->name);
   //else flu_sbprintf(b, " /* linked */", p->name);
 }
 
@@ -501,7 +522,7 @@ char *abr_parser_to_string(abr_parser *p)
 char *abr_parser_to_s(abr_parser *p)
 {
   size_t ccount = 0;
-  for (abr_parser *c = p->child; c != NULL; c = c->sibling) { ++ccount; }
+  if (p->children) while (p->children[ccount] != NULL) { ++ccount; }
 
   char *name = "";
   if (p->name) name = flu_sprintf("'%s' ", p->name);
@@ -574,7 +595,7 @@ abr_tree *abr_p_rep(
   for (; ; count++)
   {
     if (p->max > 0 && count >= p->max) break;
-    abr_tree *t = abr_do_parse(input, off, depth + 1, p->child);
+    abr_tree *t = abr_do_parse(input, off, depth + 1, p->children[0]);
 
     if (first == NULL) first = t;
     if (prev != NULL) prev->sibling = t;
@@ -601,8 +622,10 @@ abr_tree *abr_p_alt(
   abr_tree *first = NULL;
   abr_tree *prev = NULL;
 
-  for (abr_parser *pc = p->child; pc != NULL; pc = pc->sibling)
+  for (size_t i = 0; p->children[i] != NULL; i++)
   {
+    abr_parser *pc = p->children[i];
+
     abr_tree *t = abr_do_parse(input, offset, depth + 1, pc);
 
     if (first == NULL) first = t;
@@ -627,8 +650,10 @@ abr_tree *abr_p_seq(
   abr_tree *first = NULL;
   abr_tree *prev = NULL;
 
-  for (abr_parser *pc = p->child; pc != NULL; pc = pc->sibling)
+  for (size_t i = 0; p->children[i] != NULL; i++)
   {
+    abr_parser *pc = p->children[i];
+
     abr_tree *t = abr_do_parse(input, off, depth + 1, pc);
 
     if (first == NULL) first = t;
@@ -653,7 +678,7 @@ abr_tree *abr_p_not(
 abr_tree *abr_p_name(
   const char *input, size_t offset, int depth, abr_parser *p)
 {
-  abr_tree *t = abr_do_parse(input, offset, depth + 1, p->child);
+  abr_tree *t = abr_do_parse(input, offset, depth + 1, p->children[0]);
 
   return abr_tree_malloc(t->result, t->offset, t->length, NULL, p, t);
 }
@@ -675,14 +700,14 @@ abr_tree *abr_p_absence(
 abr_tree *abr_p_n(
   const char *input, size_t offset, int depth, abr_parser *p)
 {
-  if (p->child == NULL)
+  if (p->children == NULL)
   {
     char *note = flu_sprintf("unlinked abr_n(\"%s\")", p->name);
     abr_tree *t = abr_tree_malloc(-1, offset, 0, note, p, NULL);
     free(note);
     return t;
   }
-  return abr_do_parse(input, offset, depth, p->child);
+  return abr_do_parse(input, offset, depth, p->children[0]);
 }
 
 abr_p_func *abr_p_funcs[] = { // const ?
@@ -802,9 +827,11 @@ abr_tree **abr_tree_collect(abr_tree *t, abr_tree_func *f)
 
 abr_parser *abr_p_child(abr_parser *p, size_t index)
 {
-  for (abr_parser *c = p->child; c != NULL; c = c->sibling)
+  // expensive, but safer...
+
+  if (p->children) for (size_t i = 0; p->children[i] != NULL; i++)
   {
-    if (index == 0) return c;
+    if (index == 0) return p->children[i];
     --index;
   }
 
