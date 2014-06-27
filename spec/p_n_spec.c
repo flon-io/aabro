@@ -157,7 +157,25 @@ context "abr_n_xxx"
         NULL);
 
     ensure(abr_parser_to_string(p) ===f ""
-      "nada");
+      "abr_n_alt(\n"
+      "  \"value\",\n"
+      "  abr_n_regex(\"number\", \"^-?[0-9]+(\\.[0-9]+)?([eE][+-]?[0-9]+)?\"),\n"
+      "  abr_n_seq(\n"
+      "    \"object\",\n"
+      "    abr_string(\"{\"),\n"
+      "    abr_n_rep(\n"
+      "      \"entries\",\n"
+      "      abr_seq(\n"
+      "        abr_n_seq(\n"
+      "          \"entry\",\n"
+      "          abr_n(\"value\"),\n"
+      "          NULL),\n"
+      "        abr_rep(\n"
+      "          abr_n(\"entry\"), 0, -1),\n"
+      "        NULL), 0, 1),\n"
+      "    abr_string(\"}\"),\n"
+      "    NULL),\n"
+      "  NULL)");
   }
 }
 

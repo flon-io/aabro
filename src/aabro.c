@@ -235,11 +235,6 @@ static abr_parser *abr_parser_malloc(unsigned short type, const char *name)
 
 void abr_do_name(abr_parser *named, abr_parser *target)
 {
-  //printf(
-  //  ">>> named: %s target: %s\n",
-  //  abr_parser_to_s(named), abr_parser_to_s(target));
-  //puts(abr_parser_to_string(target));
-
   if (named->name == NULL) return;
 
   if (target->type == 9)
@@ -410,17 +405,19 @@ abr_parser *abr_n(const char *name)
 //
 // the to_s methods
 
-typedef void abr_p_to_s_func(flu_sbuffer *, int, abr_parser *);
+typedef void abr_p_to_s_func(flu_sbuffer *, flu_list *, int, abr_parser *);
 
-void abr_p_to_s(flu_sbuffer *b, int indent, abr_parser *p);
+void abr_p_to_s(flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p);
 
-void abr_p_string_to_s(flu_sbuffer *b, int indent, abr_parser *p)
+void abr_p_string_to_s(
+  flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
 {
   if (p->name == NULL) flu_sbprintf(b, "abr_string(\"%s\")", p->string);
   else flu_sbprintf(b, "abr_n_string(\"%s\", \"%s\")", p->name, p->string);
 }
 
-void abr_p_regex_to_s(flu_sbuffer *b, int indent, abr_parser *p)
+void abr_p_regex_to_s(
+  flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
 {
   if (p->string == NULL)
   {
@@ -434,7 +431,8 @@ void abr_p_regex_to_s(flu_sbuffer *b, int indent, abr_parser *p)
   }
 }
 
-void abr_p_rep_to_s(flu_sbuffer *b, int indent, abr_parser *p)
+void abr_p_rep_to_s(
+  flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
 {
   if (p->name == NULL)
   {
@@ -446,12 +444,12 @@ void abr_p_rep_to_s(flu_sbuffer *b, int indent, abr_parser *p)
     for (int i = 0; i < indent + 1; i++) flu_sbprintf(b, "  ");
     flu_sbprintf(b, "\"%s\",\n", p->name);
   }
-  abr_p_to_s(b, indent + 1, p->children[0]);
+  abr_p_to_s(b, seen, indent + 1, p->children[0]);
   flu_sbprintf(b, ", %i, %i)", p->min, p->max);
 }
 
 void abr_p_wchildren_to_s(
-  const char *n, flu_sbuffer *b, int indent, abr_parser *p)
+  const char *n, flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
 {
   if (p->name == NULL)
   {
@@ -466,45 +464,52 @@ void abr_p_wchildren_to_s(
   if (p->children != NULL) for (size_t i = 0; ; i++)
   {
     abr_parser *c = p->children[i];
-    abr_p_to_s(b, indent + 1, c);
+    abr_p_to_s(b, seen, indent + 1, c);
     if (c == NULL) break;
     flu_sbprintf(b, ",\n");
   }
   flu_sbprintf(b, ")");
 }
 
-void abr_p_alt_to_s(flu_sbuffer *b, int indent, abr_parser *p)
+void abr_p_alt_to_s(
+  flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
 {
-  abr_p_wchildren_to_s("alt", b, indent, p);
+  abr_p_wchildren_to_s("alt", b, seen, indent, p);
 }
 
-void abr_p_seq_to_s(flu_sbuffer *b, int indent, abr_parser *p)
+void abr_p_seq_to_s(
+  flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
 {
-  abr_p_wchildren_to_s("seq", b, indent, p);
+  abr_p_wchildren_to_s("seq", b, seen, indent, p);
 }
 
-void abr_p_name_to_s(flu_sbuffer *b, int indent, abr_parser *p)
+void abr_p_name_to_s(
+  flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
 {
   flu_sbprintf(b, "abr_name(\n");
   for (int i = 0; i < indent + 1; i++) flu_sbprintf(b, "  ");
   flu_sbprintf(b, "\"%s\",\n", p->name);
-  abr_p_to_s(b, indent + 1, p->children[0]);
+  abr_p_to_s(b, seen, indent + 1, p->children[0]);
   flu_sbprintf(b, ")");
 }
 
-void abr_p_not_to_s(flu_sbuffer *b, int indent, abr_parser *p)
+void abr_p_not_to_s(
+  flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
 {
 }
 
-void abr_p_presence_to_s(flu_sbuffer *b, int indent, abr_parser *p)
+void abr_p_presence_to_s(
+  flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
 {
 }
 
-void abr_p_absence_to_s(flu_sbuffer *b, int indent, abr_parser *p)
+void abr_p_absence_to_s(
+  flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
 {
 }
 
-void abr_p_n_to_s(flu_sbuffer *b, int indent, abr_parser *p)
+void abr_p_n_to_s(
+  flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
 {
   flu_sbprintf(b, "abr_n(\"%s\")", p->name);
   if (p->children == NULL) flu_sbprintf(b, " /* not linked */", p->name);
@@ -524,17 +529,30 @@ abr_p_to_s_func *abr_p_to_s_funcs[] = { // const ?
   abr_p_n_to_s
 };
 
-void abr_p_to_s(flu_sbuffer *b, int indent, abr_parser *p)
+void abr_p_to_s(flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
 {
   for (int i = 0; i < indent; i++) flu_sbprintf(b, "  ");
-  if (p == NULL) flu_sbprintf(b, "NULL");
-  else abr_p_to_s_funcs[p->type](b, 0, p);
+  if (p == NULL)
+  {
+    flu_sbprintf(b, "NULL");
+  }
+  else
+  {
+    int r = flu_list_add_unique(seen, p);
+    if (r) abr_p_to_s_funcs[p->type](b, seen, indent, p);
+    else flu_sbprintf(b, "abr_n(\"%s\")", p->name);
+  }
 }
 
 char *abr_parser_to_string(abr_parser *p)
 {
   flu_sbuffer *b = flu_sbuffer_malloc();
-  abr_p_to_s(b, 0, p);
+  flu_list *seen = flu_list_malloc();
+
+  abr_p_to_s(b, seen, 0, p);
+
+  flu_list_free(seen);
+
   return flu_sbuffer_to_string(b);
 }
 
