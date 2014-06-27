@@ -278,3 +278,101 @@ char *flu_n_unescape(const char *s, size_t n)
   return d;
 }
 
+
+//
+// colls
+
+flu_node *flu_node_malloc(void *item)
+{
+  flu_node *n = calloc(1, sizeof(flu_node));
+  n->item = item;
+  n->next = NULL;
+  //n->key = ...
+
+  return n;
+}
+
+void flu_node_free(flu_node *n)
+{
+  //if (n->key != NULL) free(n->key)
+  free(n);
+}
+
+flu_list *flu_list_malloc()
+{
+  flu_list *l = calloc(1, sizeof(flu_list));
+
+  l->first = NULL;
+  l->last = NULL;
+  l->size = 0;
+
+  return l;
+}
+
+void flu_list_free(flu_list *l)
+{
+  for (flu_node *n = l->first; n != NULL; )
+  {
+    flu_node *next = n->next;
+    flu_node_free(n);
+    n = next;
+  }
+  free(l);
+}
+
+void flu_list_and_items_free(flu_list *l, void (*free_item)(void *))
+{
+  for (flu_node *n = l->first; n != NULL; n = n->next) free_item(n->item);
+  flu_list_free(l);
+}
+
+void flu_list_add(flu_list *l, void *item)
+{
+  flu_node *n = flu_node_malloc(item);
+
+  if (l->first == NULL) l->first = n;
+  if (l->last != NULL) l->last->next = n;
+  l->last = n;
+  l->size++;
+}
+
+int flu_list_add_unique(flu_list *l, void *item)
+{
+  for (flu_node *n = l->first; n != NULL; n = n->next)
+  {
+    if (n->item == item) return 0; // not added
+  }
+
+  flu_list_add(l, item);
+  return 1; // added
+}
+
+void **flu_list_to_array(const flu_list *l)
+{
+  void **a = calloc(l->size, sizeof(void *));
+  size_t i = 0;
+  for (flu_node *n = l->first; n != NULL; n = n->next) a[i++] = n->item;
+  return a;
+}
+
+void **flu_list_to_array_n(const flu_list *l)
+{
+  void **a = calloc(l->size + 1, sizeof(void *));
+  size_t i = 0;
+  for (flu_node *n = l->first; n != NULL; n = n->next) a[i++] = n->item;
+  a[i] = NULL;
+  return a;
+}
+
+
+//
+// misc
+
+char *flu_strdup(char *s)
+{
+  int l = strlen(s);
+  char *r = calloc(l + 1, sizeof(char));
+  strcpy(r, s);
+  return r;
+}
+
