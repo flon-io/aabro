@@ -818,46 +818,27 @@ char *abr_error_message(abr_tree *t)
   return NULL;
 }
 
-size_t abr_t_count(abr_tree *t, abr_tree_func *f)
+static void abr_t_collect(flu_list *l, abr_tree *t, abr_tree_func *f)
 {
   short r = f(t);
 
-  if (r < 0) return 0;
-  if (r > 0) return 1;
-
-  size_t l = 0;
-  for (abr_tree *c = t->child; c != NULL; c = c->sibling)
-  {
-    l += abr_t_count(c, f);
-  }
-  return l;
-}
-
-abr_tree **abr_t_collect(abr_tree **ts, abr_tree *t, abr_tree_func *f)
-{
-  short r = f(t);
-
-  if (r < 0) { return ts; }
-  if (r > 0) { *ts = t; return ++ts; }
+  if (r < 0) { return; }
+  if (r > 0) { flu_list_add(l, t); return; }
 
   for (abr_tree *c = t->child; c != NULL; c = c->sibling)
   {
-    ts = abr_t_collect(ts, c, f);
+    abr_t_collect(l, c, f);
   }
-
-  return ts;
 }
 
 abr_tree **abr_tree_collect(abr_tree *t, abr_tree_func *f)
 {
-  // count pass
+  flu_list *l = flu_list_malloc();
 
-  size_t c = abr_t_count(t, f);
+  abr_t_collect(l, t, f);
 
-  // collect pass
-
-  abr_tree **ts = calloc(c + 1, sizeof(abr_tree *));
-  abr_t_collect(ts, t, f);
+  abr_tree **ts = (abr_tree **)flu_list_to_array_n(l);
+  flu_list_free(l);
 
   return ts;
 }
@@ -865,6 +846,7 @@ abr_tree **abr_tree_collect(abr_tree *t, abr_tree_func *f)
 abr_parser *abr_p_child(abr_parser *p, size_t index)
 {
   // expensive, but safer...
+  // but well, what's the point the abr_parser struct is public...
 
   if (p->children) for (size_t i = 0; p->children[i] != NULL; i++)
   {
