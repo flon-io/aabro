@@ -32,7 +32,6 @@
 #include <stdint.h>
 #include <limits.h>
 
-#include "flutil.h"
 #include "aabro.h"
 
 #define MAX_P_CHILDREN 128
@@ -818,7 +817,7 @@ char *abr_error_message(abr_tree *t)
   return NULL;
 }
 
-static void abr_t_collect(flu_list *l, abr_tree *t, abr_tree_func *f)
+static void abr_t_list(flu_list *l, abr_tree *t, abr_tree_func *f)
 {
   short r = f(t);
 
@@ -827,15 +826,22 @@ static void abr_t_collect(flu_list *l, abr_tree *t, abr_tree_func *f)
 
   for (abr_tree *c = t->child; c != NULL; c = c->sibling)
   {
-    abr_t_collect(l, c, f);
+    abr_t_list(l, c, f);
   }
+}
+
+flu_list *abr_tree_list(abr_tree *t, abr_tree_func *f)
+{
+  flu_list *l = flu_list_malloc();
+
+  abr_t_list(l, t, f);
+
+  return l;
 }
 
 abr_tree **abr_tree_collect(abr_tree *t, abr_tree_func *f)
 {
-  flu_list *l = flu_list_malloc();
-
-  abr_t_collect(l, t, f);
+  flu_list *l = abr_tree_list(t, f);
 
   abr_tree **ts = (abr_tree **)flu_list_to_array_n(l);
   flu_list_free(l);

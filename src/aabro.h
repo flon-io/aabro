@@ -28,6 +28,8 @@
 
 #include <regex.h>
 
+#include "flutil.h"
+
 //
 // abr_parser
 
@@ -136,6 +138,11 @@ typedef short abr_tree_func(abr_tree *);
 /*
  * Given a tree (starting point) and an abr_tree_func, collects all the
  * [sub-trees] that return 1 when the function is called on them.
+ */
+flu_list *abr_tree_list(abr_tree *t, abr_tree_func *f);
+
+/*
+ * Like abr_tree_list() but returns directly an array of abr_tree*.
  */
 abr_tree **abr_tree_collect(abr_tree *t, abr_tree_func *f);
 
