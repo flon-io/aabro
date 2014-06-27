@@ -128,8 +128,6 @@ context "abr_n_xxx"
 
   it "doesn't fall in an infinite loop when resolving names"
   {
-    ensure(0 == 1); // break visibly...
-
     abr_parser *entry =
       abr_n_seq(
         "entry",

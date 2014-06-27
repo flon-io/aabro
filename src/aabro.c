@@ -157,8 +157,24 @@ char *abr_tree_to_string_with_leaves(const char *input, abr_tree *t)
 //
 // the abr_parser methods
 
-void abr_parser_free(abr_parser *p)
+static flu_list *abr_p_list(flu_list *l, abr_parser *p)
 {
+  // using the [not] cheap flu_list_add_unique trick
+  // but parsers shan't be that big
+
+  if (l == NULL) l = flu_list_malloc();
+  int r = flu_list_add_unique(l, p);
+  if (r && p->children) for (size_t i = 0; p->children[i] != NULL; i++)
+  {
+    abr_p_list(l, p->children[i]);
+  }
+  return l;
+}
+
+static void abr_p_free(void *v)
+{
+  abr_parser *p = v;
+
   if (p->name != NULL)
   {
     free(p->name);
@@ -178,16 +194,21 @@ void abr_parser_free(abr_parser *p)
 
   if (p->children != NULL)
   {
-    if (p->type != 9) for (size_t i = 0; p->children[i] != NULL; ++i)
-    {
-      abr_parser_free(p->children[i]);
-    }
     free(p->children);
   }
+
   free(p);
 }
 
-abr_parser *abr_parser_malloc(unsigned short type, const char *name)
+void abr_parser_free(abr_parser *p)
+{
+  // list all parsers, then free them
+
+  flu_list *ps = abr_p_list(NULL, p);
+  flu_list_and_items_free(ps, abr_p_free);
+}
+
+static abr_parser *abr_parser_malloc(unsigned short type, const char *name)
 {
   abr_parser *p = calloc(1, sizeof(abr_parser));
 
