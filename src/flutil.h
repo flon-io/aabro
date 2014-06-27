@@ -169,7 +169,7 @@ flu_list *flu_list_malloc();
 void flu_list_free(flu_list *l);
 void flu_list_and_items_free(flu_list *l, void (*free_item)(void *));
 
-//void *flu_list_at(const flu_list *l, size_t n);
+void *flu_list_at(const flu_list *l, size_t n);
 //size_t flu_list_indexof(const flu_list *l, void *item);
 //int flu_list_contains(const flu_list *l, void *item);
 

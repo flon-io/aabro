@@ -326,6 +326,17 @@ void flu_list_and_items_free(flu_list *l, void (*free_item)(void *))
   flu_list_free(l);
 }
 
+void *flu_list_at(const flu_list *l, size_t n)
+{
+  size_t i = 0;
+  for (flu_node *no = l->first; no != NULL; no = no->next)
+  {
+    if (i == n) return no->item;
+    ++i;
+  }
+  return NULL;
+}
+
 void flu_list_add(flu_list *l, void *item)
 {
   flu_node *n = flu_node_malloc(item);
