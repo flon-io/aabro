@@ -817,6 +817,19 @@ char *abr_error_message(abr_tree *t)
   return NULL;
 }
 
+abr_tree *abr_tree_lookup(abr_tree *t, const char *name)
+{
+  if (t->name != NULL && strcmp(t->name, name) == 0) return t;
+
+  for (abr_tree *c = t->child; c != NULL; c = c->sibling)
+  {
+    abr_tree *r = abr_tree_lookup(c, name);
+    if (r != NULL) return r;
+  }
+
+  return NULL;
+}
+
 static void abr_t_list(flu_list *l, abr_tree *t, abr_tree_func *f)
 {
   short r = f(t);

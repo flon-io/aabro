@@ -127,6 +127,12 @@ abr_tree *abr_parse(const char *input, size_t offset, abr_parser *p);
 char *abr_error_message(abr_tree *t);
 
 /*
+ * Starting from tree t, returns the first sub-tree that bears the
+ * given name.
+ */
+abr_tree *abr_tree_lookup(abr_tree *t, const char *name);
+
+/*
  * The model for a function that, given a tree, returns an integer.
  *
  * -1: no, don't go on with my children

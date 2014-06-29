@@ -212,5 +212,35 @@ context "tree functions"
         "] ]");
     }
   }
+
+  describe "abr_tree_lookup()"
+  {
+    it "returns NULL if it finds nothing"
+    {
+      char *s = "[1,2,3]";
+      t = abr_parse_all(s, 0, p);
+
+      //puts(abr_tree_to_string_with_leaves(s, t));
+
+      abr_tree *r = abr_tree_lookup(t, "string");
+
+      ensure(r == NULL);
+    }
+
+    it "returns the first sub-tree with the given name"
+    {
+      char *s = "[1,\"deux\",3]";
+      t = abr_parse_all(s, 0, p);
+
+      //puts(abr_tree_to_string_with_leaves(s, t));
+
+      abr_tree *r = abr_tree_lookup(t, "string");
+
+      ensure(r != NULL);
+      ensure(r->name === "string");
+      ensure(r->offset == 3);
+      ensure(r->length == 6);
+    }
+  }
 }
 
