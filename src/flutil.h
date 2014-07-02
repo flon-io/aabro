@@ -178,9 +178,10 @@ void **flu_list_to_array_n(const flu_list *l);
 
 void flu_list_add(flu_list *l, void *item);
 int flu_list_add_unique(flu_list *l, void *item);
-//void flu_list_insert(flu_list *l, size_t index, const void *item);
+void flu_list_unshift(flu_list *l, void *item);
+void *flu_list_shift(flu_list *l);
 //void *flu_list_pop(flu_list *l);
-//void *flu_list_shift(flu_list *l);
+//void flu_list_insert(flu_list *l, size_t index, const void *item);
 
 //flu_htable h=100, k=1000
 //flu_set
