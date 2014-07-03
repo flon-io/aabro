@@ -58,7 +58,7 @@ context "tree functions"
 
   //typedef int abr_tree_func(abr_tree *);
   //
-  short is_value(abr_tree *t)
+  short is_value(const abr_tree *t)
   {
     // -1: fail, do not continue
     //  0: fail, please check my children
@@ -96,6 +96,35 @@ context "tree functions"
         "  [ \"number\", 1, 1, 1, null, \"regex\", [] ]\n"
         "] ]"
       );
+
+      flu_list_free(l);
+        // NB: only freeing this list of pointers,
+        //     the trees themselves are freed in the "after each"
+    }
+  }
+
+  describe "abr_tree_list_named()"
+  {
+    it "collects the trees that match the given name"
+    {
+      char *s = "[1,2,3]";
+      t = abr_parse_all(s, 0, p);
+      //char *st = abr_tree_to_string(t); puts(st); free(st);
+
+      flu_list *l = abr_tree_list_named(abr_t_child(t, 1), "value");
+
+      ensure(l->size == 3);
+
+      abr_tree *t0 = (abr_tree *)flu_list_at(l, 0);
+      abr_tree *t1 = (abr_tree *)flu_list_at(l, 1);
+      abr_tree *t2 = (abr_tree *)flu_list_at(l, 2);
+
+      ensure(t0->name === "value");
+      ensure(abr_tree_string(s, t0) ===f "1");
+      ensure(t1->name === "value");
+      ensure(abr_tree_string(s, t1) ===f "2");
+      ensure(t2->name === "value");
+      ensure(abr_tree_string(s, t2) ===f "3");
 
       flu_list_free(l);
         // NB: only freeing this list of pointers,

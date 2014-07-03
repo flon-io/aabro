@@ -139,13 +139,19 @@ abr_tree *abr_tree_lookup(abr_tree *t, const char *name);
  *  0: no, but please go on with my children if I have any
  *  1: success (collect me, but not any of my children)
  */
-typedef short abr_tree_func(abr_tree *);
+typedef short abr_tree_func(const abr_tree *);
 
 /*
  * Given a tree (starting point) and an abr_tree_func, collects all the
  * [sub-trees] that return 1 when the function is called on them.
  */
-flu_list *abr_tree_list(abr_tree *t, abr_tree_func *f);
+flu_list *abr_tree_list(const abr_tree *t, abr_tree_func *f);
+
+/*
+ * Given a tree (starting point) and an abr_tree_func, collects all the
+ * [sub-trees] that have a result to 1 and the given name.
+ */
+flu_list *abr_tree_list_named(const abr_tree *t, const char *name);
 
 /*
  * Like abr_tree_list() but returns directly an array of abr_tree*.
