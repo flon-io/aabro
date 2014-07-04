@@ -830,7 +830,7 @@ abr_tree *abr_tree_lookup(abr_tree *t, const char *name)
   return NULL;
 }
 
-static void abr_t_list(flu_list *l, const abr_tree *t, abr_tree_func *f)
+static void abr_t_list(flu_list *l, abr_tree *t, abr_tree_func *f)
 {
   short r = f(t);
 
@@ -843,7 +843,7 @@ static void abr_t_list(flu_list *l, const abr_tree *t, abr_tree_func *f)
   }
 }
 
-flu_list *abr_tree_list(const abr_tree *t, abr_tree_func *f)
+flu_list *abr_tree_list(abr_tree *t, abr_tree_func *f)
 {
   flu_list *l = flu_list_malloc();
 
@@ -852,7 +852,7 @@ flu_list *abr_tree_list(const abr_tree *t, abr_tree_func *f)
   return l;
 }
 
-static void abr_t_list_named(flu_list *l, const abr_tree *t, const char *name)
+static void abr_t_list_named(flu_list *l, abr_tree *t, const char *name)
 {
   if (t->result != 1) { return; }
   if (t->name && strcmp(t->name, name) == 0) { flu_list_add(l, t); return; }
@@ -863,7 +863,7 @@ static void abr_t_list_named(flu_list *l, const abr_tree *t, const char *name)
   }
 }
 
-flu_list *abr_tree_list_named(const abr_tree *t, const char *name)
+flu_list *abr_tree_list_named(abr_tree *t, const char *name)
 {
   flu_list *l = flu_list_malloc();
 
