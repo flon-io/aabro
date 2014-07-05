@@ -23,7 +23,6 @@ context "parser"
 
   describe "abr_parse(input, offset, parser)"
   {
-
     it "parses as much as it can"
     {
       p = abr_rep(abr_string("x"), 1, 4);
@@ -106,6 +105,14 @@ context "parser"
         "  [ null, 1, 0, 1, null, \"string\", [] ],\n"
         "  [ null, 1, 1, 1, null, \"string\", [] ]\n"
         "] ]");
+    }
+  }
+
+  describe "abr_parse_c(input, offset, parser, conf)"
+  {
+    it "lets parsing with conf.prune = false"
+    {
+      ensure(0 == 1);
     }
   }
 

@@ -777,12 +777,26 @@ abr_tree *abr_do_parse(
 
 abr_tree *abr_parse(const char *input, size_t offset, abr_parser *p)
 {
-  return abr_do_parse(input, offset, 0, p);
+  const abr_conf co = { .prune = 1, .all = 0 };
+
+  return abr_parse_c(input, offset, p, co);
 }
 
 abr_tree *abr_parse_all(const char *input, size_t offset, abr_parser *p)
 {
+  const abr_conf co = { .prune = 1, .all = 1 };
+
+  return abr_parse_c(input, offset, p, co);
+}
+
+abr_tree *abr_parse_c(
+  const char *input, size_t offset, abr_parser *p, const abr_conf co)
+{
   abr_tree *t = abr_do_parse(input, offset, 0, p);
+
+  if (co.all == 0) return t;
+
+  // check if all the input got parsed
 
   if (t->result == 1 && t->length < strlen(input))
   {

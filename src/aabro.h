@@ -118,8 +118,19 @@ abr_parser *abr_n(const char *name);
 //
 // entry point
 
-abr_tree *abr_parse_all(const char *input, size_t offset, abr_parser *p);
-abr_tree *abr_parse(const char *input, size_t offset, abr_parser *p);
+abr_tree *abr_parse_all(
+  const char *input, size_t offset, abr_parser *p);
+
+abr_tree *abr_parse(
+  const char *input, size_t offset, abr_parser *p);
+
+typedef struct abr_conf {
+  short prune;  // 1 = prune failed trees, defaults to 1
+  short all;    // 1 = parse all, defaults to 0
+} abr_conf;
+
+abr_tree *abr_parse_c(
+  const char *input, size_t offset, abr_parser *p, const abr_conf c);
 
 //
 // helper functions
