@@ -125,7 +125,6 @@ context "alternative"
 
       ensure(s ===f ""
         "[ null, 1, 0, 1, null, \"alt\", [\n"
-        "  [ null, 0, 0, 0, null, \"string\", [] ],\n"
         "  [ null, 1, 0, 1, null, \"string\", [] ]\n"
         "] ]");
     }
@@ -137,10 +136,7 @@ context "alternative"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 0, 0, 0, null, \"alt\", [\n"
-        "  [ null, 0, 0, 0, null, \"string\", [] ],\n"
-        "  [ null, 0, 0, 0, null, \"string\", [] ]\n"
-        "] ]");
+        "[ null, 0, 0, 0, null, \"alt\", [] ]");
     }
     it "fails (named parser)"
     {
@@ -149,9 +145,20 @@ context "alternative"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ \"xory\", 0, 0, 0, null, \"alt\", [\n"
+        "[ \"xory\", 0, 0, 0, null, \"alt\", [] ]");
+    }
+
+    it "reports the failed attempted if conf.prune == 0"
+    {
+      abr_conf co = { .all = 1, .prune = 0 };
+      p = abr_alt(abr_string("x"), abr_string("y"), NULL);
+      t = abr_parse_c("y", 0, p, co);
+      char *s = abr_tree_to_string(t);
+
+      ensure(s ===f ""
+        "[ null, 1, 0, 1, null, \"alt\", [\n"
         "  [ null, 0, 0, 0, null, \"string\", [] ],\n"
-        "  [ null, 0, 0, 0, null, \"string\", [] ]\n"
+        "  [ null, 1, 0, 1, null, \"string\", [] ]\n"
         "] ]");
     }
 
@@ -163,7 +170,6 @@ context "alternative"
 
       ensure(s ===f ""
         "[ null, -1, 0, 0, null, \"alt\", [\n"
-        "  [ null, 0, 0, 0, null, \"string\", [] ],\n"
         "  [ \"y\", -1, 0, 0, \"unlinked abr_n(\"y\")\", \"n\", [] ]\n"
         "] ]");
     }

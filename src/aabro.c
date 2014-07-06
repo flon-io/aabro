@@ -691,11 +691,19 @@ abr_tree *abr_p_alt(
 
     abr_tree *t = abr_do_parse(input, offset, depth + 1, pc, co);
 
-    if (first == NULL) first = t;
-    if (prev != NULL) prev->sibling = t;
-    prev = t;
-
     result = t->result;
+
+    if (t->result != 0 || co.prune == 0)
+    {
+      if (first == NULL) first = t;
+      if (prev != NULL) prev->sibling = t;
+      prev = t;
+    }
+    else
+    {
+      abr_tree_free(t);
+    }
+
     if (result < 0) { break; }
     if (result == 1) { length = t->length; break; }
   }

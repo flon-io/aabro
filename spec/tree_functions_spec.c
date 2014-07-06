@@ -76,7 +76,7 @@ context "tree functions"
       t = abr_parse_all(s, 0, p);
       //char *st = abr_tree_to_string(t); puts(st); free(st);
 
-      flu_list *l = abr_tree_list(abr_t_child(t, 1), is_value);
+      flu_list *l = abr_tree_list(abr_t_child(t, 0), is_value);
 
       ensure(l->size == 3);
 
@@ -111,7 +111,7 @@ context "tree functions"
       t = abr_parse_all(s, 0, p);
       //char *st = abr_tree_to_string(t); puts(st); free(st);
 
-      flu_list *l = abr_tree_list_named(abr_t_child(t, 1), "value");
+      flu_list *l = abr_tree_list_named(abr_t_child(t, 0), "value");
 
       ensure(l->size == 3);
 
@@ -140,7 +140,7 @@ context "tree functions"
       t = abr_parse_all(s, 0, p);
       //char *st = abr_tree_to_string(t); puts(st); free(st);
 
-      abr_tree **ts = abr_tree_collect(abr_t_child(t, 1), is_value);
+      abr_tree **ts = abr_tree_collect(t->child, is_value);
 
       ensure(ts[0] != NULL);
       ensure(ts[1] != NULL);
@@ -192,7 +192,6 @@ context "tree functions"
       //puts(s);
       ensure(s ===f ""
         "[ \"value\", 1, 0, 8, null, \"alt\", [\n"
-        "  [ \"number\", 0, 0, 0, null, \"regex\", [] ],\n"
         "  [ \"array\", 1, 0, 8, null, \"seq\", [\n"
         "    [ null, 1, 0, 1, null, \"string\", \"[\" ],\n"
         "    [ \"values\", 1, 1, 6, null, \"rep\", [\n"
@@ -227,13 +226,8 @@ context "tree functions"
       t = abr_parse_all(in, 0, p);
       char *s = abr_tree_to_string_with_leaves(in, t);
 
-      //puts(s);
       ensure(s ===f ""
         "[ \"value\", 1, 0, 13, null, \"alt\", [\n"
-        "  [ \"number\", 0, 0, 0, null, \"regex\", [] ],\n"
-        "  [ \"array\", 0, 0, 0, null, \"seq\", [\n"
-        "    [ null, 0, 0, 0, null, \"string\", [] ]\n"
-        "  ] ],\n"
         "  [ \"string\", 1, 0, 13, null, \"regex\", \"\\\"hello\\nworld\\\"\" ]\n"
         "] ]");
     }
