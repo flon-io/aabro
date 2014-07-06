@@ -579,13 +579,20 @@ char *abr_parser_to_s(abr_parser *p)
 //
 // the parse methods
 
-typedef abr_tree *abr_p_func(const char *, size_t, size_t, abr_parser *);
+typedef abr_tree *abr_p_func(
+  const char *, size_t, size_t, abr_parser *, const abr_conf);
 //
 abr_tree *abr_do_parse(
-  const char *input, size_t offset, size_t depth, abr_parser *p);
+  const char *input,
+  size_t offset, size_t depth,
+  abr_parser *p,
+  const abr_conf co);
 
 abr_tree *abr_p_string(
-  const char *input, size_t offset, size_t depth, abr_parser *p)
+  const char *input,
+  size_t offset, size_t depth,
+  abr_parser *p,
+  const abr_conf co)
 {
   char *s = p->string;
   size_t le = p->string_length;
@@ -602,7 +609,10 @@ abr_tree *abr_p_string(
 }
 
 abr_tree *abr_p_regex(
-  const char *input, size_t offset, size_t depth, abr_parser *p)
+  const char *input,
+  size_t offset, size_t depth,
+  abr_parser *p,
+  const abr_conf co)
 {
   regmatch_t ms[1];
 
@@ -617,7 +627,10 @@ abr_tree *abr_p_regex(
 }
 
 abr_tree *abr_p_rep(
-  const char *input, size_t offset, size_t depth, abr_parser *p)
+  const char *input,
+  size_t offset, size_t depth,
+  abr_parser *p,
+  const abr_conf co)
 {
   short result = 1;
   size_t off = offset;
@@ -631,7 +644,7 @@ abr_tree *abr_p_rep(
   for (; ; count++)
   {
     if (p->max > 0 && count >= p->max) break;
-    abr_tree *t = abr_do_parse(input, off, depth + 1, p->children[0]);
+    abr_tree *t = abr_do_parse(input, off, depth + 1, p->children[0], co);
 
     if (first == NULL) first = t;
     if (prev != NULL) prev->sibling = t;
@@ -650,7 +663,10 @@ abr_tree *abr_p_rep(
 }
 
 abr_tree *abr_p_alt(
-  const char *input, size_t offset, size_t depth, abr_parser *p)
+  const char *input,
+  size_t offset, size_t depth,
+  abr_parser *p,
+  const abr_conf co)
 {
   short result = 0;
   size_t length = 0;
@@ -662,7 +678,7 @@ abr_tree *abr_p_alt(
   {
     abr_parser *pc = p->children[i];
 
-    abr_tree *t = abr_do_parse(input, offset, depth + 1, pc);
+    abr_tree *t = abr_do_parse(input, offset, depth + 1, pc, co);
 
     if (first == NULL) first = t;
     if (prev != NULL) prev->sibling = t;
@@ -677,7 +693,10 @@ abr_tree *abr_p_alt(
 }
 
 abr_tree *abr_p_seq(
-  const char *input, size_t offset, size_t depth, abr_parser *p)
+  const char *input,
+  size_t offset, size_t depth,
+  abr_parser *p,
+  const abr_conf co)
 {
   short result = 1;
   size_t length = 0;
@@ -690,7 +709,7 @@ abr_tree *abr_p_seq(
   {
     abr_parser *pc = p->children[i];
 
-    abr_tree *t = abr_do_parse(input, off, depth + 1, pc);
+    abr_tree *t = abr_do_parse(input, off, depth + 1, pc, co);
 
     if (first == NULL) first = t;
     if (prev != NULL) prev->sibling = t;
@@ -705,36 +724,51 @@ abr_tree *abr_p_seq(
 }
 
 abr_tree *abr_p_not(
-  const char *input, size_t offset, size_t depth, abr_parser *p)
+  const char *input,
+  size_t offset, size_t depth,
+  abr_parser *p,
+  const abr_conf co)
 {
   // not yet implemented
   return NULL;
 }
 
 abr_tree *abr_p_name(
-  const char *input, size_t offset, size_t depth, abr_parser *p)
+  const char *input,
+  size_t offset, size_t depth,
+  abr_parser *p,
+  const abr_conf co)
 {
-  abr_tree *t = abr_do_parse(input, offset, depth + 1, p->children[0]);
+  abr_tree *t = abr_do_parse(input, offset, depth + 1, p->children[0], co);
 
   return abr_tree_malloc(t->result, t->offset, t->length, NULL, p, t);
 }
 
 abr_tree *abr_p_presence(
-  const char *input, size_t offset, size_t depth, abr_parser *p)
+  const char *input,
+  size_t offset, size_t depth,
+  abr_parser *p,
+  const abr_conf co)
 {
   // not yet implemented
   return NULL;
 }
 
 abr_tree *abr_p_absence(
-  const char *input, size_t offset, size_t depth, abr_parser *p)
+  const char *input,
+  size_t offset, size_t depth,
+  abr_parser *p,
+  const abr_conf co)
 {
   // not yet implemented
   return NULL;
 }
 
 abr_tree *abr_p_n(
-  const char *input, size_t offset, size_t depth, abr_parser *p)
+  const char *input,
+  size_t offset, size_t depth,
+  abr_parser *p,
+  const abr_conf co)
 {
   if (p->children == NULL)
   {
@@ -743,7 +777,7 @@ abr_tree *abr_p_n(
     free(note);
     return t;
   }
-  return abr_do_parse(input, offset, depth, p->children[0]);
+  return abr_do_parse(input, offset, depth, p->children[0], co);
 }
 
 abr_p_func *abr_p_funcs[] = { // const ?
@@ -760,7 +794,10 @@ abr_p_func *abr_p_funcs[] = { // const ?
 };
 
 abr_tree *abr_do_parse(
-  const char *input, size_t offset, size_t depth, abr_parser *p)
+  const char *input,
+  size_t offset, size_t depth,
+  abr_parser *p,
+  const abr_conf co)
 {
   if (depth > MAX_DEPTH)
   {
@@ -768,7 +805,7 @@ abr_tree *abr_do_parse(
       -1, offset, 0, "too much recursion, parser loop?", p, NULL);
   }
 
-  return abr_p_funcs[p->type](input, offset, depth, p);
+  return abr_p_funcs[p->type](input, offset, depth, p, co);
 }
 
 
@@ -792,7 +829,7 @@ abr_tree *abr_parse_all(const char *input, size_t offset, abr_parser *p)
 abr_tree *abr_parse_c(
   const char *input, size_t offset, abr_parser *p, const abr_conf co)
 {
-  abr_tree *t = abr_do_parse(input, offset, 0, p);
+  abr_tree *t = abr_do_parse(input, offset, 0, p, co);
 
   if (co.all == 0) return t;
 
