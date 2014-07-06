@@ -150,9 +150,7 @@ context "repetition"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 0, 0, 2, null, \"rep\", [\n"
-        "  [ null, 1, 0, 2, null, \"string\", [] ]\n"
-        "] ]");
+        "[ null, 0, 0, 2, null, \"rep\", [] ]");
     }
 
     it "relates all the tries when abr_conf.prune = 0"

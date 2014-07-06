@@ -644,25 +644,14 @@ abr_tree *abr_p_rep(
   for (; ; count++)
   {
     if (p->max > 0 && count >= p->max) break;
-
     abr_tree *t = abr_do_parse(input, off, depth + 1, p->children[0], co);
-    short tresult = t->result;
 
-    if (tresult < 0) result = -1;
+    if (first == NULL) first = t;
+    if (prev != NULL) prev->sibling = t;
+    prev = t;
 
-    if (tresult != 0 || co.prune == 0)
-    {
-      if (first == NULL) first = t;
-      if (prev != NULL) prev->sibling = t;
-      prev = t;
-    }
-    else
-    {
-      abr_tree_free(t);
-    }
-
-    if (tresult != 1) break;
-
+    if (t->result < 0) result = -1;
+    if (t->result != 1) break;
     off += t->length;
     length += t->length;
   }
@@ -691,19 +680,11 @@ abr_tree *abr_p_alt(
 
     abr_tree *t = abr_do_parse(input, offset, depth + 1, pc, co);
 
+    if (first == NULL) first = t;
+    if (prev != NULL) prev->sibling = t;
+    prev = t;
+
     result = t->result;
-
-    if (t->result != 0 || co.prune == 0)
-    {
-      if (first == NULL) first = t;
-      if (prev != NULL) prev->sibling = t;
-      prev = t;
-    }
-    else
-    {
-      abr_tree_free(t);
-    }
-
     if (result < 0) { break; }
     if (result == 1) { length = t->length; break; }
   }
@@ -737,17 +718,6 @@ abr_tree *abr_p_seq(
     if (t->result != 1) { result = t->result; length = 0; break; }
     off += t->length;
     length += t->length;
-  }
-
-  if (result == 0)
-  {
-    for (abr_tree *t = first; t != NULL; )
-    {
-      abr_tree *s = t->sibling;
-      abr_tree_free(t);
-      t = s;
-    }
-    first = NULL;
   }
 
   return abr_tree_malloc(result, offset, length, NULL, p, first);
@@ -835,7 +805,31 @@ abr_tree *abr_do_parse(
       -1, offset, 0, "too much recursion, parser loop?", p, NULL);
   }
 
-  return abr_p_funcs[p->type](input, offset, depth, p, co);
+  abr_tree *t = abr_p_funcs[p->type](input, offset, depth, p, co);
+
+  if (co.prune == 0 || t->child == NULL) return t;
+
+  abr_tree *first = t->child;
+  t->child = NULL;
+  abr_tree **sibling = &t->child;
+  abr_tree *next = NULL;
+  for (abr_tree *c = first; c != NULL; c = next)
+  {
+    next = c->sibling;
+    c->sibling = NULL;
+
+    if (t->result == 0 || c->result == 0)
+    {
+      abr_tree_free(c);
+    }
+    else
+    {
+      *sibling = c;
+      sibling = &c->sibling;
+    }
+  }
+
+  return t;
 }
 
 

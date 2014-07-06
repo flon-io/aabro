@@ -132,7 +132,10 @@ context "sequence"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 0, 0, 0, null, \"seq\", [] ]");
+        "[ null, 0, 0, 0, null, \"seq\", [\n"
+        "  [ null, 1, 0, 1, null, \"string\", [] ],\n"
+        "  [ null, 0, 1, 0, null, \"string\", [] ]\n"
+        "] ]");
     }
 
     it "propagates errors"
