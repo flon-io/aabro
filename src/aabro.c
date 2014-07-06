@@ -739,6 +739,17 @@ abr_tree *abr_p_seq(
     length += t->length;
   }
 
+  if (result == 0)
+  {
+    for (abr_tree *t = first; t != NULL; )
+    {
+      abr_tree *s = t->sibling;
+      abr_tree_free(t);
+      t = s;
+    }
+    first = NULL;
+  }
+
   return abr_tree_malloc(result, offset, length, NULL, p, first);
 }
 

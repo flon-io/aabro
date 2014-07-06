@@ -111,9 +111,7 @@ context "sequence"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 0, 0, 0, null, \"seq\", [\n"
-        "  [ null, 0, 0, 0, null, \"string\", [] ]\n"
-        "] ]");
+        "[ null, 0, 0, 0, null, \"seq\", [] ]");
     }
 
     it "fails (2nd step)"
@@ -123,10 +121,18 @@ context "sequence"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 0, 0, 0, null, \"seq\", [\n"
-        "  [ null, 1, 0, 1, null, \"string\", [] ],\n"
-        "  [ null, 0, 1, 0, null, \"string\", [] ]\n"
-        "] ]");
+        "[ null, 0, 0, 0, null, \"seq\", [] ]");
+    }
+
+    it "reports the failed tries if conf.prune == 0"
+    {
+      abr_conf co = { .all = 1, .prune = 0 };
+      p = abr_seq(abr_string("x"), abr_string("y"), NULL);
+      t = abr_parse_c("xz", 0, p, co);
+      char *s = abr_tree_to_string(t);
+
+      ensure(s ===f ""
+        "[ null, 0, 0, 0, null, \"seq\", [] ]");
     }
 
     it "propagates errors"
