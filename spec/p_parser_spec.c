@@ -31,8 +31,7 @@ context "parser"
 
       ensure(s ===f ""
         "[ null, 1, 0, 1, null, \"rep\", [\n"
-        "  [ null, 1, 0, 1, null, \"string\", [] ],\n"
-        "  [ null, 0, 1, 0, null, \"string\", [] ]\n"
+        "  [ null, 1, 0, 1, null, \"string\", [] ]\n"
         "] ]");
     }
 
@@ -89,8 +88,7 @@ context "parser"
 
       ensure(s ===f ""
         "[ null, 1, 0, 1, null, \"rep\", [\n"
-        "  [ null, 1, 0, 1, null, \"string\", [] ],\n"
-        "  [ null, 0, 1, 0, null, \"string\", [] ]\n"
+        "  [ null, 1, 0, 1, null, \"string\", [] ]\n"
         "] ]");
     }
 
@@ -110,9 +108,18 @@ context "parser"
 
   describe "abr_parse_c(input, offset, parser, conf)"
   {
-    it "lets parsing with conf.prune = false"
+    it "lets parsing proceed with conf.prune = 0"
     {
-      ensure(0 == 1);
+      abr_conf c = { .all = 1, .prune = 0 };
+      p = abr_rep(abr_string("x"), 1, 4);
+      t = abr_parse_c("x", 0, p, c);
+      char *s = abr_tree_to_string(t);
+
+      ensure(s ===f ""
+        "[ null, 1, 0, 1, null, \"rep\", [\n"
+        "  [ null, 1, 0, 1, null, \"string\", [] ],\n"
+        "  [ null, 0, 1, 0, null, \"string\", [] ]\n"
+        "] ]");
     }
   }
 

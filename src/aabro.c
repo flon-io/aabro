@@ -644,14 +644,25 @@ abr_tree *abr_p_rep(
   for (; ; count++)
   {
     if (p->max > 0 && count >= p->max) break;
+
     abr_tree *t = abr_do_parse(input, off, depth + 1, p->children[0], co);
+    short tresult = t->result;
 
-    if (first == NULL) first = t;
-    if (prev != NULL) prev->sibling = t;
-    prev = t;
+    if (tresult < 0) result = -1;
 
-    if (t->result < 0) result = -1;
-    if (t->result != 1) break;
+    if (tresult != 0 || co.prune == 0)
+    {
+      if (first == NULL) first = t;
+      if (prev != NULL) prev->sibling = t;
+      prev = t;
+    }
+    else
+    {
+      abr_tree_free(t);
+    }
+
+    if (tresult != 1) break;
+
     off += t->length;
     length += t->length;
   }

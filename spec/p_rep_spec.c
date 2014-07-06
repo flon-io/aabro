@@ -151,6 +151,19 @@ context "repetition"
 
       ensure(s ===f ""
         "[ null, 0, 0, 2, null, \"rep\", [\n"
+        "  [ null, 1, 0, 2, null, \"string\", [] ]\n"
+        "] ]");
+    }
+
+    it "relates all the tries when abr_conf.prune = 0"
+    {
+      abr_conf co = { .all = 1, .prune = 0 };
+      p = abr_rep(abr_string("xy"), 2, 3);
+      t = abr_parse_c("xy", 0, p, co);
+      char *s = abr_tree_to_string(t);
+
+      ensure(s ===f ""
+        "[ null, 0, 0, 2, null, \"rep\", [\n"
         "  [ null, 1, 0, 2, null, \"string\", [] ],\n"
         "  [ null, 0, 2, 0, null, \"string\", [] ]\n"
         "] ]");
