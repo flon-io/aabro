@@ -43,15 +43,15 @@ typedef struct abr_parser {
   struct abr_parser **children;
 } abr_parser;
 
+/* Frees the given parser (and its children parsers).
+ */
 void abr_parser_free(abr_parser *p);
 
-/*
- * Returns a string representation of the parser (and its children).
+/* Returns a string representation of the parser (and its children).
  */
 char *abr_parser_to_string(abr_parser *p);
 
-/*
- * Returns a string representation of the parser
+/* Returns a string representation of the parser
  * (but doesn't dive into its children).
  */
 char *abr_parser_to_s(abr_parser *p);
@@ -72,25 +72,27 @@ typedef struct abr_tree {
 
 void abr_tree_free(abr_tree *t);
 
-/*
- * Returns a string representation (JSON) of the abr_tree.
+/* Returns a string representation (JSON) of the abr_tree.
  */
 char *abr_tree_to_string(abr_tree *t);
 
-/*
- * Same as abr_tree_to_string(), but successful leaves have their text
+/* Same as abr_tree_to_string(), but successful leaves have their text
  * printed, instead of the "[]" standing for "no children".
  * Useful when debugging a parser.
  */
 char *abr_tree_to_string_with_leaves(const char *input, abr_tree *t);
 
-/*
- * Returns a copy of the string behind the abr_tree.
+/* Returns a copy of the string behind the abr_tree.
  */
 char *abr_tree_string(const char *input, abr_tree *t);
 
 //
 // abr_parser builders
+//
+// Calling those methods build parsers.
+//
+// The ellipsis methods (alt, seq) actually expect NULL as their
+// last argument to stop iterating (over their arguments).
 
 abr_parser *abr_string(const char *s);
 abr_parser *abr_regex(const char *s);
@@ -118,9 +120,16 @@ abr_parser *abr_n(const char *name);
 //
 // entry point
 
+/* Parses the input. returns an abr_tree with result 0 if not all the
+ * input could be parsed until its end.
+ */
 abr_tree *abr_parse_all(
   const char *input, size_t offset, abr_parser *p);
 
+/* Parses as much as it can from the given input (starting at offset).
+ * The length of the resulting abr_tree can be shorter than the length
+ * of the input.
+ */
 abr_tree *abr_parse(
   const char *input, size_t offset, abr_parser *p);
 
@@ -129,22 +138,25 @@ typedef struct abr_conf {
   short all;    // 1 = parse all, defaults to 0
 } abr_conf;
 
+/* Parses with a given input, offset and a configuration struct.
+ */
 abr_tree *abr_parse_c(
   const char *input, size_t offset, abr_parser *p, const abr_conf c);
 
 //
 // helper functions
 
+/* Given an abr_tree resulting from a parse run, returns the error message
+ * or NULL if none.
+ */
 char *abr_error_message(abr_tree *t);
 
-/*
- * Starting from tree t, returns the first sub-tree that bears the
+/* Starting from tree t, returns the first sub-tree that bears the
  * given name.
  */
 abr_tree *abr_tree_lookup(abr_tree *t, const char *name);
 
-/*
- * The model for a function that, given a tree, returns an integer.
+/* The model for a function that, given a tree, returns an integer.
  *
  * -1: no, don't go on with my children
  *  0: no, but please go on with my children if I have any
@@ -152,30 +164,25 @@ abr_tree *abr_tree_lookup(abr_tree *t, const char *name);
  */
 typedef short abr_tree_func(const abr_tree *);
 
-/*
- * Given a tree (starting point) and an abr_tree_func, collects all the
+/* Given a tree (starting point) and an abr_tree_func, collects all the
  * [sub-trees] that return 1 when the function is called on them.
  */
 flu_list *abr_tree_list(abr_tree *t, abr_tree_func *f);
 
-/*
- * Given a tree (starting point) and an abr_tree_func, collects all the
+/* Given a tree (starting point) and an abr_tree_func, collects all the
  * [sub-trees] that have a result to 1 and the given name.
  */
 flu_list *abr_tree_list_named(abr_tree *t, const char *name);
 
-/*
- * Like abr_tree_list() but returns directly an array of abr_tree*.
+/* Like abr_tree_list() but returns directly an array of abr_tree*.
  */
 abr_tree **abr_tree_collect(abr_tree *t, abr_tree_func *f);
 
-/*
- * Returns the child at the given index, or NULL if there is none there.
+/* Returns the child at the given index, or NULL if there is none there.
  */
 abr_parser *abr_p_child(abr_parser *p, size_t index);
 
-/*
- * Returns the child at the given index, or NULL if there is none there.
+/* Returns the child at the given index, or NULL if there is none there.
  */
 abr_tree *abr_t_child(abr_tree *t, size_t index);
 
