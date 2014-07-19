@@ -146,6 +146,15 @@ context "regular expressions"
 
       ensure(s ===f "[ null, 0, 0, 0, null, \"regex\", [] ]");
     }
+
+    it "fails when the input is empty"
+    {
+      p = abr_regex("^x+");
+      t = abr_parse("", 0, p);
+      char *s = abr_tree_to_string(t);
+
+      ensure(s ===f "[ null, 0, 0, 0, null, \"regex\", [] ]");
+    }
   }
 }
 
