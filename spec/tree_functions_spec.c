@@ -166,6 +166,41 @@ context "tree functions"
     }
   }
 
+  describe "abr_tree_string()"
+  {
+    it "returns a string containing the parsed input for the tree"
+    {
+      char *in = "[-1,0,1]";
+      t = abr_parse_all(in, 0, p);
+      abr_tree *tt = abr_tree_lookup(t, "number");
+
+      char *s = abr_tree_string(in, tt);
+
+      ensure(s === "-1");
+      ensure(s != in + tt->offset);
+
+      free(s);
+    }
+
+    it "returns an empty string when the tree is not a successful one"
+    {
+      char *in = "[nada]";
+      t = abr_parse_all(in, 0, p);
+
+      char *s = abr_tree_string(in, t);
+
+      ensure(s === "");
+      ensure(s != in + t->offset);
+
+      free(s);
+    }
+  }
+
+  //describe "abr_tree_str()"
+  //{
+  //  it "flips burgers"
+  //}
+
   describe "abr_tree_to_string()"
   {
     it "returns a string representation of an abr_tree"
