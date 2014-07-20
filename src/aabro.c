@@ -81,6 +81,11 @@ char *abr_tree_string(const char *input, abr_tree *t)
   return strndup(input + t->offset, t->length);
 }
 
+char *abr_tree_str(const char *input, abr_tree *t)
+{
+  return input + t->offset;
+}
+
 char *abr_p_names[] = { // const ?
   "string", "regex",
   "rep", "alt", "seq",

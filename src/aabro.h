@@ -83,8 +83,15 @@ char *abr_tree_to_string(abr_tree *t);
 char *abr_tree_to_string_with_leaves(const char *input, abr_tree *t);
 
 /* Returns a copy of the string behind the abr_tree.
+ * Returns an empty string if the tree is not a successful one.
  */
 char *abr_tree_string(const char *input, abr_tree *t);
+
+/* Returns a pointer to the beginning of the tree in the input directly.
+ * Does not return a new char*.
+ * Returns the pointer even if the tree is not a successful one.
+ */
+char *abr_tree_str(const char *input, abr_tree *t);
 
 //
 // abr_parser builders

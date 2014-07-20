@@ -196,10 +196,31 @@ context "tree functions"
     }
   }
 
-  //describe "abr_tree_str()"
-  //{
-  //  it "flips burgers"
-  //}
+  describe "abr_tree_str()"
+  {
+    it "returns a pointer to the beginning of the tree in the input"
+    {
+      char *in = "[-1,0,1]";
+      t = abr_parse_all(in, 0, p);
+      abr_tree *tt = abr_tree_lookup(t, "number");
+
+      char *s = abr_tree_str(in, tt);
+
+      ensure(s === "-1,0,1]");
+      ensure(s == in + 1);
+    }
+
+    it "returns the pointer anyway if the tree is not a successful one"
+    {
+      char *in = "[nada]";
+      t = abr_parse_all(in, 0, p);
+
+      char *s = abr_tree_str(in, t);
+
+      ensure(s === "[nada]");
+      ensure(s == in);
+    }
+  }
 
   describe "abr_tree_to_string()"
   {
