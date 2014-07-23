@@ -39,7 +39,7 @@ typedef struct abr_parser {
   char *string;
   size_t string_length;
   regex_t *regex;
-  int min; int max;
+  ssize_t min; ssize_t max;
   struct abr_parser **children;
 } abr_parser;
 
@@ -105,14 +105,14 @@ abr_parser *abr_string(const char *s);
 abr_parser *abr_regex(const char *s);
 abr_parser *abr_regex_r(regex_t *r);
 
-abr_parser *abr_rep(abr_parser *p, int min, int max);
+abr_parser *abr_rep(abr_parser *p, ssize_t min, ssize_t max);
 abr_parser *abr_alt(abr_parser *p, ...);
 abr_parser *abr_seq(abr_parser *p, ...);
 
 abr_parser *abr_n_alt(const char *name, abr_parser *p, ...);
 abr_parser *abr_n_regex(const char *name, const char *s);
 abr_parser *abr_n_regex_r(const char *name, regex_t *r);
-abr_parser *abr_n_rep(const char *name, abr_parser *p, int min, int max);
+abr_parser *abr_n_rep(const char *name, abr_parser *p, ssize_t min, ssize_t max);
 abr_parser *abr_n_seq(const char *name, abr_parser *p, ...);
 abr_parser *abr_n_string(const char *name, const char *s);
 

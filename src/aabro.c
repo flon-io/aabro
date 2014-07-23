@@ -332,12 +332,12 @@ abr_parser *abr_n_regex_r(const char *name, regex_t *r)
   return p;
 }
 
-abr_parser *abr_rep(abr_parser *p, int min, int max)
+abr_parser *abr_rep(abr_parser *p, ssize_t min, ssize_t max)
 {
   return abr_n_rep(NULL, p, min, max);
 }
 
-abr_parser *abr_n_rep(const char *name, abr_parser *p, int min, int max)
+abr_parser *abr_n_rep(const char *name, abr_parser *p, ssize_t min, ssize_t max)
 {
   abr_parser *r = abr_parser_malloc(2, name);
   r->min = min;
