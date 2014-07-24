@@ -34,7 +34,6 @@
 
 #include "aabro.h"
 
-#define MAX_P_CHILDREN 128
 #define MAX_DEPTH 2048
 
 
@@ -258,24 +257,20 @@ void abr_do_name(abr_parser *named, abr_parser *target)
 
 abr_parser **abr_list_children(abr_parser *p, abr_parser *child0, va_list ap)
 {
-  // TODO: eventually, *choke* on MAX_P_CHILDREN
-  //       idea: introduce a parser that stands for a [parser building] error...
+  flu_list *l = flu_list_malloc();
 
-  abr_parser **ps = calloc(MAX_P_CHILDREN + 1, sizeof(abr_parser *));
+  flu_list_add(l, child0);
 
-  ps[0] = child0;
-
-  size_t i = 1;
-  for (; i < MAX_P_CHILDREN; i++)
+  while(1)
   {
-    ps[i] = va_arg(ap, abr_parser *);
-    if (ps[i] == NULL) break;
+    abr_parser *p = va_arg(ap, abr_parser *);
+    if (p == NULL) break;
+    flu_list_add(l, p);
   }
 
-  abr_parser **children = calloc(i + 1, sizeof(abr_parser *));
-  for (size_t j = 0; j < i; j++) children[j] = ps[j];
+  abr_parser **children = flu_list_to_array_n(l);
 
-  free(ps);
+  flu_list_free(l);
 
   return children;
 }
