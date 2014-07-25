@@ -288,6 +288,12 @@ abr_parser *abr_r_expand(abr_parser *r, abr_parser *child)
   r->children = calloc(2, sizeof(abr_parser *));
   r->children[0] = child;
 
+  if (child->name)
+  {
+    r->name = child->name;
+    child->name = NULL;
+  }
+
   return r;
 }
 

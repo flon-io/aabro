@@ -8,7 +8,7 @@
 #include "aabro.h"
 
 
-context "abr_r() as final child"
+describe "abr_r(), final child"
 {
   before each
   {
@@ -64,6 +64,20 @@ context "abr_r() as final child"
 
       ensure(s ===f ""
         "abr_rep(\n"
+        "  abr_alt(\n"
+        "    abr_string(\"x\"),\n"
+        "    abr_string(\"y\"),\n"
+        "    NULL), 4, 5)");
+    }
+
+    it "steals the parent name"
+    {
+      p = abr_n_alt("n", abr_string("x"), abr_string("y"), abr_r("{4, 5}"));
+      char *s = abr_parser_to_string(p);
+
+      ensure(s ===f ""
+        "abr_n_rep(\n"
+        "  \"n\",\n"
         "  abr_alt(\n"
         "    abr_string(\"x\"),\n"
         "    abr_string(\"y\"),\n"
