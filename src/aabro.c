@@ -266,6 +266,7 @@ abr_parser **abr_list_children(abr_parser *p, abr_parser *child0, va_list ap)
     abr_parser *p = va_arg(ap, abr_parser *);
     if (p == NULL) break;
     flu_list_add(l, p);
+    if (p->type == 10) break;
   }
 
   abr_parser **children = flu_list_to_array_n(l);
@@ -276,16 +277,17 @@ abr_parser **abr_list_children(abr_parser *p, abr_parser *child0, va_list ap)
 }
 
 /*
- * string
- * regex
- * repetition
- * alternative
- * sequence
- * not, negation
- * name
- * presence
- * absence
- * placeholder (abr_n)
+ *  0 string
+ *  1 regex
+ *  2 repetition
+ *  3 alternative
+ *  4 sequence
+ *  5 not, negation
+ *  6 name
+ *  7 presence
+ *  8 absence
+ *  9 placeholder (abr_n)
+ * 10 repetition (abr_r)
  */
 
 abr_parser *abr_string(const char *s)
@@ -401,6 +403,13 @@ abr_parser *abr_n(const char *name)
   return abr_parser_malloc(9, name);
 }
 
+abr_parser *abr_r(const char *code)
+{
+  abr_parser *p = abr_parser_malloc(10, NULL);
+  p->string = strdup(code);
+  return p;
+}
+
 //
 // the to_s methods
 
@@ -495,16 +504,19 @@ void abr_p_name_to_s(
 void abr_p_not_to_s(
   flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
 {
+  flu_sbprintf(b, "abr_not(...)");
 }
 
 void abr_p_presence_to_s(
   flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
 {
+  flu_sbprintf(b, "abr_presence(...)");
 }
 
 void abr_p_absence_to_s(
   flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
 {
+  flu_sbprintf(b, "abr_absence(...)");
 }
 
 void abr_p_n_to_s(
@@ -513,6 +525,12 @@ void abr_p_n_to_s(
   flu_sbprintf(b, "abr_n(\"%s\")", p->name);
   if (p->children == NULL) flu_sbprintf(b, " /* not linked */", p->name);
   //else flu_sbprintf(b, " /* linked */", p->name);
+}
+
+void abr_p_r_to_s(
+  flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
+{
+  flu_sbprintf(b, "abr_r(\"%s\")", p->string);
 }
 
 abr_p_to_s_func *abr_p_to_s_funcs[] = { // const ?
@@ -525,7 +543,8 @@ abr_p_to_s_func *abr_p_to_s_funcs[] = { // const ?
   abr_p_name_to_s,
   abr_p_presence_to_s,
   abr_p_absence_to_s,
-  abr_p_n_to_s
+  abr_p_n_to_s,
+  abr_p_r_to_s
 };
 
 void abr_p_to_s(flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
@@ -723,16 +742,6 @@ abr_tree *abr_p_seq(
   return abr_tree_malloc(result, offset, length, NULL, p, first);
 }
 
-abr_tree *abr_p_not(
-  const char *input,
-  size_t offset, size_t depth,
-  abr_parser *p,
-  const abr_conf co)
-{
-  // not yet implemented
-  return NULL;
-}
-
 abr_tree *abr_p_name(
   const char *input,
   size_t offset, size_t depth,
@@ -742,26 +751,6 @@ abr_tree *abr_p_name(
   abr_tree *t = abr_do_parse(input, offset, depth + 1, p->children[0], co);
 
   return abr_tree_malloc(t->result, t->offset, t->length, NULL, p, t);
-}
-
-abr_tree *abr_p_presence(
-  const char *input,
-  size_t offset, size_t depth,
-  abr_parser *p,
-  const abr_conf co)
-{
-  // not yet implemented
-  return NULL;
-}
-
-abr_tree *abr_p_absence(
-  const char *input,
-  size_t offset, size_t depth,
-  abr_parser *p,
-  const abr_conf co)
-{
-  // not yet implemented
-  return NULL;
 }
 
 abr_tree *abr_p_n(
@@ -780,17 +769,32 @@ abr_tree *abr_p_n(
   return abr_do_parse(input, offset, depth, p->children[0], co);
 }
 
+abr_tree *abr_p_not_implemented(
+  const char *input,
+  size_t offset, size_t depth,
+  abr_parser *p,
+  const abr_conf co)
+{
+  char *s0 = abr_parser_to_string(p);
+  char *s1 = flu_sprintf("not implemented %s", s0);
+  abr_tree *t = abr_tree_malloc(-1, offset, 0, s1, p, NULL);
+  free(s0);
+  free(s1);
+  return t;
+}
+
 abr_p_func *abr_p_funcs[] = { // const ?
   abr_p_string,
   abr_p_regex,
   abr_p_rep,
   abr_p_alt,
   abr_p_seq,
-  abr_p_not,
+  abr_p_not_implemented, //abr_p_not,
   abr_p_name,
-  abr_p_presence,
-  abr_p_absence,
-  abr_p_n
+  abr_p_not_implemented, //abr_p_presence,
+  abr_p_not_implemented, //abr_p_absence,
+  abr_p_n,
+  abr_p_not_implemented, //abr_p_r
 };
 
 abr_tree *abr_do_parse(

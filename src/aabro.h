@@ -124,6 +124,8 @@ abr_parser *abr_absence(abr_parser *p);
 
 abr_parser *abr_n(const char *name);
 
+abr_parser *abr_r(const char *code);
+
 //
 // entry point
 
