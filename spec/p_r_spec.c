@@ -84,5 +84,23 @@ describe "abr_r(), final child"
         "    NULL), 4, 5)");
     }
   }
+
+  describe "abr_n_r()"
+  {
+    it "doesn't steal the parent name if it has its own name"
+    {
+      p = abr_n_alt("n", abr_string("x"), abr_string("y"), abr_n_r("", "*"));
+      char *s = abr_parser_to_string(p);
+
+      ensure(s ===f ""
+        "abr_n_rep(\n"
+        "  \"\",\n"
+        "  abr_n_alt(\n"
+        "    \"n\",\n"
+        "    abr_string(\"x\"),\n"
+        "    abr_string(\"y\"),\n"
+        "    NULL), 0, -1)");
+    }
+  }
 }
 

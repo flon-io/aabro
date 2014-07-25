@@ -288,7 +288,7 @@ abr_parser *abr_r_expand(abr_parser *r, abr_parser *child)
   r->children = calloc(2, sizeof(abr_parser *));
   r->children[0] = child;
 
-  if (child->name)
+  if (r->name == NULL && child->name != NULL)
   {
     r->name = child->name;
     child->name = NULL;
@@ -442,9 +442,16 @@ abr_parser *abr_n(const char *name)
 
 abr_parser *abr_r(const char *code)
 {
-  abr_parser *p = abr_parser_malloc(10, NULL);
-  p->string = strdup(code);
-  return p;
+  return abr_n_r(NULL, code);
+}
+
+abr_parser *abr_n_r(const char *name, const char *code)
+{
+  abr_parser *r = abr_parser_malloc(10, name);
+  r->string = strdup(code);
+  abr_do_name(r, r);
+
+  return r;
 }
 
 //

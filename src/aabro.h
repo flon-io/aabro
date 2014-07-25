@@ -118,13 +118,14 @@ abr_parser *abr_n_string(const char *name, const char *s);
 
 abr_parser *abr_name(const char *name, abr_parser *p);
 
-abr_parser *abr_not(abr_parser *p);
-abr_parser *abr_presence(abr_parser *p);
-abr_parser *abr_absence(abr_parser *p);
-
 abr_parser *abr_n(const char *name);
 
 abr_parser *abr_r(const char *code);
+abr_parser *abr_n_r(const char *name, const char *code);
+
+//abr_parser *abr_not(abr_parser *p);
+//abr_parser *abr_presence(abr_parser *p);
+//abr_parser *abr_absence(abr_parser *p);
 
 //
 // entry point
