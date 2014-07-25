@@ -80,7 +80,7 @@ char *abr_tree_string(const char *input, abr_tree *t)
   return strndup(input + t->offset, t->length);
 }
 
-char *abr_tree_str(const char *input, abr_tree *t)
+char *abr_tree_str(char *input, abr_tree *t)
 {
   return input + t->offset;
 }
