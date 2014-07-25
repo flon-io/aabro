@@ -302,18 +302,15 @@ abr_parser *abr_wrap_children(abr_parser *p, abr_parser *child0, va_list ap)
   {
     child = va_arg(ap, abr_parser *);
     if (child == NULL) break;
-    flu_list_add(l, child);
     if (child->type == 10) break;
+    flu_list_add(l, child);
   }
 
   p->children = flu_list_to_array_n(l);
-  size_t s = l->size;
 
   flu_list_free(l);
 
   if (child == NULL) return p;
-
-  p->children[s - 1] = NULL;
 
   return abr_r_expand(child, p);
 }
