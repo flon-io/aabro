@@ -306,7 +306,7 @@ abr_parser *abr_wrap_children(abr_parser *p, abr_parser *child0, va_list ap)
     flu_list_add(l, child);
   }
 
-  p->children = flu_list_to_array_n(l);
+  p->children = (abr_parser **)flu_list_to_array_n(l);
 
   flu_list_free(l);
 
