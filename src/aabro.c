@@ -255,25 +255,67 @@ void abr_do_name(abr_parser *named, abr_parser *target)
   }
 }
 
-abr_parser **abr_list_children(abr_parser *p, abr_parser *child0, va_list ap)
+void abr_r_expand_bracket(abr_parser *r)
+{
+  char *s0 = strdup(r->string + 1);
+  s0[strlen(s0) - 1] = '\0';
+
+  char *comma = strchr(s0, ',');
+  if (comma != NULL) {
+    char *s1 = strdup(comma + 1);
+    s0[comma - s0] = '\0';
+    r->min = atoi(s0);
+    r->max = atoi(s1);
+    free(s1);
+  }
+
+  free(s0);
+}
+
+abr_parser *abr_r_expand(abr_parser *r, abr_parser *child)
+{
+  r->min = 1; r->max = 1;
+  //
+  if (strcmp(r->string, "*") == 0) { r->min = 0; r->max = -1; }
+  else if (strcmp(r->string, "+") == 0) { r->max = -1; }
+  else if (strcmp(r->string, "?") == 0) { r->min = 0; }
+  else if (r->string[0] == '{') { abr_r_expand_bracket(r); }
+  else { /* let it to "exactly once" */ }
+
+  r->type = 2;
+  free(r->string); r->string = NULL;
+
+  r->children = calloc(2, sizeof(abr_parser *));
+  r->children[0] = child;
+
+  return r;
+}
+
+abr_parser *abr_wrap_children(abr_parser *p, abr_parser *child0, va_list ap)
 {
   flu_list *l = flu_list_malloc();
 
   flu_list_add(l, child0);
 
+  abr_parser *child = NULL;
   while(1)
   {
-    abr_parser *p = va_arg(ap, abr_parser *);
-    if (p == NULL) break;
-    flu_list_add(l, p);
-    if (p->type == 10) break;
+    child = va_arg(ap, abr_parser *);
+    if (child == NULL) break;
+    flu_list_add(l, child);
+    if (child->type == 10) break;
   }
 
-  abr_parser **children = flu_list_to_array_n(l);
+  p->children = flu_list_to_array_n(l);
+  size_t s = l->size;
 
   flu_list_free(l);
 
-  return children;
+  if (child == NULL) return p;
+
+  p->children[s - 1] = NULL;
+
+  return abr_r_expand(child, p);
 }
 
 /*
@@ -348,9 +390,7 @@ abr_parser *abr_alt(abr_parser *p, ...)
 {
   abr_parser *r = abr_parser_malloc(3, NULL);
 
-  va_list l; va_start(l, p);
-  r->children = abr_list_children(r, p, l);
-  va_end(l);
+  va_list l; va_start(l, p); r = abr_wrap_children(r, p, l); va_end(l);
 
   return r;
 }
@@ -359,9 +399,7 @@ abr_parser *abr_n_alt(const char *name, abr_parser *p, ...)
 {
   abr_parser *r = abr_parser_malloc(3, name);
 
-  va_list l; va_start(l, p);
-  r->children = abr_list_children(r, p, l);
-  va_end(l);
+  va_list l; va_start(l, p); r = abr_wrap_children(r, p, l); va_end(l);
   abr_do_name(r, r);
 
   return r;
@@ -371,9 +409,7 @@ abr_parser *abr_seq(abr_parser *p, ...)
 {
   abr_parser *r = abr_parser_malloc(4, NULL);
 
-  va_list l; va_start(l, p);
-  r->children = abr_list_children(r, p, l);
-  va_end(l);
+  va_list l; va_start(l, p); r = abr_wrap_children(r, p, l); va_end(l);
 
   return r;
 }
@@ -382,9 +418,7 @@ abr_parser *abr_n_seq(const char *name, abr_parser *p, ...)
 {
   abr_parser *r = abr_parser_malloc(4, name);
 
-  va_list l; va_start(l, p);
-  r->children = abr_list_children(r, p, l);
-  va_end(l);
+  va_list l; va_start(l, p); r = abr_wrap_children(r, p, l); va_end(l);
   abr_do_name(r, r);
 
   return r;
