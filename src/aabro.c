@@ -88,7 +88,8 @@ char *abr_tree_str(char *input, abr_tree *t)
 char *abr_p_names[] = { // const ?
   "string", "regex",
   "rep", "alt", "seq",
-  "not", "name", "presence", "absence", "n"
+  "not", "name", "presence", "absence", "n",
+  "r", "range"//, "rex"
 };
 
 void abr_t_to_s(abr_tree *t, const char *input, flu_sbuffer *b, int indent)
@@ -374,6 +375,19 @@ abr_parser *abr_n_regex_r(const char *name, regex_t *r)
   return p;
 }
 
+abr_parser *abr_range(const char *range)
+{
+  return abr_n_range(NULL, range);
+}
+
+abr_parser *abr_n_range(const char *name, const char *range)
+{
+  abr_parser *r = abr_parser_malloc(11, name);
+  r->string = strdup(range);
+  abr_do_name(r, r);
+  return r;
+}
+
 abr_parser *abr_rep(abr_parser *p, ssize_t min, ssize_t max)
 {
   return abr_n_rep(NULL, p, min, max);
@@ -577,6 +591,13 @@ void abr_p_r_to_s(
   flu_sbprintf(b, "abr_r(\"%s\")", p->string);
 }
 
+void abr_p_range_to_s(
+  flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
+{
+  if (p->name == NULL) flu_sbprintf(b, "abr_range(\"%s\")", p->string);
+  else flu_sbprintf(b, "abr_n_range(\"%s\", \"%s\")", p->name, p->string);
+}
+
 abr_p_to_s_func *abr_p_to_s_funcs[] = { // const ?
   abr_p_string_to_s,
   abr_p_regex_to_s,
@@ -588,7 +609,8 @@ abr_p_to_s_func *abr_p_to_s_funcs[] = { // const ?
   abr_p_presence_to_s,
   abr_p_absence_to_s,
   abr_p_n_to_s,
-  abr_p_r_to_s
+  abr_p_r_to_s,
+  abr_p_range_to_s
 };
 
 void abr_p_to_s(flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
@@ -813,6 +835,30 @@ abr_tree *abr_p_n(
   return abr_do_parse(input, offset, depth, p->children[0], co);
 }
 
+//char *abr_range_next(size_t start, char *range)
+//{
+//  char a = range[start];
+//  if (a == '\0') return (char []){ -1, -1, -1 };
+//  char b = range[start + 1];
+//  return NULL;
+//}
+
+abr_tree *abr_p_range(
+  const char *input,
+  size_t offset, size_t depth,
+  abr_parser *p,
+  const abr_conf co)
+{
+  char *range = p->string;
+  short not = (range[0] == '^'); if (not) ++range;
+  short success = 0;
+
+  // TODO and don't forget \- \xXX ...
+
+  if (not) success = ( ! success);
+  return abr_tree_malloc(success, offset, success ? 1 : 0, NULL, p, NULL);
+}
+
 abr_tree *abr_p_not_implemented(
   const char *input,
   size_t offset, size_t depth,
@@ -839,6 +885,7 @@ abr_p_func *abr_p_funcs[] = { // const ?
   abr_p_not_implemented, //abr_p_absence,
   abr_p_n,
   abr_p_not_implemented, //abr_p_r
+  abr_p_range
 };
 
 abr_tree *abr_do_parse(

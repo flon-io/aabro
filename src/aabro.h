@@ -104,6 +104,7 @@ char *abr_tree_str(char *input, abr_tree *t);
 abr_parser *abr_string(const char *s);
 abr_parser *abr_regex(const char *s);
 abr_parser *abr_regex_r(regex_t *r);
+abr_parser *abr_range(const char *range);
 
 abr_parser *abr_rep(abr_parser *p, ssize_t min, ssize_t max);
 abr_parser *abr_alt(abr_parser *p, ...);
@@ -112,6 +113,8 @@ abr_parser *abr_seq(abr_parser *p, ...);
 abr_parser *abr_n_alt(const char *name, abr_parser *p, ...);
 abr_parser *abr_n_regex(const char *name, const char *s);
 abr_parser *abr_n_regex_r(const char *name, regex_t *r);
+abr_parser *abr_n_range(const char *name, const char *range);
+
 abr_parser *abr_n_rep(const char *name, abr_parser *p, ssize_t min, ssize_t max);
 abr_parser *abr_n_seq(const char *name, abr_parser *p, ...);
 abr_parser *abr_n_string(const char *name, const char *s);
