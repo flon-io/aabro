@@ -835,13 +835,18 @@ abr_tree *abr_p_n(
   return abr_do_parse(input, offset, depth, p->children[0], co);
 }
 
-//char *abr_range_next(size_t start, char *range)
-//{
-//  char a = range[start];
-//  if (a == '\0') return (char []){ -1, -1, -1 };
-//  char b = range[start + 1];
-//  return NULL;
-//}
+void abr_range_next(char *range, char *next)
+{
+  char a = range[0];
+  //if (a == '\\') a = range[start + 1];
+  if (a == '\0') { next[0] = 0; next[1] = 0; next[2] = 0; return; }
+
+  char b = range[1];
+  //if (b == '\\') ... for \-
+  if (b != '-') { next[0] = 1; next[1] = a; next[2] = a; return; }
+
+  next[0] = 2; next[1] = a; next[2] = range[2];
+}
 
 abr_tree *abr_p_range(
   const char *input,
@@ -853,7 +858,15 @@ abr_tree *abr_p_range(
   short not = (range[0] == '^'); if (not) ++range;
   short success = 0;
 
-  // TODO and don't forget \- \xXX ...
+  char *next = calloc(3, sizeof(char));
+  while(1)
+  {
+    abr_range_next(range, next);
+    if (next[0] == 0) break;
+    if (input[0] >= next[1] && input[0] <= next[2]) { success = 1; break; }
+    range = range + next[0];
+  }
+  free(next);
 
   if (not) success = ( ! success);
   return abr_tree_malloc(success, offset, success ? 1 : 0, NULL, p, NULL);
