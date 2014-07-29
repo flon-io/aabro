@@ -837,15 +837,17 @@ abr_tree *abr_p_n(
 
 void abr_range_next(char *range, char *next)
 {
+  size_t b_index = 1;
   char a = range[0];
-  //if (a == '\\') a = range[start + 1];
+  if (a == '\\') { a = range[1]; b_index = 2; }
   if (a == '\0') { next[0] = 0; next[1] = 0; next[2] = 0; return; }
 
-  char b = range[1];
-  //if (b == '\\') ... for \-
+  char b = range[b_index];
   if (b != '-') { next[0] = 1; next[1] = a; next[2] = a; return; }
+  b = range[++b_index];
+  if (b == '\\') b = range[++b_index];
 
-  next[0] = 2; next[1] = a; next[2] = range[2];
+  next[0] = 2; next[1] = a; next[2] = b;
 }
 
 abr_tree *abr_p_range(
