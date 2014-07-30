@@ -388,6 +388,14 @@ abr_parser *abr_n_range(const char *name, const char *range)
   return r;
 }
 
+abr_parser *abr_rex(const char *s)
+{
+  return abr_n_rex(NULL, s);
+}
+
+abr_parser *abr_n_rex(const char *name, const char *s);
+  // developed further down
+
 abr_parser *abr_rep(abr_parser *p, ssize_t min, ssize_t max)
 {
   return abr_n_rep(NULL, p, min, max);
@@ -1090,5 +1098,35 @@ abr_tree *abr_t_child(abr_tree *t, size_t index)
   }
 
   return NULL;
+}
+
+//
+// abr_rex
+
+abr_parser *abr_n_rex(const char *name, const char *s)
+{
+  abr_parser *p = abr_parser_malloc(0, name); // string
+
+  char *ss = calloc(strlen(s) + 1, sizeof(char));
+  flu_list *children = flu_list_malloc();
+
+  size_t si = 0;
+  size_t ssi = 0;
+
+  while (1)
+  {
+    char c = s[si++];
+    char nc = s[si];
+    if (c == '\0') { break; }
+    if (c == '\\') { ss[ssi++] = nc; ++si; continue; }
+    //if (c == '(') ...
+    //if (c == '[') ...
+    //if (nc == '?' || nc == '*' || nc == '+') ...
+    ss[ssi++] = c;
+  }
+
+  p->string = ss;
+
+  return p;
 }
 

@@ -145,18 +145,53 @@ context "abr_rex"
 {
   before each
   {
-    abr_tree *t = NULL;
     abr_parser *p = NULL;
   }
   after each
   {
-    if (t != NULL) abr_tree_free(t);
     if (p != NULL) abr_parser_free(p);
   }
 
   describe "abr_rex(s)"
   {
-    it "creates a rex parsing tree"
+    it "accepts \"a\""
+    {
+      p = abr_rex("a");
+
+      ensure(abr_parser_to_string(p) ===f ""
+        "abr_string(\"a\")");
+    }
+
+    it "accepts \"a\\?\""
+    {
+      p = abr_rex("a\\?");
+
+      ensure(abr_parser_to_string(p) ===f ""
+        "abr_string(\"a?\")");
+    }
+
+    it "accepts \"a+\""
+    {
+      p = abr_rex("a+");
+
+      ensure(abr_parser_to_string(p) ===f ""
+        "abr_rep(\n"
+        "  abr_string(\"a\"),\n"
+        "  1, -1)");
+    }
+
+    it "accepts \"ab+\""
+    {
+      p = abr_rex("ab+");
+
+      ensure(abr_parser_to_string(p) ===f ""
+        "abr_seq(\n"
+        "  abr_string(\"a\"),\n"
+        "  abr_rep(\n"
+        "    abr_string(\"b\"),\n"
+        "    1, -1),\n"
+        "  NULL)");
+    }
   }
   describe "abr_n_rex(name, s)"
   {
