@@ -1114,7 +1114,7 @@ size_t abr_parse_rex_quant(const char *s, abr_parser *p)
   if (c == '*') { p->min = 0; p->max = -1; return 1; }
   if (c == '+') { p->min = 1; p->max = -1; return 1; }
 
-  if (c != '{') { p->min = 1; p->max = 1; return 0; }
+  if (c != '{') { p->min = -1; p->max = -1; return 0; }
 
   char *s0 = strdup(s + 1);
   char *s1 = NULL;
