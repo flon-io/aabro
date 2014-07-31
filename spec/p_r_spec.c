@@ -70,6 +70,19 @@ describe "abr_r(), final child"
         "    NULL), 4, 5)");
     }
 
+    it "understands {3}"
+    {
+      p = abr_alt(abr_string("x"), abr_string("y"), abr_r("{3}"));
+      char *s = abr_parser_to_string(p);
+
+      ensure(s ===f ""
+        "abr_rep(\n"
+        "  abr_alt(\n"
+        "    abr_string(\"x\"),\n"
+        "    abr_string(\"y\"),\n"
+        "    NULL), 3, 3)");
+    }
+
     it "steals the parent name"
     {
       p = abr_n_alt("n", abr_string("x"), abr_string("y"), abr_r("{4, 5}"));

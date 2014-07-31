@@ -256,32 +256,12 @@ void abr_do_name(abr_parser *named, abr_parser *target)
   }
 }
 
-void abr_r_expand_bracket(abr_parser *r)
-{
-  char *s0 = strdup(r->string + 1);
-  s0[strlen(s0) - 1] = '\0';
-
-  char *comma = strchr(s0, ',');
-  if (comma != NULL) {
-    char *s1 = strdup(comma + 1);
-    s0[comma - s0] = '\0';
-    r->min = atoi(s0);
-    r->max = atoi(s1);
-    free(s1);
-  }
-
-  free(s0);
-}
+size_t abr_parse_rex_quant(const char *s, abr_parser *p);
+  // defined below
 
 abr_parser *abr_r_expand(abr_parser *r, abr_parser *child)
 {
-  r->min = 1; r->max = 1;
-  //
-  if (strcmp(r->string, "*") == 0) { r->min = 0; r->max = -1; }
-  else if (strcmp(r->string, "+") == 0) { r->max = -1; }
-  else if (strcmp(r->string, "?") == 0) { r->min = 0; }
-  else if (r->string[0] == '{') { abr_r_expand_bracket(r); }
-  else { /* let it to "exactly once" */ }
+  abr_parse_rex_quant(r->string, r);
 
   r->type = 2;
   free(r->string); r->string = NULL;
@@ -388,13 +368,20 @@ abr_parser *abr_n_range(const char *name, const char *range)
   return r;
 }
 
+abr_parser *abr_decompose_rex(const char *s);
+  // defined below
+
 abr_parser *abr_rex(const char *s)
 {
   return abr_n_rex(NULL, s);
 }
 
-abr_parser *abr_n_rex(const char *name, const char *s);
-  // developed further down
+abr_parser *abr_n_rex(const char *name, const char *s)
+{
+  abr_parser *p = abr_decompose_rex(s);
+  p->name = name ? strdup(name) : NULL;
+  return p;
+}
 
 abr_parser *abr_rep(abr_parser *p, ssize_t min, ssize_t max)
 {
@@ -1103,9 +1090,55 @@ abr_tree *abr_t_child(abr_tree *t, size_t index)
 //
 // abr_rex
 
-abr_parser *abr_n_rex(const char *name, const char *s)
+ssize_t abr_find(const char *s, char c)
 {
-  abr_parser *p = abr_parser_malloc(0, name); // string
+  char b = (c == ')') ? '(' : '[';
+  ssize_t stacked = 0;
+  for (size_t i = 0; ;)
+  {
+    char cc = s[i++];
+    char ncc = s[i];
+    if (cc == '\0') { break; }
+    if (cc == c && stacked-- == 0) { return i; }
+    if (cc == '\\' && ncc != '\0') { ++i; continue; }
+    if (cc == b) ++stacked;
+  }
+  return -1;
+}
+
+size_t abr_parse_rex_quant(const char *s, abr_parser *p)
+{
+  char c = s[0];
+
+  if (c == '?') { p->min = 0; p->max = 1; return 1; }
+  if (c == '*') { p->min = 0; p->max = -1; return 1; }
+  if (c == '+') { p->min = 1; p->max = -1; return 1; }
+
+  if (c != '{') { p->min = 1; p->max = 1; return 0; }
+
+  char *s0 = strdup(s + 1);
+  char *s1 = NULL;
+
+  ssize_t j = abr_find(s0, '}');
+  s0[j] = '\0';
+  char *comma = strchr(s0, ',');
+
+  if (comma != NULL) {
+    s1 = strdup(comma + 1);
+    s0[comma - s0] = '\0';
+  }
+  p->min = atoi(s0);
+  p->max = s1 ? atoi(s1) : p->min;
+
+  if (s1) free(s1);
+  free(s0);
+
+  return j + 1;
+}
+
+abr_parser *abr_decompose_rex(const char *s)
+{
+  abr_parser *p = abr_parser_malloc(0, NULL); // string
 
   char *ss = calloc(strlen(s) + 1, sizeof(char));
   flu_list *children = flu_list_malloc();
