@@ -1148,10 +1148,12 @@ size_t abr_parse_rex_quant(const char *s, abr_parser *p)
 
 abr_parser *abr_decompose_rex(const char *s)
 {
-  abr_parser *p = abr_parser_malloc(0, NULL); // string
+  flu_list *children = flu_list_malloc();
 
-  char *ss = calloc(strlen(s) + 1, sizeof(char));
-  flu_list *children = NULL;
+  abr_parser *p = abr_parser_malloc(0, NULL);
+  flu_list_add(children, p);
+  p->string = calloc(strlen(s) + 1, sizeof(char));
+  char *ss = p->string;
 
   size_t si = 0;
   size_t ssi = 0;
@@ -1168,7 +1170,13 @@ abr_parser *abr_decompose_rex(const char *s)
     ss[ssi++] = c;
   }
 
-  p->string = ss;
+  if (children->size > 1)
+  {
+    p = abr_parser_malloc(4, NULL);
+    p->children = flu_list_to_array_n(children);
+  }
+
+  flu_list_free(children);
 
   return p;
 }
