@@ -378,8 +378,10 @@ abr_parser *abr_rex(const char *s)
 
 abr_parser *abr_n_rex(const char *name, const char *s)
 {
-  abr_parser *p = abr_decompose_rex(s);
-  p->name = name ? strdup(name) : NULL;
+  abr_parser *p = abr_parser_malloc(12, name);
+  p->string = strdup(s);
+  p->children = calloc(2, sizeof(abr_parser *));
+  p->children[0] = abr_decompose_rex(s);
   return p;
 }
 
