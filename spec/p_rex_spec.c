@@ -146,9 +146,29 @@ context "abr_range"
 
         ensure(t->result == 0);
 
+        abr_tree_free(t);
         t = abr_parse("A", 0, p);
 
         ensure(t->result == 1);
+      }
+
+      it "accepts \"\\^a-z\""
+      {
+        p = abr_range("\\^a-z");
+
+        t = abr_parse("a", 0, p);
+
+        ensure(t->result == 1);
+
+        abr_tree_free(t);
+        t = abr_parse("^", 0, p);
+
+        ensure(t->result == 1);
+
+        abr_tree_free(t);
+        t = abr_parse("A", 0, p);
+
+        ensure(t->result == 0);
       }
     }
   }
