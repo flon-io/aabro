@@ -159,6 +159,8 @@ context "abr_rex"
       p = abr_rex("a");
 
       ensure(abr_parser_to_string(p) ===f ""
+        "abr_rex(\"a\")");
+      ensure(abr_parser_to_string(p->children[0]) ===f ""
         "abr_string(\"a\")");
     }
 
@@ -167,6 +169,8 @@ context "abr_rex"
       p = abr_rex("a\\?");
 
       ensure(abr_parser_to_string(p) ===f ""
+        "abr_rex(\"a\\?\")");
+      ensure(abr_parser_to_string(p->children[0]) ===f ""
         "abr_string(\"a?\")");
     }
 
@@ -175,6 +179,8 @@ context "abr_rex"
       p = abr_rex("a+");
 
       ensure(abr_parser_to_string(p) ===f ""
+        "abr_rex(\"a+\")");
+      ensure(abr_parser_to_string(p->children[0]) ===f ""
         "abr_rep(\n"
         "  abr_string(\"a\"),\n"
         "  1, -1)");
@@ -185,6 +191,8 @@ context "abr_rex"
       p = abr_rex("ab+");
 
       ensure(abr_parser_to_string(p) ===f ""
+        "abr_rex(\"ab+\")");
+      ensure(abr_parser_to_string(p->children[0]) ===f ""
         "abr_seq(\n"
         "  abr_string(\"a\"),\n"
         "  abr_rep(\n"

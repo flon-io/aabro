@@ -89,7 +89,7 @@ char *abr_p_names[] = { // const ?
   "string", "regex",
   "rep", "alt", "seq",
   "not", "name", "presence", "absence", "n",
-  "r", "range"//, "rex"
+  "r", "range", "rex"
 };
 
 void abr_t_to_s(abr_tree *t, const char *input, flu_sbuffer *b, int indent)
@@ -470,11 +470,15 @@ typedef void abr_p_to_s_func(flu_sbuffer *, flu_list *, int, abr_parser *);
 
 void abr_p_to_s(flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p);
 
-void abr_p_string_to_s(
+void abr_p_string_to_s( // works for range and rex as well
   flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
 {
-  if (p->name == NULL) flu_sbprintf(b, "abr_string(\"%s\")", p->string);
-  else flu_sbprintf(b, "abr_n_string(\"%s\", \"%s\")", p->name, p->string);
+  if (p->name == NULL)
+    flu_sbprintf(
+      b, "abr_%s(\"%s\")", abr_p_names[p->type], p->string);
+  else
+    flu_sbprintf(
+      b, "abr_n_%s(\"%s\", \"%s\")", abr_p_names[p->type], p->name, p->string);
 }
 
 void abr_p_regex_to_s(
@@ -586,13 +590,6 @@ void abr_p_r_to_s(
   flu_sbprintf(b, "abr_r(\"%s\")", p->string);
 }
 
-void abr_p_range_to_s(
-  flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
-{
-  if (p->name == NULL) flu_sbprintf(b, "abr_range(\"%s\")", p->string);
-  else flu_sbprintf(b, "abr_n_range(\"%s\", \"%s\")", p->name, p->string);
-}
-
 abr_p_to_s_func *abr_p_to_s_funcs[] = { // const ?
   abr_p_string_to_s,
   abr_p_regex_to_s,
@@ -605,7 +602,8 @@ abr_p_to_s_func *abr_p_to_s_funcs[] = { // const ?
   abr_p_absence_to_s,
   abr_p_n_to_s,
   abr_p_r_to_s,
-  abr_p_range_to_s
+  abr_p_string_to_s,
+  abr_p_string_to_s
 };
 
 void abr_p_to_s(flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
@@ -869,6 +867,15 @@ abr_tree *abr_p_range(
   return abr_tree_malloc(success, offset, success ? 1 : 0, NULL, p, NULL);
 }
 
+abr_tree *abr_p_rex(
+  const char *input,
+  size_t offset, size_t depth,
+  abr_parser *p,
+  const abr_conf co)
+{
+  return NULL;
+}
+
 abr_tree *abr_p_not_implemented(
   const char *input,
   size_t offset, size_t depth,
@@ -895,7 +902,8 @@ abr_p_func *abr_p_funcs[] = { // const ?
   abr_p_not_implemented, //abr_p_absence,
   abr_p_n,
   abr_p_not_implemented, //abr_p_r
-  abr_p_range
+  abr_p_range,
+  abr_p_rex
 };
 
 abr_tree *abr_do_parse(
@@ -1141,7 +1149,7 @@ abr_parser *abr_decompose_rex(const char *s)
   abr_parser *p = abr_parser_malloc(0, NULL); // string
 
   char *ss = calloc(strlen(s) + 1, sizeof(char));
-  flu_list *children = flu_list_malloc();
+  flu_list *children = NULL;
 
   size_t si = 0;
   size_t ssi = 0;
