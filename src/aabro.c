@@ -1175,18 +1175,33 @@ abr_parser *abr_decompose_rex(const char *s)
   size_t si = 0;
   size_t ssi = 0;
 
-  while (1)
+  for (size_t si = 0; ; ++si)
   {
-    char c = s[si++];
-    char nc = s[si];
+    char c = s[si];
     if (c == '\0') { break; }
-    if (nc == '?' || nc == '*' || nc == '+' || nc == '{')
+    if (c == '\\') { ss[ssi++] = s[++si]; continue; }
+    if (c == '?' || c == '*' || c == '+' || c == '{')
     {
-      //if (p->type == abr_pt_string)
+      ssize_t l = (p->type == abr_pt_string) ? strlen(p->string) : -1;
+
+      if (p->type != abr_pt_string || l == 1)
+      {
+        flu_list_shift(children);
+        abr_parser *r = abr_parser_malloc(abr_pt_rep, NULL);
+        abr_parse_rex_quant(s + si, r);
+        r->children = calloc(2, sizeof(abr_parser *));
+        r->children[0] = p;
+        flu_list_unshift(children, r);
+        p = r;
+      }
+      else // have to grab the last char in the current string...
+      {
+        // TODO
+      }
+      continue;
     }
     //if (c == '(') ...
     //if (c == '[') ...
-    if (c == '\\') { ss[ssi++] = nc; ++si; continue; }
     ss[ssi++] = c;
   }
 
@@ -1194,6 +1209,7 @@ abr_parser *abr_decompose_rex(const char *s)
   {
     p = abr_parser_malloc(abr_pt_seq, NULL);
     p->children = flu_list_to_array_n(children);
+      // TODO: reverse that !
   }
 
   flu_list_free(children);

@@ -215,8 +215,7 @@ context "abr_rex"
         "abr_rex(\"a+\")");
       ensure(abr_parser_to_string(p->children[0]) ===f ""
         "abr_rep(\n"
-        "  abr_string(\"a\"),\n"
-        "  1, -1)");
+        "  abr_string(\"a\"), 1, -1)");
     }
 
     it "accepts \"ab+\""
@@ -229,8 +228,7 @@ context "abr_rex"
         "abr_seq(\n"
         "  abr_string(\"a\"),\n"
         "  abr_rep(\n"
-        "    abr_string(\"b\"),\n"
-        "    1, -1),\n"
+        "    abr_string(\"b\"), 1, -1),\n"
         "  NULL)");
     }
   }
