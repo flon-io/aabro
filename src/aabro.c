@@ -85,6 +85,20 @@ char *abr_tree_str(char *input, abr_tree *t)
   return input + t->offset;
 }
 
+#define ABR_STRING     0
+#define ABR_REGEX      1
+#define ABR_REP        2
+#define ABR_ALT        3
+#define ABR_SEQ        4
+#define ABR_NOT        5
+#define ABR_NAME       6
+#define ABR_PRESENCE   7
+#define ABR_ABSENCE    8
+#define ABR_N          9
+#define ABR_R         10
+#define ABR_RANGE     11
+#define ABR_REX       12
+
 char *abr_p_names[] = { // const ?
   "string", "regex",
   "rep", "alt", "seq",
@@ -241,7 +255,7 @@ void abr_do_name(abr_parser *named, abr_parser *target)
 {
   if (named->name == NULL) return;
 
-  if (target->type == 9)
+  if (target->type == ABR_N)
   {
     if (strcmp(target->name, named->name) != 0) return;
     if (target->children == NULL) target->children = abr_single_child(named);
@@ -263,7 +277,7 @@ abr_parser *abr_r_expand(abr_parser *r, abr_parser *child)
 {
   abr_parse_rex_quant(r->string, r);
 
-  r->type = 2;
+  r->type = ABR_REP;
   free(r->string); r->string = NULL;
 
   r->children = calloc(2, sizeof(abr_parser *));
@@ -289,7 +303,7 @@ abr_parser *abr_wrap_children(abr_parser *p, abr_parser *child0, va_list ap)
   {
     child = va_arg(ap, abr_parser *);
     if (child == NULL) break;
-    if (child->type == 10) break;
+    if (child->type == ABR_R) break;
     flu_list_add(l, child);
   }
 
@@ -323,7 +337,7 @@ abr_parser *abr_string(const char *s)
 
 abr_parser *abr_n_string(const char *name, const char *s)
 {
-  abr_parser *p = abr_parser_malloc(0, name);
+  abr_parser *p = abr_parser_malloc(ABR_STRING, name);
   p->string = strdup(s);
   p->string_length = strlen(s);
   return p;
@@ -336,7 +350,7 @@ abr_parser *abr_regex(const char *s)
 
 abr_parser *abr_n_regex(const char *name, const char *s)
 {
-  abr_parser *p = abr_parser_malloc(1, name);
+  abr_parser *p = abr_parser_malloc(ABR_REGEX, name);
   p->string = strdup(s); // keep a copy of the original
   p->regex = calloc(1, sizeof(regex_t));
   regcomp(p->regex, p->string, REG_EXTENDED);
@@ -350,7 +364,7 @@ abr_parser *abr_regex_r(regex_t *r)
 
 abr_parser *abr_n_regex_r(const char *name, regex_t *r)
 {
-  abr_parser *p = abr_parser_malloc(1, name);
+  abr_parser *p = abr_parser_malloc(ABR_REGEX, name);
   p->regex = r;
   return p;
 }
@@ -362,7 +376,7 @@ abr_parser *abr_range(const char *range)
 
 abr_parser *abr_n_range(const char *name, const char *range)
 {
-  abr_parser *r = abr_parser_malloc(11, name);
+  abr_parser *r = abr_parser_malloc(ABR_RANGE, name);
   r->string = strdup(range);
   abr_do_name(r, r);
   return r;
@@ -378,7 +392,7 @@ abr_parser *abr_rex(const char *s)
 
 abr_parser *abr_n_rex(const char *name, const char *s)
 {
-  abr_parser *p = abr_parser_malloc(12, name);
+  abr_parser *p = abr_parser_malloc(ABR_REX, name);
   p->string = strdup(s);
   p->children = calloc(2, sizeof(abr_parser *));
   p->children[0] = abr_decompose_rex(s);
@@ -392,7 +406,7 @@ abr_parser *abr_rep(abr_parser *p, ssize_t min, ssize_t max)
 
 abr_parser *abr_n_rep(const char *name, abr_parser *p, ssize_t min, ssize_t max)
 {
-  abr_parser *r = abr_parser_malloc(2, name);
+  abr_parser *r = abr_parser_malloc(ABR_REP, name);
   r->min = min;
   r->max = max;
   r->children = abr_single_child(p);
@@ -402,7 +416,7 @@ abr_parser *abr_n_rep(const char *name, abr_parser *p, ssize_t min, ssize_t max)
 
 abr_parser *abr_alt(abr_parser *p, ...)
 {
-  abr_parser *r = abr_parser_malloc(3, NULL);
+  abr_parser *r = abr_parser_malloc(ABR_ALT, NULL);
 
   va_list l; va_start(l, p); r = abr_wrap_children(r, p, l); va_end(l);
 
@@ -411,7 +425,7 @@ abr_parser *abr_alt(abr_parser *p, ...)
 
 abr_parser *abr_n_alt(const char *name, abr_parser *p, ...)
 {
-  abr_parser *r = abr_parser_malloc(3, name);
+  abr_parser *r = abr_parser_malloc(ABR_ALT, name);
 
   va_list l; va_start(l, p); r = abr_wrap_children(r, p, l); va_end(l);
   abr_do_name(r, r);
@@ -421,7 +435,7 @@ abr_parser *abr_n_alt(const char *name, abr_parser *p, ...)
 
 abr_parser *abr_seq(abr_parser *p, ...)
 {
-  abr_parser *r = abr_parser_malloc(4, NULL);
+  abr_parser *r = abr_parser_malloc(ABR_SEQ, NULL);
 
   va_list l; va_start(l, p); r = abr_wrap_children(r, p, l); va_end(l);
 
@@ -430,7 +444,7 @@ abr_parser *abr_seq(abr_parser *p, ...)
 
 abr_parser *abr_n_seq(const char *name, abr_parser *p, ...)
 {
-  abr_parser *r = abr_parser_malloc(4, name);
+  abr_parser *r = abr_parser_malloc(ABR_SEQ, name);
 
   va_list l; va_start(l, p); r = abr_wrap_children(r, p, l); va_end(l);
   abr_do_name(r, r);
@@ -440,7 +454,7 @@ abr_parser *abr_n_seq(const char *name, abr_parser *p, ...)
 
 abr_parser *abr_name(const char *name, abr_parser *p)
 {
-  abr_parser *r = abr_parser_malloc(6, name);
+  abr_parser *r = abr_parser_malloc(ABR_NAME, name);
   r->children = abr_single_child(p);
   abr_do_name(r, r);
   return r;
@@ -448,7 +462,7 @@ abr_parser *abr_name(const char *name, abr_parser *p)
 
 abr_parser *abr_n(const char *name)
 {
-  return abr_parser_malloc(9, name);
+  return abr_parser_malloc(ABR_N, name);
 }
 
 abr_parser *abr_r(const char *code)
@@ -458,7 +472,7 @@ abr_parser *abr_r(const char *code)
 
 abr_parser *abr_n_r(const char *name, const char *code)
 {
-  abr_parser *r = abr_parser_malloc(10, name);
+  abr_parser *r = abr_parser_malloc(ABR_R, name);
   r->string = strdup(code);
   abr_do_name(r, r);
 
@@ -644,7 +658,7 @@ char *abr_parser_to_s(abr_parser *p)
   if (p->name) name = flu_sprintf("'%s' ", p->name);
 
   char *minmax = "";
-  if (p->type == 2) minmax = flu_sprintf(" mn%i mx%i", p->min, p->max);
+  if (p->type == ABR_REP) minmax = flu_sprintf(" mn%i mx%i", p->min, p->max);
 
   char *s = flu_sprintf(
     "%s t%i %sc%i%s",
@@ -1150,7 +1164,7 @@ abr_parser *abr_decompose_rex(const char *s)
 {
   flu_list *children = flu_list_malloc();
 
-  abr_parser *p = abr_parser_malloc(0, NULL);
+  abr_parser *p = abr_parser_malloc(ABR_STRING, NULL);
   flu_list_add(children, p);
   p->string = calloc(strlen(s) + 1, sizeof(char));
   char *ss = p->string;
@@ -1163,16 +1177,19 @@ abr_parser *abr_decompose_rex(const char *s)
     char c = s[si++];
     char nc = s[si];
     if (c == '\0') { break; }
-    if (c == '\\') { ss[ssi++] = nc; ++si; continue; }
+    if (nc == '?' || nc == '*' || nc == '+' || nc == '{')
+    {
+      //if (p->type == ABR_STRING)
+    }
     //if (c == '(') ...
     //if (c == '[') ...
-    //if (nc == '?' || nc == '*' || nc == '+') ...
+    if (c == '\\') { ss[ssi++] = nc; ++si; continue; }
     ss[ssi++] = c;
   }
 
   if (children->size > 1)
   {
-    p = abr_parser_malloc(4, NULL);
+    p = abr_parser_malloc(ABR_SEQ, NULL);
     p->children = flu_list_to_array_n(children);
   }
 
