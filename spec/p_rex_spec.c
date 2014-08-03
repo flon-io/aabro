@@ -231,6 +231,28 @@ context "abr_rex"
         "    abr_string(\"b\"), 1, -1),\n"
         "  NULL)");
     }
+
+    it "accepts \"ab+c\""
+    {
+      p = abr_rex("ab+c");
+
+      ensure(abr_parser_to_string(p->children[0]) ===f ""
+        "abr_seq(\n"
+        "  abr_string(\"a\"),\n"
+        "  abr_rep(\n"
+        "    abr_string(\"b\"), 1, -1),\n"
+        "  abr_string(\"c\"),\n"
+        "  NULL)");
+    }
+
+    it "accepts \"[a-z]+\""
+    {
+      p = abr_rex("[a-z]+");
+
+      ensure(abr_parser_to_string(p->children[0]) ===f ""
+        "abr_rep(\n"
+        "  abr_range(\"a-z\"), 1, -1)");
+    }
   }
   describe "abr_n_rex(name, s)"
   {
