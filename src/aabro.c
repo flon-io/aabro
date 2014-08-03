@@ -310,7 +310,7 @@ abr_parser *abr_wrap_children(abr_parser *p, abr_parser *child0, va_list ap)
     flu_list_add(l, child);
   }
 
-  p->children = (abr_parser **)flu_list_to_array_n(l);
+  p->children = (abr_parser **)flu_list_to_array(l, 1);
 
   flu_list_free(l);
 
@@ -1083,7 +1083,7 @@ abr_tree **abr_tree_collect(abr_tree *t, abr_tree_func *f)
 {
   flu_list *l = abr_tree_list(t, f);
 
-  abr_tree **ts = (abr_tree **)flu_list_to_array_n(l);
+  abr_tree **ts = (abr_tree **)flu_list_to_array(l, 1);
   flu_list_free(l);
 
   return ts;
@@ -1216,14 +1216,7 @@ abr_parser *abr_decompose_rex(const char *s)
   if (children->size > 1)
   {
     p = abr_parser_malloc(abr_pt_seq, NULL);
-    p->children = flu_list_to_array_n(children);
-      // TODO: reverse that !
-    //p->children = calloc(children->size + 1, sizeof(abr_parser *));
-    //size_t ci = children->size;
-    //for (flu_node *n = children->first; n = n->next; n != NULL)
-    //{
-    //  p->children[ci--] = (abr_parser *)n->item;
-    //}
+    p->children = flu_list_to_array_r(children, 1);
   }
 
   flu_list_free(children);

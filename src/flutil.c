@@ -320,7 +320,7 @@ char *flu_n_unescape(const char *s, size_t n)
 
 
 //
-// colls
+// flu_list
 
 static flu_node *flu_node_malloc(void *item)
 {
@@ -421,20 +421,21 @@ void *flu_list_shift(flu_list *l)
   return item;
 }
 
-void **flu_list_to_array(const flu_list *l)
+void **flu_list_to_array(const flu_list *l, int add_extra_null)
 {
-  void **a = calloc(l->size, sizeof(void *));
+  size_t s = l->size + (add_extra_null ? 1 : 0);
+  void **a = calloc(s, sizeof(void *));
   size_t i = 0;
   for (flu_node *n = l->first; n != NULL; n = n->next) a[i++] = n->item;
   return a;
 }
 
-void **flu_list_to_array_n(const flu_list *l)
+void **flu_list_to_array_r(const flu_list *l, int add_extra_null)
 {
-  void **a = calloc(l->size + 1, sizeof(void *));
-  size_t i = 0;
-  for (flu_node *n = l->first; n != NULL; n = n->next) a[i++] = n->item;
-  a[i] = NULL;
+  size_t s = l->size + (add_extra_null ? 1 : 0);
+  void **a = calloc(s, sizeof(void *));
+  size_t i = l->size;
+  for (flu_node *n = l->first; n != NULL; n = n->next) a[--i] = n->item;
   return a;
 }
 

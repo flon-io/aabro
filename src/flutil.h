@@ -191,13 +191,16 @@ void *flu_list_at(const flu_list *l, size_t n);
 
 /* Returns an array of void pointers, pointers to the items in the flu_list.
  * The size of the array is the size of the flu_list.
+ * If add_extra_null is set to 1, the array gains an extra NULL element, so
+ * the array size will be the size of the flu_list plus one.
  */
-void **flu_list_to_array(const flu_list *l);
+void **flu_list_to_array(const flu_list *l, int add_extra_null);
 
-/* Returns the array of pointers to the items in the flu_list, with an
- * extra NULL pointer at the end of the array.
+/* Same as flu_list_to_array() but the resulting array elements are
+ * in the reverse order.
+ * `add_extra_null` adds an extra NULL at the end.
  */
-void **flu_list_to_array_n(const flu_list *l);
+void **flu_list_to_array_r(const flu_list *l, int add_extra_null);
 
 /* Adds an item at the end of a flu_list.
  */
