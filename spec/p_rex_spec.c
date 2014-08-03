@@ -281,6 +281,14 @@ context "abr_rex"
       ensure(abr_parser_to_string(p->children[0]) ===f ""
         "abr_error(\"orphan quantifier >{1,2}<\")");
     }
+
+    it "fails when a range isn't closed"
+    {
+      p = abr_rex("[a-z");
+
+      ensure(abr_parser_to_string(p->children[0]) ===f ""
+        "abr_error(\"range not closed >[a-z<\")");
+    }
   }
 }
 

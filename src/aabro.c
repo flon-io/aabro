@@ -1119,7 +1119,7 @@ abr_tree *abr_t_child(abr_tree *t, size_t index)
 ssize_t abr_find(const char *s, char c)
 {
   char b = (c == ')') ? '(' : '[';
-  ssize_t stacked = 0;
+  size_t stacked = 0;
   for (size_t i = 0; ;)
   {
     char cc = s[i++];
@@ -1162,6 +1162,20 @@ size_t abr_parse_rex_quant(const char *s, abr_parser *p)
   return j + 1;
 }
 
+abr_parser *abr_error(const char *format, ...)
+{
+  va_list ap;
+  va_start(ap, format);
+  flu_sbuffer *b = flu_sbuffer_malloc();
+  flu_sbvprintf(b, format, ap);
+  va_end(ap);
+
+  abr_parser *p = abr_parser_malloc(abr_pt_error, NULL);
+  p->string = flu_sbuffer_to_string(b);
+
+  return p;
+}
+
 abr_parser *abr_decompose_rex(const char *s)
 {
   size_t sl = strlen(s);
@@ -1182,8 +1196,7 @@ abr_parser *abr_decompose_rex(const char *s)
     {
       if (p == NULL)
       {
-        p = abr_parser_malloc(abr_pt_error, NULL);
-        p->string = flu_sprintf("orphan quantifier >%s<", s + si);
+        p = abr_error("orphan quantifier >%s<", s + si);
         flu_list_unshift(children, p);
         break;
       }
@@ -1217,8 +1230,12 @@ abr_parser *abr_decompose_rex(const char *s)
     if (c == '[')
     {
       ssize_t ei = abr_find(s + si + 1, ']');
-      // TODO: when ei is -1
-      //printf("si: %zu, ei: %zu, >%s<\n", si, ei, s + si);
+      if (ei == -1)
+      {
+        p = abr_error("range not closed >%s<", s + si);
+        flu_list_unshift(children, p);
+        break;
+      }
       abr_parser *r = abr_parser_malloc(abr_pt_range, NULL);
       r->string = strndup(s + si + 1, ei - si - 1);
       flu_list_unshift(children, r);
