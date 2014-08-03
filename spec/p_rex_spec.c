@@ -254,6 +254,7 @@ context "abr_rex"
         "  abr_range(\"a-z\"), 1, -1)");
     }
   }
+
   describe "abr_n_rex(name, s)"
   {
     it "creates a named rex parsing tree"
@@ -268,6 +269,17 @@ context "abr_rex"
         "  abr_rep(\n"
         "    abr_string(\"b\"), 1, -1),\n"
         "  NULL)");
+    }
+  }
+
+  context "errors"
+  {
+    it "injects an abr_error() when the regex is invalid"
+    {
+      p = abr_rex("{1,2}");
+
+      ensure(abr_parser_to_string(p->children[0]) ===f ""
+        "abr_error(\"quantifier >{1,2}< has nothing to get applied to\")");
     }
   }
 }

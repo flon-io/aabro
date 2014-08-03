@@ -99,14 +99,16 @@ typedef enum abr_p_type
   abr_pt_n,
   abr_pt_r,
   abr_pt_range,
-  abr_pt_rex
+  abr_pt_rex,
+  abr_pt_error
 } abr_p_type;
 
 char *abr_p_names[] = { // const ?
   "string", "regex",
   "rep", "alt", "seq",
   "not", "name", "presence", "absence", "n",
-  "r", "range", "rex"
+  "r", "range", "rex",
+  "error"
 };
 
 void abr_t_to_s(abr_tree *t, const char *input, flu_sbuffer *b, int indent)
@@ -318,20 +320,6 @@ abr_parser *abr_wrap_children(abr_parser *p, abr_parser *child0, va_list ap)
 
   return abr_r_expand(child, p);
 }
-
-/*
- *  0 string
- *  1 regex
- *  2 repetition
- *  3 alternative
- *  4 sequence
- *  5 not, negation
- *  6 name
- *  7 presence
- *  8 absence
- *  9 placeholder (abr_n)
- * 10 repetition (abr_r)
- */
 
 abr_parser *abr_string(const char *s)
 {
@@ -621,8 +609,9 @@ abr_p_to_s_func *abr_p_to_s_funcs[] = { // const ?
   abr_p_absence_to_s,
   abr_p_n_to_s,
   abr_p_r_to_s,
-  abr_p_string_to_s,
-  abr_p_string_to_s
+  abr_p_string_to_s, // range
+  abr_p_string_to_s, // rex
+  abr_p_string_to_s  // "error" parser
 };
 
 void abr_p_to_s(flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
@@ -895,6 +884,15 @@ abr_tree *abr_p_rex(
   return NULL;
 }
 
+abr_tree *abr_p_error(
+  const char *input,
+  size_t offset, size_t depth,
+  abr_parser *p,
+  const abr_conf co)
+{
+  return abr_tree_malloc(-1, offset, 0, strdup(p->string), p, NULL);
+}
+
 abr_tree *abr_p_not_implemented(
   const char *input,
   size_t offset, size_t depth,
@@ -922,7 +920,8 @@ abr_p_func *abr_p_funcs[] = { // const ?
   abr_p_n,
   abr_p_not_implemented, //abr_p_r
   abr_p_range,
-  abr_p_rex
+  abr_p_rex,
+  abr_p_error
 };
 
 abr_tree *abr_do_parse(
@@ -1169,11 +1168,8 @@ abr_parser *abr_decompose_rex(const char *s)
 
   flu_list *children = flu_list_malloc();
 
-  abr_parser *p = abr_parser_malloc(abr_pt_string, NULL);
-  flu_list_unshift(children, p);
-  p->string = calloc(sl + 1, sizeof(char));
-  char *ss = p->string;
-
+  abr_parser *p = NULL;
+  char *ss = NULL;
   size_t ssi = 0;
 
   for (size_t si = 0; ; ++si)
@@ -1181,10 +1177,18 @@ abr_parser *abr_decompose_rex(const char *s)
     char c = s[si];
 
     if (c == '\0') { break; }
-    if (c == '\\') { ss[ssi++] = s[++si]; continue; }
 
     if (c == '?' || c == '*' || c == '+' || c == '{')
     {
+      if (p == NULL)
+      {
+        p = abr_parser_malloc(abr_pt_error, NULL);
+        p->string = flu_sprintf(
+          "quantifier >%s< has nothing to get applied to", s + si);
+        flu_list_unshift(children, p);
+        break;
+      }
+
       ssize_t l = (p->type == abr_pt_string) ? strlen(p->string) : -1;
 
       abr_parser *r = abr_parser_malloc(abr_pt_rep, NULL);
@@ -1213,20 +1217,23 @@ abr_parser *abr_decompose_rex(const char *s)
     //if (c == '(') ...
     //if (c == '[') ...
 
-    if (p->type != abr_pt_string) {
+    if (p == NULL || p->type != abr_pt_string) {
       p = abr_parser_malloc(abr_pt_string, NULL);
       p->string = calloc(sl - si + 1, sizeof(char));
       flu_list_unshift(children, p);
       ss = p->string;
       ssi = 0;
     }
+
+    if (c == '\\') { ss[ssi++] = s[++si]; continue; }
+
     ss[ssi++] = c;
   }
 
   if (children->size > 1)
   {
     p = abr_parser_malloc(abr_pt_seq, NULL);
-    p->children = flu_list_to_array_r(children, 1);
+    p->children = (abr_parser **)flu_list_to_array_r(children, 1);
   }
 
   flu_list_free(children);
