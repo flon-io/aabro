@@ -1214,8 +1214,21 @@ abr_parser *abr_decompose_rex(const char *s)
       p = r;
       continue;
     }
+
+    if (c == '[')
+    {
+      ssize_t ei = abr_find(s + si + 1, ']');
+      // TODO: when ei is -1
+      //printf("si: %zu, ei: %zu, >%s<\n", si, ei, s + si);
+      abr_parser *r = abr_parser_malloc(abr_pt_range, NULL);
+      r->string = strndup(s + si + 1, ei - si - 1);
+      flu_list_unshift(children, r);
+      p = r;
+      si = ei;
+      continue;
+    }
+
     //if (c == '(') ...
-    //if (c == '[') ...
 
     if (p == NULL || p->type != abr_pt_string) {
       p = abr_parser_malloc(abr_pt_string, NULL);
