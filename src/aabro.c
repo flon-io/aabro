@@ -1183,8 +1183,7 @@ abr_parser *abr_decompose_rex(const char *s)
       if (p == NULL)
       {
         p = abr_parser_malloc(abr_pt_error, NULL);
-        p->string = flu_sprintf(
-          "quantifier >%s< has nothing to get applied to", s + si);
+        p->string = flu_sprintf("orphan quantifier >%s<", s + si);
         flu_list_unshift(children, p);
         break;
       }

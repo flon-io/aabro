@@ -274,12 +274,12 @@ context "abr_rex"
 
   context "errors"
   {
-    it "injects an abr_error() when the regex is invalid"
+    it "fails when a quantifier is orphan"
     {
       p = abr_rex("{1,2}");
 
       ensure(abr_parser_to_string(p->children[0]) ===f ""
-        "abr_error(\"quantifier >{1,2}< has nothing to get applied to\")");
+        "abr_error(\"orphan quantifier >{1,2}<\")");
     }
   }
 }
