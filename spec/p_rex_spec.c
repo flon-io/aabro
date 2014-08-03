@@ -235,6 +235,18 @@ context "abr_rex"
   describe "abr_n_rex(name, s)"
   {
     it "creates a named rex parsing tree"
+    {
+      p = abr_n_rex("a_and_bs", "ab+");
+
+      ensure(abr_parser_to_string(p) ===f ""
+        "abr_n_rex(\"a_and_bs\", \"ab+\")");
+      ensure(abr_parser_to_string(p->children[0]) ===f ""
+        "abr_seq(\n"
+        "  abr_string(\"a\"),\n"
+        "  abr_rep(\n"
+        "    abr_string(\"b\"), 1, -1),\n"
+        "  NULL)");
+    }
   }
 }
 
