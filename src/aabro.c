@@ -1214,7 +1214,6 @@ abr_parser *abr_decompose_rex(const char *s)
       }
       else // have to grab the last char in the current string...
       {
-        // TODO... when si == 0
         size_t ci = strlen(p->string) - 1;
         abr_parser *p0 = abr_parser_malloc(abr_pt_string, NULL);
         p0->string = calloc(2, sizeof(char));
