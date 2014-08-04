@@ -1123,10 +1123,9 @@ ssize_t abr_find(const char *s, char c)
   for (size_t i = 0; ;)
   {
     char cc = s[i++];
-    char ncc = s[i];
     if (cc == '\0') { break; }
     if (cc == c && stacked-- == 0) { return i; }
-    if (cc == '\\' && ncc != '\0') { ++i; continue; }
+    if (cc == '\\' && s[i] != '\0') { ++i; continue; }
     if (cc == b) ++stacked;
   }
   return -1;
