@@ -189,18 +189,20 @@ void *flu_list_at(const flu_list *l, size_t n);
 //size_t flu_list_indexof(const flu_list *l, void *item);
 //int flu_list_contains(const flu_list *l, void *item);
 
+enum
+{
+  FLU_REVERSE = 1 << 0,
+  FLU_EXTRA_NULL = 1 << 1
+};
+
 /* Returns an array of void pointers, pointers to the items in the flu_list.
  * The size of the array is the size of the flu_list.
- * If add_extra_null is set to 1, the array gains an extra NULL element, so
- * the array size will be the size of the flu_list plus one.
+ * If the flag FLU_REVERSE is set, the array order will be the reverse of
+ * the flu_list order.
+ * If the flag FLU_EXTRA_NULL is set, the array will have one final extra
+ * NULL element.
  */
-void **flu_list_to_array(const flu_list *l, int add_extra_null);
-
-/* Same as flu_list_to_array() but the resulting array elements are
- * in the reverse order.
- * `add_extra_null` adds an extra NULL at the end.
- */
-void **flu_list_to_array_r(const flu_list *l, int add_extra_null);
+void **flu_list_to_array(const flu_list *l, int flags);
 
 /* Adds an item at the end of a flu_list.
  */

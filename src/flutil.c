@@ -421,21 +421,16 @@ void *flu_list_shift(flu_list *l)
   return item;
 }
 
-void **flu_list_to_array(const flu_list *l, int add_extra_null)
+void **flu_list_to_array(const flu_list *l, int flags)
 {
-  size_t s = l->size + (add_extra_null ? 1 : 0);
+  size_t s = l->size + (flags & FLU_EXTRA_NULL ? 1 : 0);
   void **a = calloc(s, sizeof(void *));
-  size_t i = 0;
-  for (flu_node *n = l->first; n != NULL; n = n->next) a[i++] = n->item;
-  return a;
-}
-
-void **flu_list_to_array_r(const flu_list *l, int add_extra_null)
-{
-  size_t s = l->size + (add_extra_null ? 1 : 0);
-  void **a = calloc(s, sizeof(void *));
-  size_t i = l->size;
-  for (flu_node *n = l->first; n != NULL; n = n->next) a[--i] = n->item;
+  size_t i = flags & FLU_REVERSE ? l->size - 1 : 0;
+  for (flu_node *n = l->first; n != NULL; n = n->next)
+  {
+    a[i] = n->item;
+    i = i + (flags & FLU_REVERSE ? -1 : 1);
+  }
   return a;
 }
 
