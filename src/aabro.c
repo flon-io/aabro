@@ -373,7 +373,7 @@ abr_parser *abr_n_range(const char *name, const char *range)
   return r;
 }
 
-abr_parser *abr_decompose_rex(const char *s);
+abr_parser *abr_decompose_rex_group(const char *s);
   // defined below
 
 abr_parser *abr_rex(const char *s)
@@ -386,7 +386,7 @@ abr_parser *abr_n_rex(const char *name, const char *s)
   abr_parser *p = abr_parser_malloc(abr_pt_rex, name);
   p->string = strdup(s);
   p->children = calloc(2, sizeof(abr_parser *));
-  p->children[0] = abr_decompose_rex(s);
+  p->children[0] = abr_decompose_rex_group(s);
   return p;
 }
 
@@ -1176,7 +1176,7 @@ abr_parser *abr_error(const char *format, ...)
   return p;
 }
 
-abr_parser *abr_decompose_rex(const char *s)
+abr_parser *abr_decompose_rex_group(const char *s)
 {
   size_t sl = strlen(s);
 
