@@ -275,7 +275,7 @@ void abr_do_name(abr_parser *named, abr_parser *target)
   }
 }
 
-size_t abr_parse_rex_quant(const char *s, abr_parser *p);
+static size_t abr_parse_rex_quant(const char *s, abr_parser *p);
   // defined below
 
 abr_parser *abr_r_expand(abr_parser *r, abr_parser *child)
@@ -373,7 +373,7 @@ abr_parser *abr_n_range(const char *name, const char *range)
   return r;
 }
 
-abr_parser *abr_decompose_rex_group(const char *s);
+static abr_parser *abr_decompose_rex_group(const char *s);
   // defined below
 
 abr_parser *abr_rex(const char *s)
@@ -1116,7 +1116,7 @@ abr_tree *abr_t_child(abr_tree *t, size_t index)
 //
 // abr_rex
 
-ssize_t abr_find(const char *s, char c)
+static ssize_t abr_find(const char *s, char c)
 {
   char b = (c == ')') ? '(' : '[';
   size_t stacked = 0;
@@ -1131,7 +1131,7 @@ ssize_t abr_find(const char *s, char c)
   return -1;
 }
 
-size_t abr_parse_rex_quant(const char *s, abr_parser *p)
+static size_t abr_parse_rex_quant(const char *s, abr_parser *p)
 {
   char c = s[0];
 
@@ -1161,7 +1161,7 @@ size_t abr_parse_rex_quant(const char *s, abr_parser *p)
   return j + 1;
 }
 
-abr_parser *abr_error(const char *format, ...)
+static abr_parser *abr_error(const char *format, ...)
 {
   va_list ap;
   va_start(ap, format);
@@ -1175,7 +1175,7 @@ abr_parser *abr_error(const char *format, ...)
   return p;
 }
 
-abr_parser *abr_decompose_rex_sequence(const char *s)
+static abr_parser *abr_decompose_rex_sequence(const char *s)
 {
   size_t sl = strlen(s);
 
@@ -1270,7 +1270,7 @@ abr_parser *abr_decompose_rex_sequence(const char *s)
   return p;
 }
 
-abr_parser *abr_decompose_rex_group(const char *s)
+static abr_parser *abr_decompose_rex_group(const char *s)
 {
   flu_list *children = flu_list_malloc();
 
