@@ -1273,17 +1273,24 @@ abr_parser *abr_decompose_rex_group(const char *s)
 {
   flu_list *children = flu_list_malloc();
 
-  for (size_t i = 0, j = 0; ; j++)
+  for (size_t i = 0, j = 0, stack = 0; ; j++)
   {
     char c = s[j];
+
     if (c == '\\') continue;
+
+    if (c == '(' || c == '[') { ++stack; continue; }
+    if (c == ')' || c == ']') { --stack; continue; }
+
+    if (c == '|' && stack > 0) continue;
+
     if (c == '\0' || c == '|')
     {
       char *ss = strndup(s + i, j - i);
       abr_parser *p = abr_decompose_rex_sequence(ss);
       free(ss);
       flu_list_add(children, p);
-      i = ++j;
+      i = j + 1;
       if (c == '\0') break;
     }
   }
