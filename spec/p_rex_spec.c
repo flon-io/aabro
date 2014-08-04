@@ -254,6 +254,18 @@ context "abr_rex"
         "  abr_range(\"a-z\"), 1, -1)");
     }
 
+    it "accepts \"ab[c-d]ef\""
+    {
+      p = abr_rex("ab[c-d]ef");
+
+      ensure(abr_parser_to_string(p->children[0]) ===f ""
+        "abr_seq(\n"
+        "  abr_string(\"ab\"),\n"
+        "  abr_range(\"c-d\"),\n"
+        "  abr_string(\"ef\"),\n"
+        "  NULL)");
+    }
+
     it "accepts \"ab|cd\""
     {
       p = abr_rex("ab|cd");
@@ -275,6 +287,31 @@ context "abr_rex"
         "  abr_rep(\n"
         "    abr_range(\"a-z|\"), 1, -1),\n"
         "  abr_string(\"cd\"),\n"
+        "  NULL)");
+    }
+
+    it "accepts \"ab(cd)ef\""
+    {
+      p = abr_rex("ab(cd)ef");
+
+      ensure(abr_parser_to_string(p->children[0]) ===f ""
+        "abr_seq(\n"
+        "  abr_string(\"ab\"),\n"
+        "  abr_string(\"cd\"),\n"
+        "  abr_string(\"ef\"),\n"
+        "  NULL)");
+    }
+
+    it "accepts \"ab(cd)?ef\""
+    {
+      p = abr_rex("ab(cd)?ef");
+
+      ensure(abr_parser_to_string(p->children[0]) ===f ""
+        "abr_seq(\n"
+        "  abr_string(\"ab\"),\n"
+        "  abr_rep(\n"
+        "    abr_string(\"cd\"), 0, 1),\n"
+        "  abr_string(\"ef\"),\n"
         "  NULL)");
     }
   }

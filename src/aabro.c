@@ -1193,22 +1193,22 @@ static abr_parser *abr_decompose_rex_sequence(const char *s)
 
     if (c == '?' || c == '*' || c == '+' || c == '{')
     {
-      if (p == NULL)
+      if (p == NULL && children->size < 1)
       {
         p = abr_error("orphan quantifier >%s<", s + si);
         flu_list_unshift(children, p);
         break;
       }
 
-      ssize_t l = (p->type == abr_pt_string) ? strlen(p->string) : -1;
+      //ssize_t l = (p->type == abr_pt_string) ? strlen(p->string) : -1;
 
       abr_parser *r = abr_parser_malloc(abr_pt_rep, NULL);
       abr_parse_rex_quant(s + si, r);
       r->children = calloc(2, sizeof(abr_parser *));
 
-      if (p->type != abr_pt_string || l == 1)
+      if (p == NULL || p->type != abr_pt_string || strlen(p->string) == 1)
       {
-        r->children[0] = p;
+        r->children[0] = (abr_parser *)children->first->item;
         flu_list_shift(children);
       }
       else // have to grab the last char in the current string...
@@ -1221,7 +1221,7 @@ static abr_parser *abr_decompose_rex_sequence(const char *s)
         r->children[0] = p0;
       }
       flu_list_unshift(children, r);
-      p = r;
+      p = NULL;
       continue;
     }
 
@@ -1235,14 +1235,30 @@ static abr_parser *abr_decompose_rex_sequence(const char *s)
         break;
       }
       abr_parser *r = abr_parser_malloc(abr_pt_range, NULL);
-      r->string = strndup(s + si + 1, ei - si - 1);
+      r->string = strndup(s + si + 1, ei - 1);
       flu_list_unshift(children, r);
-      p = r;
-      si = ei;
+      p = NULL;
+      si = si + ei;
       continue;
     }
 
-    //if (c == '(') ...
+    if (c == '(')
+    {
+      ssize_t ei = abr_find(s + si + 1, ')');
+      if (ei == -1)
+      {
+        p = abr_error("group not closed >%s<", s + si);
+        flu_list_unshift(children, p);
+        break;
+      }
+      char *gs = strndup(s + si + 1, ei - 1);
+      abr_parser *g = abr_decompose_rex_group(gs);
+      free(gs);
+      flu_list_unshift(children, g);
+      p = NULL;
+      si = si + ei;
+      continue;
+    }
 
     if (p == NULL || p->type != abr_pt_string) {
       p = abr_parser_malloc(abr_pt_string, NULL);
@@ -1263,6 +1279,11 @@ static abr_parser *abr_decompose_rex_sequence(const char *s)
       abr_parser_malloc(abr_pt_seq, NULL);
     p->children =
       (abr_parser **)flu_list_to_array(children, FLU_REVERSE | FLU_EXTRA_NULL);
+  }
+  else
+  {
+    p =
+      (abr_parser *)children->first->item;
   }
 
   flu_list_free(children);
