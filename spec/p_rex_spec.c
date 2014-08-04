@@ -253,6 +253,17 @@ context "abr_rex"
         "abr_rep(\n"
         "  abr_range(\"a-z\"), 1, -1)");
     }
+
+    it "accepts \"ab|cd\""
+    {
+      p = abr_rex("ab|cd");
+
+      ensure(abr_parser_to_string(p->children[0]) ===f ""
+        "abr_alt(\n"
+        "  abr_string(\"ab\"),\n"
+        "  abr_string(\"cd\"),\n"
+        "  NULL)");
+    }
   }
 
   describe "abr_n_rex(name, s)"

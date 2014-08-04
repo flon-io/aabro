@@ -1176,7 +1176,7 @@ abr_parser *abr_error(const char *format, ...)
   return p;
 }
 
-abr_parser *abr_decompose_rex_group(const char *s)
+abr_parser *abr_decompose_rex_sequence(const char *s)
 {
   size_t sl = strlen(s);
 
@@ -1267,5 +1267,41 @@ abr_parser *abr_decompose_rex_group(const char *s)
   flu_list_free(children);
 
   return p;
+}
+
+abr_parser *abr_decompose_rex_group(const char *s)
+{
+  flu_list *children = flu_list_malloc();
+
+  for (size_t i = 0, j = 0; ; j++)
+  {
+    char c = s[j];
+    if (c == '\\') continue;
+    if (c == '\0' || c == '|')
+    {
+      char *ss = strndup(s + i, j - i);
+      abr_parser *p = abr_decompose_rex_sequence(ss);
+      free(ss);
+      flu_list_add(children, p);
+      i = ++j;
+      if (c == '\0') break;
+    }
+  }
+
+  abr_parser *r = NULL;
+
+  if (children->size > 1)
+  {
+    r = abr_parser_malloc(abr_pt_alt, NULL);
+    r->children = (abr_parser **)flu_list_to_array(children, 1);
+  }
+  else
+  {
+    r = (abr_parser *)children->first->item;
+  }
+
+  flu_list_free(children);
+
+  return r;
 }
 
