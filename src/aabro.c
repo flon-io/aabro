@@ -1175,7 +1175,7 @@ static abr_parser *abr_error(const char *format, ...)
   return p;
 }
 
-static abr_parser *abr_decompose_rex_sequence(const char *s)
+static abr_parser *abr_decompose_rex_sequence(const char *s, ssize_t n)
 {
   size_t sl = strlen(s);
 
@@ -1187,7 +1187,7 @@ static abr_parser *abr_decompose_rex_sequence(const char *s)
 
   for (size_t si = 0; ; ++si)
   {
-    char c = s[si];
+    char c = (si == n) ? '\0' : s[si];
 
     if (c == '\0') { break; }
 
@@ -1304,9 +1304,7 @@ static abr_parser *abr_decompose_rex_group(const char *s, ssize_t n)
 
     if (c == '\0' || c == '|')
     {
-      char *ss = strndup(s + i, j - i);
-      abr_parser *p = abr_decompose_rex_sequence(ss);
-      free(ss);
+      abr_parser *p = abr_decompose_rex_sequence(s + i, j - i);
       flu_list_add(children, p);
       i = j + 1;
       if (c == '\0') break;
