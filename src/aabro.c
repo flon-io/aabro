@@ -373,7 +373,7 @@ abr_parser *abr_n_range(const char *name, const char *range)
   return r;
 }
 
-static abr_parser *abr_decompose_rex_group(const char *s);
+static abr_parser *abr_decompose_rex_group(const char *s, ssize_t n);
   // defined below
 
 abr_parser *abr_rex(const char *s)
@@ -386,7 +386,7 @@ abr_parser *abr_n_rex(const char *name, const char *s)
   abr_parser *p = abr_parser_malloc(abr_pt_rex, name);
   p->string = strdup(s);
   p->children = calloc(2, sizeof(abr_parser *));
-  p->children[0] = abr_decompose_rex_group(s);
+  p->children[0] = abr_decompose_rex_group(s, -1);
   return p;
 }
 
@@ -1200,8 +1200,6 @@ static abr_parser *abr_decompose_rex_sequence(const char *s)
         break;
       }
 
-      //ssize_t l = (p->type == abr_pt_string) ? strlen(p->string) : -1;
-
       abr_parser *r = abr_parser_malloc(abr_pt_rep, NULL);
       abr_parse_rex_quant(s + si, r);
       r->children = calloc(2, sizeof(abr_parser *));
@@ -1251,9 +1249,7 @@ static abr_parser *abr_decompose_rex_sequence(const char *s)
         flu_list_unshift(children, p);
         break;
       }
-      char *gs = strndup(s + si + 1, ei - 1);
-      abr_parser *g = abr_decompose_rex_group(gs);
-      free(gs);
+      abr_parser *g = abr_decompose_rex_group(s + si + 1, ei - 1);
       flu_list_unshift(children, g);
       p = NULL;
       si = si + ei;
@@ -1291,13 +1287,13 @@ static abr_parser *abr_decompose_rex_sequence(const char *s)
   return p;
 }
 
-static abr_parser *abr_decompose_rex_group(const char *s)
+static abr_parser *abr_decompose_rex_group(const char *s, ssize_t n)
 {
   flu_list *children = flu_list_malloc();
 
   for (size_t i = 0, j = 0, stack = 0; ; j++)
   {
-    char c = s[j];
+    char c = (j == n) ? '\0' : s[j];
 
     if (c == '\\') continue;
 
