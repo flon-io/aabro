@@ -314,7 +314,7 @@ context "abr_rex"
         "  NULL)");
     }
 
-    it "accepts \"ab(cd)ef\""
+    it "accepts \"ab(cd)ef\" (regroups sequences)"
     {
       p = abr_rex("ab(cd)ef");
 
@@ -336,6 +336,19 @@ context "abr_rex"
         "  abr_rep(\n"
         "    abr_string(\"cd\"), 0, 1),\n"
         "  abr_string(\"ef\"),\n"
+        "  NULL)");
+    }
+
+    it "accepts \"ab|(cd|ef)|gh\" (regroups alternatives)"
+    {
+      p = abr_rex("ab|(cd|ef)|gh");
+
+      ensure(abr_parser_to_string(p->children[0]) ===f ""
+        "abr_alt(\n"
+        "  abr_string(\"ab\"),\n"
+        "  abr_string(\"cd\"),\n"
+        "  abr_string(\"ef\"),\n"
+        "  abr_string(\"gh\"),\n"
         "  NULL)");
     }
 

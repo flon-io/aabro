@@ -1194,6 +1194,32 @@ static abr_parser *abr_error(const char *format, ...)
   return p;
 }
 
+static abr_parser *abr_regroup_rex(abr_p_type t, flu_list *children)
+{
+  abr_parser *p = abr_parser_malloc(t, NULL);
+
+  flu_list *l = flu_list_malloc();
+
+  for (flu_node *n = children->first; n != NULL; n = n->next)
+  {
+    abr_parser *pp = (abr_parser *)n->item;
+
+    if (pp->type != t) { flu_list_unshift(l, pp); continue; }
+
+    size_t s = 0; while (pp->children[s] != NULL) ++s;
+    for (size_t i = s; i > 0; --i) flu_list_unshift(l, pp->children[i - 1]);
+    free(pp->children);
+    pp->children = NULL;
+    abr_parser_free(pp);
+  }
+
+  p->children = (abr_parser **)flu_list_to_array(l, FLU_EXTRA_NULL);
+
+  flu_list_free(l);
+
+  return p;
+}
+
 static abr_parser *abr_decompose_rex_sequence(const char *s, ssize_t n)
 {
 //printf("adrs(\"%s\", %i) \"%s\"\n", s, n, strndup(s, n));
@@ -1293,40 +1319,11 @@ static abr_parser *abr_decompose_rex_sequence(const char *s, ssize_t n)
   }
 
   if (children->size > 1)
-  {
-    p = abr_parser_malloc(abr_pt_seq, NULL);
-
-    flu_list *cs = flu_list_malloc();
-
-    for (flu_node *n = children->first; n != NULL; n = n->next)
-    {
-      abr_parser *pp = (abr_parser *)n->item;
-
-      if (pp->type != abr_pt_seq)
-      {
-        flu_list_unshift(cs, pp);
-        continue;
-      }
-
-      size_t l = 0; while (pp->children[l] != NULL) ++l;
-      for (size_t i = l; i > 0; --i) flu_list_unshift(cs, pp->children[i - 1]);
-      free(pp->children);
-      pp->children = NULL;
-      abr_parser_free(pp);
-    }
-
-    p->children = (abr_parser **)flu_list_to_array(cs, FLU_EXTRA_NULL);
-
-    flu_list_free(cs);
-  }
-  else //if (children->size == 1)
-  {
+    p = abr_regroup_rex(abr_pt_seq, children);
+  else /*if (children->size == 1)*/
     p = (abr_parser *)children->first->item;
-  }
   //else
-  //{
-  //  p = NULL;
-  //}
+    //p = NULL;
 
   flu_list_free(children);
 
