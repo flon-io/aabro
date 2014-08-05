@@ -1354,26 +1354,23 @@ static abr_parser *abr_decompose_rex_group(const char *s, ssize_t n)
     if (c == '\0' || c == '|')
     {
       abr_parser *p = abr_decompose_rex_sequence(s + i, j - i);
-      flu_list_add(children, p);
+      flu_list_unshift(children, p);
       i = j + 1;
       if (c == '\0') break;
     }
   }
 
-  abr_parser *r = NULL;
+  abr_parser *p = NULL;
 
   if (children->size > 1)
-  {
-    r = abr_parser_malloc(abr_pt_alt, NULL);
-    r->children = (abr_parser **)flu_list_to_array(children, FLU_EXTRA_NULL);
-  }
-  else
-  {
-    r = (abr_parser *)children->first->item;
-  }
+    p = abr_regroup_rex(abr_pt_alt, children);
+  else /*if (children->size == 1)*/
+    p = (abr_parser *)children->first->item;
+  //else
+    //p = NULL;
 
   flu_list_free(children);
 
-  return r;
+  return p;
 }
 
