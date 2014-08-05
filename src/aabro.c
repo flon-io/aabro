@@ -1294,10 +1294,29 @@ static abr_parser *abr_decompose_rex_sequence(const char *s, ssize_t n)
 
   if (children->size > 1)
   {
-    p =
-      abr_parser_malloc(abr_pt_seq, NULL);
-    p->children =
-      (abr_parser **)flu_list_to_array(children, FLU_REVERSE | FLU_EXTRA_NULL);
+    p = abr_parser_malloc(abr_pt_seq, NULL);
+
+    flu_list *cs = flu_list_malloc();
+
+    for (flu_node *n = children->first; n != NULL; n = n->next)
+    {
+      abr_parser *pp = (abr_parser *)n->item;
+
+      if (pp->type != abr_pt_seq)
+      {
+        flu_list_unshift(cs, pp);
+        continue;
+      }
+
+      size_t l = 0; while (pp->children[l] != NULL) ++l;
+      for (size_t i = l; i > 0; --i) flu_list_unshift(cs, pp->children[i - 1]);
+      pp->children = NULL;
+      abr_parser_free(pp);
+    }
+
+    p->children = (abr_parser **)flu_list_to_array(cs, FLU_EXTRA_NULL);
+
+    flu_list_free(cs);
   }
   else //if (children->size == 1)
   {

@@ -343,16 +343,12 @@ context "abr_rex"
     {
       p = abr_rex("ab|(cd[a-z\\(])ef");
 
-      // TODO: make seqs regroup automatically
-
       ensure(abr_parser_to_string(p->children[0]) ===f ""
         "abr_alt(\n"
         "  abr_string(\"ab\"),\n"
         "  abr_seq(\n"
-        "    abr_seq(\n"
-        "      abr_string(\"cd\"),\n"
-        "      abr_range(\"a-z\\(\"),\n"
-        "      NULL),\n"
+        "    abr_string(\"cd\"),\n"
+        "    abr_range(\"a-z\\(\"),\n"
         "    abr_string(\"ef\"),\n"
         "    NULL),\n"
         "  NULL)");
