@@ -1318,10 +1318,7 @@ static abr_parser *abr_decompose_rex_group(const char *s, ssize_t n)
 //printf("adrG(\"%s\", %i) \"%s\"\n", s, n, strndup(s, n));
   flu_list *children = flu_list_malloc();
 
-  size_t stack = 0;
-  short range = 0;
-
-  for (size_t i = 0, j = 0; ; j++)
+  for (size_t i = 0, j = 0, stack = 0, range = 0; ; j++)
   {
     char c = (j == n) ? '\0' : s[j];
 
