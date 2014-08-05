@@ -254,6 +254,30 @@ context "abr_rex"
         "  abr_range(\"a-z\"), 1, -1)");
     }
 
+    it "accepts \"[)(]\""
+    {
+      p = abr_rex("[)(]");
+
+      ensure(abr_parser_to_string(p->children[0]) ===f ""
+        "abr_range(\")(\")");
+    }
+
+    it "accepts \"([)(])\""
+    {
+      p = abr_rex("([)(])");
+
+      ensure(abr_parser_to_string(p->children[0]) ===f ""
+        "abr_range(\")(\")");
+    }
+
+    it "accepts \"(ab)\""
+    {
+      p = abr_rex("(ab)");
+
+      ensure(abr_parser_to_string(p->children[0]) ===f ""
+        "abr_string(\"ab\")");
+    }
+
     it "accepts \"ab[c-d]ef\""
     {
       p = abr_rex("ab[c-d]ef");
@@ -312,6 +336,25 @@ context "abr_rex"
         "  abr_rep(\n"
         "    abr_string(\"cd\"), 0, 1),\n"
         "  abr_string(\"ef\"),\n"
+        "  NULL)");
+    }
+
+    it "accepts \"ab|(cd[a-z\\(])ef\""
+    {
+      p = abr_rex("ab|(cd[a-z\\(])ef");
+
+      // TODO: make seqs regroup automatically
+
+      ensure(abr_parser_to_string(p->children[0]) ===f ""
+        "abr_alt(\n"
+        "  abr_string(\"ab\"),\n"
+        "  abr_seq(\n"
+        "    abr_seq(\n"
+        "      abr_string(\"cd\"),\n"
+        "      abr_range(\"a-z\\(\"),\n"
+        "      NULL),\n"
+        "    abr_string(\"ef\"),\n"
+        "    NULL),\n"
         "  NULL)");
     }
   }

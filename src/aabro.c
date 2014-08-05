@@ -1116,18 +1116,37 @@ abr_tree *abr_t_child(abr_tree *t, size_t index)
 //
 // abr_rex
 
-static ssize_t abr_find(const char *s, char c)
+static ssize_t abr_find_range_end(const char *s)
 {
-  char b = (c == ')') ? '(' : '[';
-  size_t stacked = 0;
-  for (size_t i = 0; ;)
+  for (size_t i = 0; ; ++i)
   {
-    char cc = s[i++];
-    if (cc == '\0') { break; }
-    if (cc == c && stacked-- == 0) { return i; }
-    if (cc == '\\' && s[i] != '\0') { ++i; continue; }
-    if (cc == b) ++stacked;
+    char c = s[i];
+
+    if (c == '\0') break;
+    if (c == '\\') continue;
+    if (c == ']') return i;
   }
+
+  return -1;
+}
+
+static ssize_t abr_find_group_end(const char *s)
+{
+  for (size_t i = 0, stack = 0, range = 0; ; ++i)
+  {
+    char c = s[i];
+
+    if (c == '\0') break;
+    if (c == '\\') continue;
+
+    if (c == '[') { range = 1; continue; };
+    if (c == ']') { range = 0; continue; };
+    if (range) continue;
+
+    if (stack == 0 && c == ')') return i;
+    if (c == '(') ++stack;
+  }
+
   return -1;
 }
 
@@ -1144,7 +1163,7 @@ static size_t abr_parse_rex_quant(const char *s, abr_parser *p)
   char *s0 = strdup(s + 1);
   char *s1 = NULL;
 
-  ssize_t j = abr_find(s0, '}');
+  ssize_t j = flu_index(s0, 0, '}');
   s0[j] = '\0';
   char *comma = strchr(s0, ',');
 
@@ -1177,6 +1196,7 @@ static abr_parser *abr_error(const char *format, ...)
 
 static abr_parser *abr_decompose_rex_sequence(const char *s, ssize_t n)
 {
+//printf("adrs(\"%s\", %i) \"%s\"\n", s, n, strndup(s, n));
   size_t sl = strlen(s);
 
   flu_list *children = flu_list_malloc();
@@ -1225,7 +1245,7 @@ static abr_parser *abr_decompose_rex_sequence(const char *s, ssize_t n)
 
     if (c == '[')
     {
-      ssize_t ei = abr_find(s + si + 1, ']');
+      ssize_t ei = abr_find_range_end(s + si + 1);
       if (ei == -1)
       {
         p = abr_error("range not closed >%s<", s + si);
@@ -1233,26 +1253,29 @@ static abr_parser *abr_decompose_rex_sequence(const char *s, ssize_t n)
         break;
       }
       abr_parser *r = abr_parser_malloc(abr_pt_range, NULL);
-      r->string = strndup(s + si + 1, ei - 1);
+      r->string = strndup(s + si + 1, ei);
       flu_list_unshift(children, r);
       p = NULL;
-      si = si + ei;
+      si = si + ei + 1;
+//printf("post range >%s<\n", s + si + 1);
       continue;
     }
 
     if (c == '(')
     {
-      ssize_t ei = abr_find(s + si + 1, ')');
+      ssize_t ei = abr_find_group_end(s + si + 1);
+//printf("group end for >%s< is at %i\n", s + si + 1, ei);
       if (ei == -1)
       {
         p = abr_error("group not closed >%s<", s + si);
         flu_list_unshift(children, p);
         break;
       }
-      abr_parser *g = abr_decompose_rex_group(s + si + 1, ei - 1);
+      abr_parser *g = abr_decompose_rex_group(s + si + 1, ei);
       flu_list_unshift(children, g);
       p = NULL;
-      si = si + ei;
+      si = si + ei + 1;
+//printf("post group >%s<\n", s + si + 1);
       continue;
     }
 
@@ -1276,11 +1299,14 @@ static abr_parser *abr_decompose_rex_sequence(const char *s, ssize_t n)
     p->children =
       (abr_parser **)flu_list_to_array(children, FLU_REVERSE | FLU_EXTRA_NULL);
   }
-  else
+  else //if (children->size == 1)
   {
-    p =
-      (abr_parser *)children->first->item;
+    p = (abr_parser *)children->first->item;
   }
+  //else
+  //{
+  //  p = NULL;
+  //}
 
   flu_list_free(children);
 
@@ -1289,16 +1315,25 @@ static abr_parser *abr_decompose_rex_sequence(const char *s, ssize_t n)
 
 static abr_parser *abr_decompose_rex_group(const char *s, ssize_t n)
 {
+//printf("adrG(\"%s\", %i) \"%s\"\n", s, n, strndup(s, n));
   flu_list *children = flu_list_malloc();
 
-  for (size_t i = 0, j = 0, stack = 0; ; j++)
+  size_t stack = 0;
+  short range = 0;
+
+  for (size_t i = 0, j = 0; ; j++)
   {
     char c = (j == n) ? '\0' : s[j];
 
     if (c == '\\') continue;
 
-    if (c == '(' || c == '[') { ++stack; continue; }
-    if (c == ')' || c == ']') { --stack; continue; }
+    if (range && c != ']') continue;
+    if (range && c == ']') { range = 0; continue; }
+    //
+    if (c == '[') { range = 1; continue; }
+
+    if (c == '(') { ++stack; continue; }
+    if (c == ')') { --stack; continue; }
 
     if (c == '|' && stack > 0) continue;
 
