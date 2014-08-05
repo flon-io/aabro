@@ -75,9 +75,9 @@ char *flu_strtrim(const char *s)
   return r;
 }
 
-ssize_t flu_index(const char *s, char c)
+ssize_t flu_index(const char *s, size_t off, char c)
 {
-  for (size_t i = 0; ; ++i)
+  for (size_t i = off; ; ++i)
   {
     char cc = s[i];
     if (cc == '\0') break;
@@ -86,9 +86,10 @@ ssize_t flu_index(const char *s, char c)
   return -1;
 }
 
-ssize_t flu_rindex(const char *s, char c)
+ssize_t flu_rindex(const char *s, ssize_t off, char c)
 {
-  for (size_t i = strlen(s) - 1; ; --i)
+  off = (off == -1) ? strlen(s) - 1 : off;
+  for (size_t i = off; ; --i)
   {
     if (s[i] == c) return i;
     if (i < 1) break;

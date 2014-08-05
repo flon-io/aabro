@@ -50,12 +50,15 @@ char *flu_strrtrim(const char *s);
 char *flu_strtrim(const char *s);
 
 /* Returns the index of the first occurence of char c in string s.
+ * Starts searching at s + off.
  */
-ssize_t flu_index(const char *s, char c);
+ssize_t flu_index(const char *s, size_t off, char c);
 
 /* Returns the index of the last occurence of char c in string s.
+ * Starts searching at s + off.
+ * Setting off to -1, is equivalent to setting it to strlen(s) - 1.
  */
-ssize_t flu_rindex(const char *s, char c);
+ssize_t flu_rindex(const char *s, ssize_t off, char c);
 
 
 //
