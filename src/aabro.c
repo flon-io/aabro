@@ -1310,6 +1310,7 @@ static abr_parser *abr_decompose_rex_sequence(const char *s, ssize_t n)
 
       size_t l = 0; while (pp->children[l] != NULL) ++l;
       for (size_t i = l; i > 0; --i) flu_list_unshift(cs, pp->children[i - 1]);
+      free(pp->children);
       pp->children = NULL;
       abr_parser_free(pp);
     }
