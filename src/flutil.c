@@ -75,6 +75,27 @@ char *flu_strtrim(const char *s)
   return r;
 }
 
+ssize_t flu_index(const char *s, char c)
+{
+  for (size_t i = 0; ; ++i)
+  {
+    char cc = s[i];
+    if (cc == '\0') break;
+    if (cc == c) return i;
+  }
+  return -1;
+}
+
+ssize_t flu_rindex(const char *s, char c)
+{
+  for (size_t i = strlen(s) - 1; ; --i)
+  {
+    if (s[i] == c) return i;
+    if (i < 1) break;
+  }
+  return -1;
+}
+
 //
 // sbuffer
 

@@ -49,6 +49,14 @@ char *flu_strrtrim(const char *s);
  */
 char *flu_strtrim(const char *s);
 
+/* Returns the index of the first occurence of char c in string s.
+ */
+ssize_t flu_index(const char *s, char c);
+
+/* Returns the index of the last occurence of char c in string s.
+ */
+ssize_t flu_rindex(const char *s, char c);
+
 
 //
 // sbuffer
@@ -189,10 +197,10 @@ void *flu_list_at(const flu_list *l, size_t n);
 //size_t flu_list_indexof(const flu_list *l, void *item);
 //int flu_list_contains(const flu_list *l, void *item);
 
-enum
+enum // flags for flu_list_to_array()
 {
-  FLU_REVERSE = 1 << 0,
-  FLU_EXTRA_NULL = 1 << 1
+  FLU_REVERSE     = 1 << 0, // reverse the order of the returned elements
+  FLU_EXTRA_NULL  = 1 << 1  // add a final NULL element
 };
 
 /* Returns an array of void pointers, pointers to the items in the flu_list.
