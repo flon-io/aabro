@@ -238,7 +238,7 @@ static abr_parser *abr_parser_malloc(abr_p_type type, const char *name)
   p->name = (name == NULL) ? NULL : strdup(name);
   p->type = type;
   p->string = NULL;
-  p->string_length = 0;
+  p->string_length = -1;
   p->regex = NULL;
   p->min = -1; p->max = -1;
   p->children = NULL;
@@ -330,7 +330,6 @@ abr_parser *abr_n_string(const char *name, const char *s)
 {
   abr_parser *p = abr_parser_malloc(abr_pt_string, name);
   p->string = strdup(s);
-  p->string_length = strlen(s);
   return p;
 }
 
@@ -680,16 +679,12 @@ abr_tree *abr_p_string(
   abr_parser *p,
   const abr_conf co)
 {
-  char *s = p->string;
-  size_t le = p->string_length;
+  if (p->string_length == -1) p->string_length = strlen(p->string);
 
   int su = 1;
+  size_t le = p->string_length;
 
-  if (strncmp(input + offset, s, le) != 0) { su = 0; le = 0; }
-
-  //free(s);
-    // no, it's probably a string literal...
-    // let the caller free it if necessary
+  if (strncmp(input + offset, p->string, le) != 0) { su = 0; le = 0; }
 
   return abr_tree_malloc(su, offset, le, NULL, p, NULL);
 }
@@ -861,12 +856,14 @@ abr_tree *abr_p_range(
   short not = (range[0] == '^'); if (not) ++range;
   short success = 0;
 
+  char c = (input + offset)[0];
+
   char *next = calloc(3, sizeof(char));
-  while(1)
+  while (1)
   {
     abr_range_next(range, next);
     if (next[0] == 0) break;
-    if (input[0] >= next[1] && input[0] <= next[2]) { success = 1; break; }
+    if (c >= next[1] && c <= next[2]) { success = 1; break; }
     range = range + next[0];
   }
   free(next);
@@ -881,7 +878,16 @@ abr_tree *abr_p_rex(
   abr_parser *p,
   const abr_conf co)
 {
-  return NULL;
+  abr_tree *t = abr_do_parse(input, offset, depth + 1, p->children[0], co);
+
+  abr_tree *r = abr_tree_malloc(t->result, offset, t->length, NULL, p, NULL);
+
+  if (co.prune == 1 && t->result == 1)
+    abr_tree_free(t);
+  else
+    r->child = t;
+
+  return r;
 }
 
 abr_tree *abr_p_error(
@@ -1341,7 +1347,7 @@ static abr_parser *abr_decompose_rex_group(const char *s, ssize_t n)
 
     if (c == '\\') continue;
 
-    if (range && c != ']') continue;
+    if (range && c != ']' && c != '\0') continue;
     if (range && c == ']') { range = 0; continue; }
     //
     if (c == '[') { range = 1; continue; }

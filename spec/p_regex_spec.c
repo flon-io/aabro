@@ -33,7 +33,7 @@ context "regular expressions"
       ensure(p->name == NULL);
       ensure(p->regex != NULL);
       ensure(p->string === "a+");
-      ensure(p->string_length == 0);
+      ensure(p->string_length == -1);
     }
   }
   describe "abr_n_regex(name, s)"
@@ -46,7 +46,7 @@ context "regular expressions"
       ensure(p->name === "aaa...");
       ensure(p->regex != NULL);
       ensure(p->string === "a+");
-      ensure(p->string_length == 0);
+      ensure(p->string_length == -1);
     }
   }
 
@@ -63,7 +63,7 @@ context "regular expressions"
       ensure(p->name == NULL);
       ensure(p->regex == r);
       ensure(p->string == NULL);
-      ensure(p->string_length == 0);
+      ensure(p->string_length == -1);
     }
   }
 
@@ -80,7 +80,7 @@ context "regular expressions"
       ensure(p->name === "aaas");
       ensure(p->regex == r);
       ensure(p->string == NULL);
-      ensure(p->string_length == 0);
+      ensure(p->string_length == -1);
     }
   }
 

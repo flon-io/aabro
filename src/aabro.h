@@ -33,11 +33,13 @@
 //
 // abr_parser
 
+// TODO: use min and drop string_length
+
 typedef struct abr_parser {
   char *name;
   short type;
   char *string;
-  size_t string_length;
+  ssize_t string_length;
   regex_t *regex;
   ssize_t min; ssize_t max;
   struct abr_parser **children;

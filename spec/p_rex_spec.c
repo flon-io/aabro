@@ -178,10 +178,12 @@ context "abr_rex"
 {
   before each
   {
+    abr_tree *t = NULL;
     abr_parser *p = NULL;
   }
   after each
   {
+    if (t != NULL) abr_tree_free(t);
     if (p != NULL) abr_parser_free(p);
   }
 
@@ -401,6 +403,43 @@ context "abr_rex"
 
       ensure(abr_parser_to_string(p->children[0]) ===f ""
         "abr_error(\"range not closed >[a-z<\")");
+    }
+  }
+
+  context "parsing"
+  {
+    it "groups successful results"
+    {
+      p = abr_rex("ab[c-d]ef");
+
+      char *in = "abdef";
+
+      t = abr_parse(in, 0, p);
+      char *s = abr_tree_to_string_with_leaves(in, t);
+
+      ensure(s ===f ""
+        "[ null, 1, 0, 5, null, \"rex\", \"abdef\" ]");
+    }
+
+    it "doesn't group when prune == 0"
+    {
+      p = abr_rex("ab[c-d]ef");
+
+      abr_conf c = { .prune = 0, .all = 1 };
+
+      char *in = "abdef";
+
+      t = abr_parse_c(in, 0, p, c);
+      char *s = abr_tree_to_string_with_leaves(in, t);
+
+      ensure(s ===f ""
+        "[ null, 1, 0, 5, null, \"rex\", [\n"
+        "  [ null, 1, 0, 5, null, \"seq\", [\n"
+        "    [ null, 1, 0, 2, null, \"string\", \"ab\" ],\n"
+        "    [ null, 1, 2, 1, null, \"range\", \"d\" ],\n"
+        "    [ null, 1, 3, 2, null, \"string\", \"ef\" ]\n"
+        "  ] ]\n"
+        "] ]");
     }
   }
 }
