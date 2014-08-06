@@ -124,11 +124,10 @@ context "sequence"
         "[ null, 0, 0, 0, null, \"seq\", [] ]");
     }
 
-    it "reports the failed tries if conf.prune == 0"
+    it "reports the failed tries if not ABR_F_PRUNE"
     {
-      abr_conf co = { .all = 1, .prune = 0 };
       p = abr_seq(abr_string("x"), abr_string("y"), NULL);
-      t = abr_parse_c("xz", 0, p, co);
+      t = abr_parse_f("xz", 0, p, ABR_F_ALL);
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""

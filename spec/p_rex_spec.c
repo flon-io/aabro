@@ -425,11 +425,9 @@ context "abr_rex"
     {
       p = abr_rex("ab[c-d]ef");
 
-      abr_conf c = { .prune = 0, .all = 1 };
-
       char *in = "abdef";
 
-      t = abr_parse_c(in, 0, p, c);
+      t = abr_parse_f(in, 0, p, ABR_F_ALL);
       char *s = abr_tree_to_string_with_leaves(in, t);
 
       ensure(s ===f ""

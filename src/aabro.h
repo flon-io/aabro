@@ -147,15 +147,16 @@ abr_tree *abr_parse_all(
 abr_tree *abr_parse(
   const char *input, size_t offset, abr_parser *p);
 
-typedef struct abr_conf {
-  short prune;  // 1 = prune failed trees, defaults to 1
-  short all;    // 1 = parse all, defaults to 0
-} abr_conf;
+enum // flags for abr_parse_f
+{
+  ABR_F_PRUNE  = 1 << 0, // don't prune failed trees, defaults to true
+  ABR_F_ALL    = 1 << 1 // parse all, defaults to false
+};
 
 /* Parses with a given input, offset and a configuration struct.
  */
-abr_tree *abr_parse_c(
-  const char *input, size_t offset, abr_parser *p, const abr_conf c);
+abr_tree *abr_parse_f(
+  const char *input, size_t offset, abr_parser *p, int flags);
 
 //
 // helper functions

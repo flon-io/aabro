@@ -106,13 +106,12 @@ context "parser"
     }
   }
 
-  describe "abr_parse_c(input, offset, parser, conf)"
+  describe "abr_parse_c(input, offset, parser, flags)"
   {
-    it "lets parsing proceed with conf.prune = 0"
+    it "lets parsing proceed if not ABR_F_PRUNE"
     {
-      abr_conf c = { .all = 1, .prune = 0 };
       p = abr_rep(abr_string("x"), 1, 4);
-      t = abr_parse_c("x", 0, p, c);
+      t = abr_parse_f("x", 0, p, ABR_F_ALL);
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
