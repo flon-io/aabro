@@ -311,7 +311,7 @@ abr_parser *abr_wrap_children(abr_parser *p, abr_parser *child0, va_list ap)
     flu_list_add(l, child);
   }
 
-  p->children = (abr_parser **)flu_list_to_array(l, FLU_EXTRA_NULL);
+  p->children = (abr_parser **)flu_list_to_array(l, FLU_F_EXTRA_NULL);
 
   flu_list_free(l);
 
@@ -1083,7 +1083,7 @@ abr_tree **abr_tree_collect(abr_tree *t, abr_tree_func *f)
 {
   flu_list *l = abr_tree_list(t, f);
 
-  abr_tree **ts = (abr_tree **)flu_list_to_array(l, FLU_EXTRA_NULL);
+  abr_tree **ts = (abr_tree **)flu_list_to_array(l, FLU_F_EXTRA_NULL);
   flu_list_free(l);
 
   return ts;
@@ -1214,7 +1214,7 @@ static abr_parser *abr_regroup_rex(abr_p_type t, flu_list *children)
     abr_parser_free(pp);
   }
 
-  p->children = (abr_parser **)flu_list_to_array(l, FLU_EXTRA_NULL);
+  p->children = (abr_parser **)flu_list_to_array(l, FLU_F_EXTRA_NULL);
 
   flu_list_free(l);
 

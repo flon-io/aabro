@@ -202,8 +202,8 @@ void *flu_list_at(const flu_list *l, size_t n);
 
 enum // flags for flu_list_to_array()
 {
-  FLU_REVERSE     = 1 << 0, // reverse the order of the returned elements
-  FLU_EXTRA_NULL  = 1 << 1  // add a final NULL element
+  FLU_F_REVERSE     = 1 << 0, // reverse the order of the returned elements
+  FLU_F_EXTRA_NULL  = 1 << 1  // add a final NULL element
 };
 
 /* Returns an array of void pointers, pointers to the items in the flu_list.
