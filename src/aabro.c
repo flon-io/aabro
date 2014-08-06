@@ -238,7 +238,6 @@ static abr_parser *abr_parser_malloc(abr_p_type type, const char *name)
   p->name = (name == NULL) ? NULL : strdup(name);
   p->type = type;
   p->string = NULL;
-  p->string_length = -1;
   p->regex = NULL;
   p->min = -1; p->max = -1;
   p->children = NULL;
@@ -679,10 +678,10 @@ abr_tree *abr_p_string(
   abr_parser *p,
   const abr_conf co)
 {
-  if (p->string_length == -1) p->string_length = strlen(p->string);
+  if (p->min == -1) p->min = strlen(p->string);
 
   int su = 1;
-  size_t le = p->string_length;
+  size_t le = p->min;
 
   if (strncmp(input + offset, p->string, le) != 0) { su = 0; le = 0; }
 
