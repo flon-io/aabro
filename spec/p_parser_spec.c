@@ -73,7 +73,7 @@ context "parser"
       ensure(t->result == -1);
       ensure(t->note === NULL);
 
-      // TODO: look up error
+      ensure(abr_error_message(t) === "too much recursion, parser loop?");
     }
   }
 

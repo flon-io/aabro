@@ -33,8 +33,6 @@
 //
 // abr_parser
 
-// TODO: use min and drop string_length
-
 typedef struct abr_parser {
   char *name;
   short type;
