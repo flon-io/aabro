@@ -170,6 +170,25 @@ context "abr_range"
 
         ensure(t->result == 0);
       }
+
+      it "accepts \"+-\""
+      {
+        p = abr_range("+-");
+
+        t = abr_parse("+", 0, p);
+
+        ensure(t->result == 1);
+
+        abr_tree_free(t);
+        t = abr_parse("-", 0, p);
+
+        ensure(t->result == 1);
+
+        abr_tree_free(t);
+        t = abr_parse("*", 0, p);
+
+        ensure(t->result == 0);
+      }
     }
   }
 }
@@ -444,7 +463,8 @@ context "abr_rex"
     {
       //p = abr_regex("^-?[0-9]+(\\.[0-9]+)?([eE][+-]?[0-9]+)?");
       //p = abr_rex("-?[0-9]+(\\.[0-9]+)?([eE][+-]?[0-9]+)?");
-      p = abr_rex("-?[0-9]+(.[0-9]+)?([eE][+\\-]?[0-9]+)?");
+      //p = abr_rex("-?[0-9]+(.[0-9]+)?([eE][+\\-]?[0-9]+)?");
+      p = abr_rex("-?[0-9]+(.[0-9]+)?([eE][+-]?[0-9]+)?");
 
       char *in = NULL;
 

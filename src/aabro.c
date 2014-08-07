@@ -838,7 +838,8 @@ void abr_range_next(char *range, char *next)
   if (a == '\0') { next[0] = 0; next[1] = 0; next[2] = 0; return; }
 
   char b = range[b_index];
-  if (b != '-') { next[0] = 1; next[1] = a; next[2] = a; return; }
+  char c = range[b_index + 1];
+  if (b != '-' || c == '\0') { next[0] = 1; next[1] = a; next[2] = a; return; }
   b = range[++b_index];
   if (b == '\\') b = range[++b_index];
 
