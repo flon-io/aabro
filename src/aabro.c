@@ -853,6 +853,9 @@ abr_tree *abr_p_range(
   int flags)
 {
   char c = (input + offset)[0];
+
+  if (c == '\0') return abr_tree_malloc(0, offset, 0, NULL, p, NULL);
+
   char *range = p->string;
   short success = 0;
 
@@ -1310,6 +1313,15 @@ static abr_parser *abr_decompose_rex_sequence(const char *s, ssize_t n)
       p = NULL;
       si = si + ei + 1;
 //printf("post group >%s<\n", s + si + 1);
+      continue;
+    }
+
+    if (c == '.') // others may come later
+    {
+      abr_parser *r = abr_parser_malloc(abr_pt_range, NULL);
+      r->string = strdup(".");
+      flu_list_unshift(children, r);
+      p = NULL;
       continue;
     }
 

@@ -202,6 +202,11 @@ context "abr_range"
         t = abr_parse("\n", 0, p);
 
         ensure(t->result == 0);
+
+        abr_tree_free(t);
+        t = abr_parse("\0", 0, p);
+
+        ensure(t->result == 0);
       }
     }
   }
@@ -413,6 +418,19 @@ context "abr_rex"
         "  abr_string(\"b\"),\n"
         "  NULL)");
     }
+
+    it "accepts \"a.?b\""
+    {
+      p = abr_rex("a.?b");
+
+      ensure(abr_parser_to_string(p->children[0]) ===f ""
+        "abr_seq(\n"
+        "  abr_string(\"a\"),\n"
+        "  abr_rep(\n"
+        "    abr_range(\".\"), 0, 1),\n"
+        "  abr_string(\"b\"),\n"
+        "  NULL)");
+    }
   }
 
   describe "abr_n_rex(name, s)"
@@ -490,7 +508,7 @@ context "abr_rex"
       //p = abr_regex("^-?[0-9]+(\\.[0-9]+)?([eE][+-]?[0-9]+)?");
       //p = abr_rex("-?[0-9]+(\\.[0-9]+)?([eE][+-]?[0-9]+)?");
       //p = abr_rex("-?[0-9]+(.[0-9]+)?([eE][+\\-]?[0-9]+)?");
-      p = abr_rex("-?[0-9]+(.[0-9]+)?([eE][+-]?[0-9]+)?");
+      p = abr_rex("-?[0-9]+(\\.[0-9]+)?([eE][+-]?[0-9]+)?");
 
       char *in = NULL;
 
@@ -542,6 +560,27 @@ context "abr_rex"
       //puts(abr_tree_to_string_with_leaves(in, t));
       ensure(t->result == 1);
       ensure(abr_tree_string(in, t) ===f "-1.1e1234");
+    }
+
+    it "parses dots"
+    {
+      p = abr_rex("a.+");
+
+      char *in = NULL;
+
+      //abr_tree_free(t);
+      in = "archibald";
+      t = abr_parse(in, 0, p);
+      //puts(abr_tree_to_string_with_leaves(in, t));
+      ensure(t->result == 1);
+      ensure(abr_tree_string(in, t) ===f in);
+
+      abr_tree_free(t);
+      in = "archived";
+      t = abr_parse(in, 0, p);
+      //puts(abr_tree_to_string_with_leaves(in, t));
+      ensure(t->result == 1);
+      ensure(abr_tree_string(in, t) ===f in);
     }
   }
 }
