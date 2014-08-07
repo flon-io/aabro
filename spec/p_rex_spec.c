@@ -444,7 +444,7 @@ context "abr_rex"
     {
       //p = abr_regex("^-?[0-9]+(\\.[0-9]+)?([eE][+-]?[0-9]+)?");
       //p = abr_rex("-?[0-9]+(\\.[0-9]+)?([eE][+-]?[0-9]+)?");
-      p = abr_rex("-?[0-9]+(.[0-9]+)?([eE][+-]?[0-9]+)?");
+      p = abr_rex("-?[0-9]+(.[0-9]+)?([eE][+\\-]?[0-9]+)?");
 
       char *in = NULL;
 
@@ -483,13 +483,19 @@ context "abr_rex"
       ensure(t->result == 1);
       ensure(abr_tree_string(in, t) ===f in);
 
-      // argh, parse all ?
+      abr_tree_free(t);
+      in = "-1.1e-1234";
+      t = abr_parse(in, 0, p);
+      //puts(abr_tree_to_string_with_leaves(in, t));
+      ensure(t->result == 1);
+      ensure(abr_tree_string(in, t) ===f in);
 
       abr_tree_free(t);
       in = "-1.1e1234X";
       t = abr_parse(in, 0, p);
-      puts(abr_tree_to_string_with_leaves(in, t));
-      ensure(t->result == 0);
+      //puts(abr_tree_to_string_with_leaves(in, t));
+      ensure(t->result == 1);
+      ensure(abr_tree_string(in, t) ===f "-1.1e1234");
     }
   }
 }
