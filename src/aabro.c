@@ -852,11 +852,17 @@ abr_tree *abr_p_range(
   abr_parser *p,
   int flags)
 {
+  char c = (input + offset)[0];
   char *range = p->string;
-  short not = (range[0] == '^'); if (not) ++range;
   short success = 0;
 
-  char c = (input + offset)[0];
+  if (strcmp(range, ".") == 0)
+  {
+    success = (c != '\n');
+    return abr_tree_malloc(success, offset, success ? 1 : 0, NULL, p, NULL);
+  }
+
+  short not = (range[0] == '^'); if (not) ++range;
 
   char *next = calloc(3, sizeof(char));
   while (1)

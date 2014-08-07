@@ -189,6 +189,20 @@ context "abr_range"
 
         ensure(t->result == 0);
       }
+
+      it "accepts \".\" (a dot on its own, any char except newline)"
+      {
+        p = abr_range(".");
+
+        t = abr_parse("a", 0, p);
+
+        ensure(t->result == 1);
+
+        abr_tree_free(t);
+        t = abr_parse("\n", 0, p);
+
+        ensure(t->result == 0);
+      }
     }
   }
 }
@@ -385,6 +399,18 @@ context "abr_rex"
         "    abr_range(\"a-z\\(\"),\n"
         "    abr_string(\"ef\"),\n"
         "    NULL),\n"
+        "  NULL)");
+    }
+
+    it "accepts \"a.b\""
+    {
+      p = abr_rex("a.b");
+
+      ensure(abr_parser_to_string(p->children[0]) ===f ""
+        "abr_seq(\n"
+        "  abr_string(\"a\"),\n"
+        "  abr_range(\".\"),\n"
+        "  abr_string(\"b\"),\n"
         "  NULL)");
     }
   }
