@@ -63,6 +63,25 @@ context "strings"
     }
   }
 
+  describe "abr_parser_to_s(p)"
+  {
+    it "returns a string representation of the parser struct"
+    {
+      p = abr_string("toto");
+      char *s = abr_parser_to_s(p);
+
+      ensure(s ===f "string t0 \"toto\" c0");
+    }
+
+    it "returns a string representation of the named parser struct"
+    {
+      p = abr_n_string("to", "toto");
+      char *s = abr_parser_to_s(p);
+
+      ensure(s ===f "string t0 'to' \"toto\" c0");
+    }
+  }
+
   context "parsing"
   {
     it "succeeds"

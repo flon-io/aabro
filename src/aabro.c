@@ -647,14 +647,18 @@ char *abr_parser_to_s(abr_parser *p)
   char *name = "";
   if (p->name) name = flu_sprintf("'%s' ", p->name);
 
+  char *string = "";
+  if (p->string) string = flu_sprintf("\"%s\" ", p->string);
+
   char *minmax = "";
   if (p->type == abr_pt_rep) minmax = flu_sprintf(" mn%i mx%i", p->min, p->max);
 
   char *s = flu_sprintf(
-    "%s t%i %sc%i%s",
-    abr_p_names[p->type], p->type, name, ccount, minmax);
+    "%s t%i %s%sc%i%s",
+    abr_p_names[p->type], p->type, name, string, ccount, minmax);
 
   if (*name != '\0') free(name);
+  if (*string != '\0') free(string);
   if (*minmax != '\0') free(minmax);
 
   return s;

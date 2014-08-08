@@ -516,6 +516,25 @@ context "abr_rex"
     }
   }
 
+  describe "abr_parser_to_s(p)"
+  {
+    it "returns a string representation of the parser struct"
+    {
+      p = abr_rex("a[^b]*b");
+      char *s = abr_parser_to_s(p);
+
+      ensure(s ===f "rex t12 \"a[^b]*b\" c1");
+    }
+
+    it "returns a string representation of the named parser struct"
+    {
+      p = abr_n_rex("oedipus", "a[^b]*b");
+      char *s = abr_parser_to_s(p);
+
+      ensure(s ===f "rex t12 'oedipus' \"a[^b]*b\" c1");
+    }
+  }
+
   context "parsing"
   {
     it "groups successful results"
