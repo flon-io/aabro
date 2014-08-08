@@ -852,11 +852,16 @@ abr_tree *abr_p_range(
   abr_parser *p,
   int flags)
 {
+  char *range = p->string;
   char c = (input + offset)[0];
+
+  if (strcmp(range, "$") == 0)
+  {
+    return abr_tree_malloc(c == '\0', offset, 0, NULL, p, NULL);
+  }
 
   if (c == '\0') return abr_tree_malloc(0, offset, 0, NULL, p, NULL);
 
-  char *range = p->string;
   short success = 0;
 
   if (strcmp(range, ".") == 0)
@@ -1317,10 +1322,11 @@ static abr_parser *abr_decompose_rex_sequence(const char *s, ssize_t n)
       continue;
     }
 
-    if (c == '.') // others may come later
+    if (c == '.' || c == '$')
     {
       abr_parser *r = abr_parser_malloc(abr_pt_range, NULL);
-      r->string = strdup(".");
+      r->string = calloc(2, sizeof(char));
+      r->string[0] = c;
       flu_list_unshift(children, r);
       p = NULL;
       continue;

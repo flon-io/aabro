@@ -208,6 +208,28 @@ context "abr_range"
 
         ensure(t->result == 0);
       }
+
+      it "accepts \"$\" (dollar on its own, the end of the input)"
+      {
+        p = abr_range("$");
+
+        t = abr_parse("", 0, p);
+
+        ensure(t->result == 1);
+        ensure(t->length == 0);
+
+        abr_tree_free(t);
+        t = abr_parse("\0", 0, p);
+
+        ensure(t->result == 1);
+        ensure(t->length == 0);
+
+        abr_tree_free(t);
+        t = abr_parse("a", 0, p);
+
+        ensure(t->result == 0);
+        ensure(t->length == 0);
+      }
     }
   }
 }
@@ -451,7 +473,7 @@ context "abr_rex"
         "            NULL), 0, 1),\n"
         "        abr_alt(\n"
         "          abr_range(\"\r\n\"),\n"
-        "          abr_string(\"$\"),\n"
+        "          abr_range(\"$\"),\n"
         "          NULL),\n"
         "        NULL), 0, 1),\n"
         "    NULL), 0, -1)");
