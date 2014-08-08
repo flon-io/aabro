@@ -431,6 +431,31 @@ context "abr_rex"
         "  abr_string(\"b\"),\n"
         "  NULL)");
     }
+
+    it "accepts djan's complex eol rex"
+    {
+      p = abr_rex("([ \t]*((#[^\r\n]*)?([\r\n]|$))?)*");
+
+      ensure(abr_parser_to_string(p->children[0]) ===f ""
+        "abr_rep(\n"
+        "  abr_seq(\n"
+        "    abr_rep(\n"
+        "      abr_range(\" \t\"), 0, -1),\n"
+        "    abr_rep(\n"
+        "      abr_seq(\n"
+        "        abr_rep(\n"
+        "          abr_seq(\n"
+        "            abr_string(\"#\"),\n"
+        "            abr_rep(\n"
+        "              abr_range(\"^\r\n\"), 0, -1),\n"
+        "            NULL), 0, 1),\n"
+        "        abr_alt(\n"
+        "          abr_range(\"\r\n\"),\n"
+        "          abr_string(\"$\"),\n"
+        "          NULL),\n"
+        "        NULL), 0, 1),\n"
+        "    NULL), 0, -1)");
+    }
   }
 
   describe "abr_n_rex(name, s)"

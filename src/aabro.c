@@ -1155,6 +1155,7 @@ static ssize_t abr_find_group_end(const char *s)
     if (range) continue;
 
     if (stack == 0 && c == ')') return i;
+    if (c == ')') --stack;
     if (c == '(') ++stack;
   }
 
