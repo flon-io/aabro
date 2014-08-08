@@ -422,6 +422,20 @@ context "abr_rex"
       ensure(t->result == 1);
       ensure(abr_tree_string(in, t) ===f in);
     }
+
+    it "doesn't go into a infinite loop"
+    {
+      //p = abr_rex("([ \t]*((#[^\r\n]*)?([\r\n]|$))?)*"); // loops
+      p = abr_rex("$*"); // loops
+      //p = abr_rep(abr_range("$"), 0, -1); // loops
+      //p = abr_rex("([ \t]*((#[^\r\n]*)?[\r\n])?)*"); // loops
+      //p = abr_rep(abr_string("x"), 0, -1); // doesn't loop
+      //p = abr_rex("([ \t]*)*"); // loops
+      //p = abr_rep(abr_rep(abr_string("x"), 0, -1), 0, -1); // loops
+
+      t = abr_parse("", 0, p);
+      ensure(t->result == 1);
+    }
   }
 }
 

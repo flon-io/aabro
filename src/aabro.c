@@ -736,6 +736,7 @@ abr_tree *abr_p_rep(
 
     if (t->result < 0) result = -1;
     if (t->result != 1) break;
+    if (t->length < 1) break;
     off += t->length;
     length += t->length;
   }
@@ -954,6 +955,8 @@ abr_tree *abr_do_parse(
   abr_parser *p,
   int flags)
 {
+  //printf("input >%s<\n", input + offset);
+
   if (depth > MAX_DEPTH)
   {
     return abr_tree_malloc(
