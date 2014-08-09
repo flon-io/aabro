@@ -128,8 +128,9 @@ void abr_t_to_s(abr_tree *t, const char *input, flu_sbuffer *b, int indent)
   //
   flu_sbprintf(
     b,
-    "[ %s, %d, %d, %d, %s, \"%s\", ",
-    name, t->result, t->offset, t->length, note, abr_p_names[t->parser->type]);
+    "[ %s, %d, %d, %d, %s, \"%s-%s\", ",
+    name, t->result, t->offset, t->length,
+    note, abr_p_names[t->parser->type], t->parser->id);
   //
   if (t->name) free(name);
   if (t->note) free(note);
@@ -250,9 +251,9 @@ static void abr_set_id(abr_parser *p, size_t depth, char *id)
 
   for (size_t i = 0; p->children[i] != NULL; ++i)
   {
-    char *cid = calloc(depth + 2, sizeof(char));
+    char *cid = calloc(depth + 3, sizeof(char));
     strcpy(cid, id);
-    cid[depth] = (i >= ABR_IDS_LENGTH) ? '+' : ABR_IDS[i];
+    cid[depth + 1] = (i >= ABR_IDS_LENGTH) ? '+' : ABR_IDS[i];
     abr_set_id(p->children[i], depth + 1, cid);
   }
 }

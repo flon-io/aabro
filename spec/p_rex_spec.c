@@ -351,7 +351,7 @@ context "abr_rex"
       char *s = abr_tree_to_string_with_leaves(in, t);
 
       ensure(s ===f ""
-        "[ null, 1, 0, 5, null, \"rex\", \"abdef\" ]");
+        "[ null, 1, 0, 5, null, \"rex-0\", \"abdef\" ]");
     }
 
     it "doesn't group when prune == 0"
@@ -364,11 +364,11 @@ context "abr_rex"
       char *s = abr_tree_to_string_with_leaves(in, t);
 
       ensure(s ===f ""
-        "[ null, 1, 0, 5, null, \"rex\", [\n"
-        "  [ null, 1, 0, 5, null, \"seq\", [\n"
-        "    [ null, 1, 0, 2, null, \"string\", \"ab\" ],\n"
-        "    [ null, 1, 2, 1, null, \"range\", \"d\" ],\n"
-        "    [ null, 1, 3, 2, null, \"string\", \"ef\" ]\n"
+        "[ null, 1, 0, 5, null, \"rex-0\", [\n"
+        "  [ null, 1, 0, 5, null, \"seq-00\", [\n"
+        "    [ null, 1, 0, 2, null, \"string-000\", \"ab\" ],\n"
+        "    [ null, 1, 2, 1, null, \"range-001\", \"d\" ],\n"
+        "    [ null, 1, 3, 2, null, \"string-002\", \"ef\" ]\n"
         "  ] ]\n"
         "] ]");
     }

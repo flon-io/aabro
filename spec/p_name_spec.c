@@ -56,8 +56,8 @@ context "name"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ \"y\", 1, 0, 1, null, \"name\", [\n"
-        "  [ null, 1, 0, 1, null, \"string\", [] ]\n"
+        "[ \"y\", 1, 0, 1, null, \"name-0\", [\n"
+        "  [ null, 1, 0, 1, null, \"string-00\", [] ]\n"
         "] ]");
     }
 
@@ -68,7 +68,7 @@ context "name"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ \"y\", 0, 0, 0, null, \"name\", [] ]");
+        "[ \"y\", 0, 0, 0, null, \"name-0\", [] ]");
     }
   }
 }

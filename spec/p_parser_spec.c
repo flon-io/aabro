@@ -30,8 +30,8 @@ context "parser"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 1, 0, 1, null, \"rep\", [\n"
-        "  [ null, 1, 0, 1, null, \"string\", [] ]\n"
+        "[ null, 1, 0, 1, null, \"rep-0\", [\n"
+        "  [ null, 1, 0, 1, null, \"string-00\", [] ]\n"
         "] ]");
     }
 
@@ -42,9 +42,9 @@ context "parser"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 1, 0, 2, null, \"rep\", [\n"
-        "  [ null, 1, 0, 1, null, \"string\", [] ],\n"
-        "  [ null, 1, 1, 1, null, \"string\", [] ]\n"
+        "[ null, 1, 0, 2, null, \"rep-0\", [\n"
+        "  [ null, 1, 0, 1, null, \"string-00\", [] ],\n"
+        "  [ null, 1, 1, 1, null, \"string-00\", [] ]\n"
         "] ]");
     }
 
@@ -87,8 +87,8 @@ context "parser"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 1, 0, 1, null, \"rep\", [\n"
-        "  [ null, 1, 0, 1, null, \"string\", [] ]\n"
+        "[ null, 1, 0, 1, null, \"rep-0\", [\n"
+        "  [ null, 1, 0, 1, null, \"string-00\", [] ]\n"
         "] ]");
     }
 
@@ -99,9 +99,9 @@ context "parser"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 0, 0, 2, \"not all the input could be parsed\", \"rep\", [\n"
-        "  [ null, 1, 0, 1, null, \"string\", [] ],\n"
-        "  [ null, 1, 1, 1, null, \"string\", [] ]\n"
+        "[ null, 0, 0, 2, \"not all the input could be parsed\", \"rep-0\", [\n"
+        "  [ null, 1, 0, 1, null, \"string-00\", [] ],\n"
+        "  [ null, 1, 1, 1, null, \"string-00\", [] ]\n"
         "] ]");
     }
   }
@@ -115,9 +115,9 @@ context "parser"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 1, 0, 1, null, \"rep\", [\n"
-        "  [ null, 1, 0, 1, null, \"string\", [] ],\n"
-        "  [ null, 0, 1, 0, null, \"string\", [] ]\n"
+        "[ null, 1, 0, 1, null, \"rep-0\", [\n"
+        "  [ null, 1, 0, 1, null, \"string-00\", [] ],\n"
+        "  [ null, 0, 1, 0, null, \"string-00\", [] ]\n"
         "] ]");
     }
   }
@@ -131,8 +131,8 @@ context "parser"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, -1, 0, 0, null, \"seq\", [\n"
-        "  [ \"p0\", -1, 0, 0, \"unlinked abr_n(\"p0\")\", \"n\", [] ]\n"
+        "[ null, -1, 0, 0, null, \"seq-0\", [\n"
+        "  [ \"p0\", -1, 0, 0, \"unlinked abr_n(\"p0\")\", \"n-00\", [] ]\n"
         "] ]");
     }
   }

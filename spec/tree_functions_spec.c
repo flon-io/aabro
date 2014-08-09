@@ -92,8 +92,8 @@ context "tree functions"
       ensure(abr_tree_string(s, t2) ===f "3");
 
       ensure(abr_tree_to_string(t0) ===f ""
-        "[ \"value\", 1, 1, 1, null, \"alt\", [\n"
-        "  [ \"number\", 1, 1, 1, null, \"regex\", [] ]\n"
+        "[ \"value\", 1, 1, 1, null, \"alt-0\", [\n"
+        "  [ \"number\", 1, 1, 1, null, \"regex-00\", [] ]\n"
         "] ]"
       );
 
@@ -155,8 +155,8 @@ context "tree functions"
       ensure(abr_tree_string(s, ts[2]) ===f "3");
 
       ensure(abr_tree_to_string(ts[0]) ===f ""
-        "[ \"value\", 1, 1, 1, null, \"alt\", [\n"
-        "  [ \"number\", 1, 1, 1, null, \"regex\", [] ]\n"
+        "[ \"value\", 1, 1, 1, null, \"alt-0\", [\n"
+        "  [ \"number\", 1, 1, 1, null, \"regex-00\", [] ]\n"
         "] ]"
       );
 
@@ -231,8 +231,8 @@ context "tree functions"
 
       //puts(s);
       ensure(s ===f ""
-        "[ \"value\", 1, 0, 2, null, \"alt\", [\n"
-        "  [ \"number\", 1, 0, 2, null, \"regex\", [] ]\n"
+        "[ \"value\", 1, 0, 2, null, \"alt-0\", [\n"
+        "  [ \"number\", 1, 0, 2, null, \"regex-00\", [] ]\n"
         "] ]");
     }
   }
@@ -247,31 +247,31 @@ context "tree functions"
 
       //puts(s);
       ensure(s ===f ""
-        "[ \"value\", 1, 0, 8, null, \"alt\", [\n"
-        "  [ \"array\", 1, 0, 8, null, \"seq\", [\n"
-        "    [ null, 1, 0, 1, null, \"string\", \"[\" ],\n"
-        "    [ \"values\", 1, 1, 6, null, \"rep\", [\n"
-        "      [ null, 1, 1, 6, null, \"seq\", [\n"
-        "        [ \"value\", 1, 1, 2, null, \"alt\", [\n"
-        "          [ \"number\", 1, 1, 2, null, \"regex\", \"-1\" ]\n"
+        "[ \"value\", 1, 0, 8, null, \"alt-0\", [\n"
+        "  [ \"array\", 1, 0, 8, null, \"seq-01\", [\n"
+        "    [ null, 1, 0, 1, null, \"string-010\", \"[\" ],\n"
+        "    [ \"values\", 1, 1, 6, null, \"rep-011\", [\n"
+        "      [ null, 1, 1, 6, null, \"seq-0110\", [\n"
+        "        [ \"value\", 1, 1, 2, null, \"alt-0\", [\n"
+        "          [ \"number\", 1, 1, 2, null, \"regex-00\", \"-1\" ]\n"
         "        ] ],\n"
-        "        [ null, 1, 3, 4, null, \"rep\", [\n"
-        "          [ null, 1, 3, 2, null, \"seq\", [\n"
-        "            [ null, 1, 3, 1, null, \"string\", \",\" ],\n"
-        "            [ \"value\", 1, 4, 1, null, \"alt\", [\n"
-        "              [ \"number\", 1, 4, 1, null, \"regex\", \"0\" ]\n"
+        "        [ null, 1, 3, 4, null, \"rep-01101\", [\n"
+        "          [ null, 1, 3, 2, null, \"seq-011010\", [\n"
+        "            [ null, 1, 3, 1, null, \"string-0110100\", \",\" ],\n"
+        "            [ \"value\", 1, 4, 1, null, \"alt-0\", [\n"
+        "              [ \"number\", 1, 4, 1, null, \"regex-00\", \"0\" ]\n"
         "            ] ]\n"
         "          ] ],\n"
-        "          [ null, 1, 5, 2, null, \"seq\", [\n"
-        "            [ null, 1, 5, 1, null, \"string\", \",\" ],\n"
-        "            [ \"value\", 1, 6, 1, null, \"alt\", [\n"
-        "              [ \"number\", 1, 6, 1, null, \"regex\", \"1\" ]\n"
+        "          [ null, 1, 5, 2, null, \"seq-011010\", [\n"
+        "            [ null, 1, 5, 1, null, \"string-0110100\", \",\" ],\n"
+        "            [ \"value\", 1, 6, 1, null, \"alt-0\", [\n"
+        "              [ \"number\", 1, 6, 1, null, \"regex-00\", \"1\" ]\n"
         "            ] ]\n"
         "          ] ]\n"
         "        ] ]\n"
         "      ] ]\n"
         "    ] ],\n"
-        "    [ null, 1, 7, 1, null, \"string\", \"]\" ]\n"
+        "    [ null, 1, 7, 1, null, \"string-012\", \"]\" ]\n"
         "  ] ]\n"
         "] ]");
     }
@@ -283,8 +283,8 @@ context "tree functions"
       char *s = abr_tree_to_string_with_leaves(in, t);
 
       ensure(s ===f ""
-        "[ \"value\", 1, 0, 13, null, \"alt\", [\n"
-        "  [ \"string\", 1, 0, 13, null, \"regex\", \"\\\"hello\\nworld\\\"\" ]\n"
+        "[ \"value\", 1, 0, 13, null, \"alt-0\", [\n"
+        "  [ \"string\", 1, 0, 13, null, \"regex-02\", \"\\\"hello\\nworld\\\"\" ]\n"
         "] ]");
     }
   }

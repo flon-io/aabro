@@ -68,7 +68,7 @@ context "name"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ \"z\", -1, 0, 0, \"unlinked abr_n(\"z\")\", \"n\", [] ]");
+        "[ \"z\", -1, 0, 0, \"unlinked abr_n(\"z\")\", \"n-0\", [] ]");
     }
 
     it "parses (linked)"
@@ -94,9 +94,9 @@ context "name"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ \"exp\", 1, 0, 1, null, \"alt\", [\n"
-        "  [ \"val\", 1, 0, 1, null, \"alt\", [\n"
-        "    [ null, 1, 0, 1, null, \"regex\", [] ]\n"
+        "[ \"exp\", 1, 0, 1, null, \"alt-0\", [\n"
+        "  [ \"val\", 1, 0, 1, null, \"alt-00\", [\n"
+        "    [ null, 1, 0, 1, null, \"regex-000\", [] ]\n"
         "  ] ]\n"
         "] ]");
     }

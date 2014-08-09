@@ -90,7 +90,7 @@ context "strings"
       t = abr_parse("xxx", 0, p);
       char *s = abr_tree_to_string(t);
 
-      ensure(s ===f "[ null, 1, 0, 3, null, \"string\", [] ]");
+      ensure(s ===f "[ null, 1, 0, 3, null, \"string-0\", [] ]");
     }
 
     it "succeeds (named parser)"
@@ -99,7 +99,7 @@ context "strings"
       t = abr_parse("xxx", 0, p);
       char *s = abr_tree_to_string(t);
 
-      ensure(s ===f "[ \"3x\", 1, 0, 3, null, \"string\", [] ]");
+      ensure(s ===f "[ \"3x\", 1, 0, 3, null, \"string-0\", [] ]");
     }
 
     it "fails"
@@ -108,7 +108,7 @@ context "strings"
       t = abr_parse("yyy", 0, p);
       char *s = abr_tree_to_string(t);
 
-      ensure(s ===f "[ null, 0, 0, 0, null, \"string\", [] ]");
+      ensure(s ===f "[ null, 0, 0, 0, null, \"string-0\", [] ]");
     }
   }
 }

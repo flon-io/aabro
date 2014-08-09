@@ -85,9 +85,9 @@ context "sequence"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 1, 0, 2, null, \"seq\", [\n"
-        "  [ null, 1, 0, 1, null, \"string\", [] ],\n"
-        "  [ null, 1, 1, 1, null, \"string\", [] ]\n"
+        "[ null, 1, 0, 2, null, \"seq-0\", [\n"
+        "  [ null, 1, 0, 1, null, \"string-00\", [] ],\n"
+        "  [ null, 1, 1, 1, null, \"string-01\", [] ]\n"
         "] ]");
     }
 
@@ -98,9 +98,9 @@ context "sequence"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ \"xtheny\", 1, 0, 2, null, \"seq\", [\n"
-        "  [ null, 1, 0, 1, null, \"string\", [] ],\n"
-        "  [ null, 1, 1, 1, null, \"string\", [] ]\n"
+        "[ \"xtheny\", 1, 0, 2, null, \"seq-0\", [\n"
+        "  [ null, 1, 0, 1, null, \"string-00\", [] ],\n"
+        "  [ null, 1, 1, 1, null, \"string-01\", [] ]\n"
         "] ]");
     }
 
@@ -111,7 +111,7 @@ context "sequence"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 0, 0, 0, null, \"seq\", [] ]");
+        "[ null, 0, 0, 0, null, \"seq-0\", [] ]");
     }
 
     it "fails (2nd step)"
@@ -121,7 +121,7 @@ context "sequence"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 0, 0, 0, null, \"seq\", [] ]");
+        "[ null, 0, 0, 0, null, \"seq-0\", [] ]");
     }
 
     it "reports the failed tries if not ABR_F_PRUNE"
@@ -131,9 +131,9 @@ context "sequence"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 0, 0, 0, null, \"seq\", [\n"
-        "  [ null, 1, 0, 1, null, \"string\", [] ],\n"
-        "  [ null, 0, 1, 0, null, \"string\", [] ]\n"
+        "[ null, 0, 0, 0, null, \"seq-0\", [\n"
+        "  [ null, 1, 0, 1, null, \"string-00\", [] ],\n"
+        "  [ null, 0, 1, 0, null, \"string-01\", [] ]\n"
         "] ]");
     }
 
@@ -144,9 +144,9 @@ context "sequence"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, -1, 0, 0, null, \"seq\", [\n"
-        "  [ null, 1, 0, 1, null, \"string\", [] ],\n"
-        "  [ \"y\", -1, 1, 0, \"unlinked abr_n(\"y\")\", \"n\", [] ]\n"
+        "[ null, -1, 0, 0, null, \"seq-0\", [\n"
+        "  [ null, 1, 0, 1, null, \"string-00\", [] ],\n"
+        "  [ \"y\", -1, 1, 0, \"unlinked abr_n(\"y\")\", \"n-01\", [] ]\n"
         "] ]");
     }
   }

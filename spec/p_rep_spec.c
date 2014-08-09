@@ -100,8 +100,8 @@ context "repetition"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 1, 0, 2, null, \"rep\", [\n"
-        "  [ null, 1, 0, 2, null, \"string\", [] ]\n"
+        "[ null, 1, 0, 2, null, \"rep-0\", [\n"
+        "  [ null, 1, 0, 2, null, \"string-00\", [] ]\n"
         "] ]");
     }
 
@@ -112,8 +112,8 @@ context "repetition"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ \"xandy\", 1, 0, 2, null, \"rep\", [\n"
-        "  [ null, 1, 0, 2, null, \"string\", [] ]\n"
+        "[ \"xandy\", 1, 0, 2, null, \"rep-0\", [\n"
+        "  [ null, 1, 0, 2, null, \"string-00\", [] ]\n"
         "] ]");
     }
 
@@ -137,9 +137,9 @@ context "repetition"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 1, 0, 4, null, \"rep\", [\n"
-        "  [ null, 1, 0, 2, null, \"string\", [] ],\n"
-        "  [ null, 1, 2, 2, null, \"string\", [] ]\n"
+        "[ null, 1, 0, 4, null, \"rep-0\", [\n"
+        "  [ null, 1, 0, 2, null, \"string-00\", [] ],\n"
+        "  [ null, 1, 2, 2, null, \"string-00\", [] ]\n"
         "] ]");
     }
 
@@ -150,7 +150,7 @@ context "repetition"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 0, 0, 2, null, \"rep\", [] ]");
+        "[ null, 0, 0, 2, null, \"rep-0\", [] ]");
     }
 
     it "relates all the tries when not ABR_F_PRUNE"
@@ -160,9 +160,9 @@ context "repetition"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, 0, 0, 2, null, \"rep\", [\n"
-        "  [ null, 1, 0, 2, null, \"string\", [] ],\n"
-        "  [ null, 0, 2, 0, null, \"string\", [] ]\n"
+        "[ null, 0, 0, 2, null, \"rep-0\", [\n"
+        "  [ null, 1, 0, 2, null, \"string-00\", [] ],\n"
+        "  [ null, 0, 2, 0, null, \"string-00\", [] ]\n"
         "] ]");
     }
 
@@ -173,8 +173,8 @@ context "repetition"
       char *s = abr_tree_to_string(t);
 
       ensure(s ===f ""
-        "[ null, -1, 0, 0, null, \"rep\", [\n"
-        "  [ \"x\", -1, 0, 0, \"unlinked abr_n(\"x\")\", \"n\", [] ]\n"
+        "[ null, -1, 0, 0, null, \"rep-0\", [\n"
+        "  [ \"x\", -1, 0, 0, \"unlinked abr_n(\"x\")\", \"n-00\", [] ]\n"
         "] ]");
     }
   }

@@ -40,7 +40,7 @@ context "abr_range"
         t = abr_parse("aaa", 0, p);
 
         ensure(abr_tree_to_string(t) ===f ""
-          "[ null, 1, 0, 1, null, \"range\", [] ]");
+          "[ null, 1, 0, 1, null, \"range-0\", [] ]");
       }
 
       it "fails when the input does not start with a char in the range"
@@ -49,7 +49,7 @@ context "abr_range"
         t = abr_parse("daa", 0, p);
 
         ensure(abr_tree_to_string(t) ===f ""
-          "[ null, 0, 0, 0, null, \"range\", [] ]");
+          "[ null, 0, 0, 0, null, \"range-0\", [] ]");
       }
 
       it "accepts \"a-z\""
