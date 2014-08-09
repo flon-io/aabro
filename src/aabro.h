@@ -34,6 +34,7 @@
 // abr_parser
 
 typedef struct abr_parser {
+  char *id;
   char *name;
   short type;
   char *string;

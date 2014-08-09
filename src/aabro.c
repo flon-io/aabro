@@ -198,10 +198,8 @@ static void abr_p_free(void *v)
 {
   abr_parser *p = v;
 
-  if (p->name != NULL)
-  {
-    free(p->name);
-  }
+  if (p->id != NULL) free(p->id);
+  if (p->name != NULL) free(p->name);
 
   // free the regex if it was created with abr_regex_s(char *s)
   if (p->regex != NULL && p->string != NULL)
@@ -210,15 +208,8 @@ static void abr_p_free(void *v)
      free(p->regex);
   }
 
-  if (p->string != NULL)
-  {
-    free(p->string);
-  }
-
-  if (p->children != NULL)
-  {
-    free(p->children);
-  }
+  if (p->string != NULL) free(p->string);
+  if (p->children != NULL) free(p->children);
 
   free(p);
 }
@@ -235,6 +226,7 @@ static abr_parser *abr_parser_malloc(abr_p_type type, const char *name)
 {
   abr_parser *p = calloc(1, sizeof(abr_parser));
 
+  p->id = NULL;
   p->name = (name == NULL) ? NULL : strdup(name);
   p->type = type;
   p->string = NULL;
@@ -243,6 +235,31 @@ static abr_parser *abr_parser_malloc(abr_p_type type, const char *name)
   p->children = NULL;
 
   return p;
+}
+
+#define ABR_IDS "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+#define ABR_IDS_LENGTH 62
+
+static void abr_set_id(abr_parser *p, size_t depth, char *id)
+{
+  if (p->id != NULL) { free(id); return; }
+
+  p->id = id;
+
+  if (p->children == NULL) return;
+
+  for (size_t i = 0; p->children[i] != NULL; ++i)
+  {
+    char *cid = calloc(depth + 2, sizeof(char));
+    strcpy(cid, id);
+    cid[depth] = (i >= ABR_IDS_LENGTH) ? '+' : ABR_IDS[i];
+    abr_set_id(p->children[i], depth + 1, cid);
+  }
+}
+
+static void abr_set_ids(abr_parser *p)
+{
+  abr_set_id(p, 0, strdup("0"));
 }
 
 //
@@ -629,6 +646,8 @@ void abr_p_to_s(flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
 
 char *abr_parser_to_string(abr_parser *p)
 {
+  if (p->id == NULL) abr_set_ids(p);
+
   flu_sbuffer *b = flu_sbuffer_malloc();
   flu_list *seen = flu_list_malloc();
 
@@ -641,6 +660,8 @@ char *abr_parser_to_string(abr_parser *p)
 
 char *abr_parser_to_s(abr_parser *p)
 {
+  if (p->id == NULL) abr_set_ids(p);
+
   size_t ccount = 0;
   if (p->children) while (p->children[ccount] != NULL) { ++ccount; }
 
@@ -1009,6 +1030,8 @@ abr_tree *abr_parse_all(const char *input, size_t offset, abr_parser *p)
 abr_tree *abr_parse_f(
   const char *input, size_t offset, abr_parser *p, int flags)
 {
+  if (p->id == NULL) abr_set_ids(p);
+
   abr_tree *t = abr_do_parse(input, offset, 0, p, flags);
 
   if ((flags & ABR_F_ALL) == 0) return t;
