@@ -284,8 +284,7 @@ static abr_parser *abr_r_expand(abr_parser *r, abr_parser *child)
   r->type = abr_pt_rep;
   free(r->string); r->string = NULL;
 
-  r->children = calloc(2, sizeof(abr_parser *));
-  r->children[0] = child;
+  r->children = abr_single_child(child);
 
   if (r->name == NULL && child->name != NULL)
   {
@@ -383,8 +382,7 @@ abr_parser *abr_n_rex(const char *name, const char *s)
 {
   abr_parser *p = abr_parser_malloc(abr_pt_rex, name);
   p->string = strdup(s);
-  p->children = calloc(2, sizeof(abr_parser *));
-  p->children[0] = abr_decompose_rex_group(s, -1);
+  p->children = abr_single_child(abr_decompose_rex_group(s, -1));
   return p;
 }
 
@@ -1276,11 +1274,10 @@ static abr_parser *abr_decompose_rex_sequence(const char *s, ssize_t n)
 
       abr_parser *r = abr_parser_malloc(abr_pt_rep, NULL);
       si = si - 1 + abr_parse_rex_quant(s + si, r);
-      r->children = calloc(2, sizeof(abr_parser *));
 
       if (p == NULL || p->type != abr_pt_string || strlen(p->string) == 1)
       {
-        r->children[0] = (abr_parser *)children->first->item;
+        r->children = abr_single_child((abr_parser *)children->first->item);
         flu_list_shift(children);
       }
       else // have to grab the last char in the current string...
@@ -1290,7 +1287,7 @@ static abr_parser *abr_decompose_rex_sequence(const char *s, ssize_t n)
         p0->string = calloc(2, sizeof(char));
         p0->string[0] = p->string[ci];
         p->string[ci] = '\0';
-        r->children[0] = p0;
+        r->children = abr_single_child(p0);
       }
       flu_list_unshift(children, r);
       p = NULL;
