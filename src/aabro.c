@@ -248,14 +248,14 @@ static abr_parser *abr_parser_malloc(abr_p_type type, const char *name)
 //
 // the builder methods
 
-/*static*/ abr_parser **abr_single_child(abr_parser *p)
+static abr_parser **abr_single_child(abr_parser *p)
 {
   abr_parser **children = calloc(2, sizeof(abr_parser *));
   children[0] = p;
   return children;
 }
 
-void abr_do_name(abr_parser *named, abr_parser *target)
+static void abr_do_name(abr_parser *named, abr_parser *target)
 {
   if (named->name == NULL) return;
 
@@ -277,7 +277,7 @@ void abr_do_name(abr_parser *named, abr_parser *target)
 static size_t abr_parse_rex_quant(const char *s, abr_parser *p);
   // defined below
 
-abr_parser *abr_r_expand(abr_parser *r, abr_parser *child)
+static abr_parser *abr_r_expand(abr_parser *r, abr_parser *child)
 {
   abr_parse_rex_quant(r->string, r);
 
@@ -296,11 +296,11 @@ abr_parser *abr_r_expand(abr_parser *r, abr_parser *child)
   return r;
 }
 
-abr_parser *abr_wrap_children(abr_parser *p, abr_parser *child0, va_list ap)
+static abr_parser *abr_wrap_children(abr_parser *p, abr_parser *c0, va_list ap)
 {
   flu_list *l = flu_list_malloc();
 
-  flu_list_add(l, child0);
+  flu_list_add(l, c0);
 
   abr_parser *child = NULL;
   while(1)
@@ -470,6 +470,8 @@ abr_parser *abr_n_r(const char *name, const char *code)
 
 //
 // the to_s methods
+
+// TODO: make them static
 
 typedef void abr_p_to_s_func(flu_sbuffer *, flu_list *, int, abr_parser *);
 
@@ -667,10 +669,12 @@ char *abr_parser_to_s(abr_parser *p)
 //
 // the parse methods
 
+// TODO: make the parse methods static
+
 typedef abr_tree *abr_p_func(
   const char *, size_t, size_t, abr_parser *, int flags);
 //
-abr_tree *abr_do_parse(
+static abr_tree *abr_do_parse(
   const char *input,
   size_t offset, size_t depth,
   abr_parser *p,
@@ -949,7 +953,7 @@ abr_p_func *abr_p_funcs[] = { // const ?
   abr_p_error
 };
 
-abr_tree *abr_do_parse(
+static abr_tree *abr_do_parse(
   const char *input,
   size_t offset, size_t depth,
   abr_parser *p,
