@@ -1201,7 +1201,7 @@ static size_t abr_parse_rex_quant(const char *s, abr_parser *p)
   if (s1) free(s1);
   free(s0);
 
-  return j + 1;
+  return j + 2;
 }
 
 static abr_parser *abr_error(const char *format, ...)
@@ -1271,7 +1271,7 @@ static abr_parser *abr_decompose_rex_sequence(const char *s, ssize_t n)
       }
 
       abr_parser *r = abr_parser_malloc(abr_pt_rep, NULL);
-      abr_parse_rex_quant(s + si, r);
+      si = si - 1 + abr_parse_rex_quant(s + si, r);
       r->children = calloc(2, sizeof(abr_parser *));
 
       if (p == NULL || p->type != abr_pt_string || strlen(p->string) == 1)

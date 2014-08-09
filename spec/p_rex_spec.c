@@ -252,6 +252,36 @@ context "abr_rex"
         "        NULL), 0, 1),\n"
         "    NULL), 0, -1)");
     }
+
+    it "accepts \"a[0-9]{4}|b\""
+    {
+      p = abr_rex("a[0-9]{4}|b");
+
+      ensure(abr_parser_to_string(p->children[0]) ===f ""
+        "abr_alt(\n"
+        "  abr_seq(\n"
+        "    abr_string(\"a\"),\n"
+        "    abr_rep(\n"
+        "      abr_range(\"0-9\"), 4, 4),\n"
+        "    NULL),\n"
+        "  abr_string(\"b\"),\n"
+        "  NULL)");
+    }
+
+    it "accepts \"a[0-9]{4,5}|b\""
+    {
+      p = abr_rex("a[0-9]{4,5}|b");
+
+      ensure(abr_parser_to_string(p->children[0]) ===f ""
+        "abr_alt(\n"
+        "  abr_seq(\n"
+        "    abr_string(\"a\"),\n"
+        "    abr_rep(\n"
+        "      abr_range(\"0-9\"), 4, 5),\n"
+        "    NULL),\n"
+        "  abr_string(\"b\"),\n"
+        "  NULL)");
+    }
   }
 
   describe "abr_n_rex(name, s)"
