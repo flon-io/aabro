@@ -37,10 +37,10 @@ describe "abr_r(), final child"
       char *s = abr_parser_to_string(p);
 
       ensure(s ===f ""
-        "abr_rep(\n"
-        "  abr_alt(\n"
-        "    abr_string(\"x\"),\n"
-        "    abr_string(\"y\"),\n"
+        "abr_rep( /* 0 */\n"
+        "  abr_alt( /* 00 */\n"
+        "    abr_string(\"x\") /* 000 */,\n"
+        "    abr_string(\"y\") /* 001 */,\n"
         "    NULL), 0, -1)");
     }
 
@@ -50,10 +50,10 @@ describe "abr_r(), final child"
       char *s = abr_parser_to_string(p);
 
       ensure(s ===f ""
-        "abr_rep(\n"
-        "  abr_alt(\n"
-        "    abr_string(\"x\"),\n"
-        "    abr_string(\"y\"),\n"
+        "abr_rep( /* 0 */\n"
+        "  abr_alt( /* 00 */\n"
+        "    abr_string(\"x\") /* 000 */,\n"
+        "    abr_string(\"y\") /* 001 */,\n"
         "    NULL), 4, 5)");
     }
 
@@ -63,10 +63,10 @@ describe "abr_r(), final child"
       char *s = abr_parser_to_string(p);
 
       ensure(s ===f ""
-        "abr_rep(\n"
-        "  abr_alt(\n"
-        "    abr_string(\"x\"),\n"
-        "    abr_string(\"y\"),\n"
+        "abr_rep( /* 0 */\n"
+        "  abr_alt( /* 00 */\n"
+        "    abr_string(\"x\") /* 000 */,\n"
+        "    abr_string(\"y\") /* 001 */,\n"
         "    NULL), 4, 5)");
     }
 
@@ -76,10 +76,10 @@ describe "abr_r(), final child"
       char *s = abr_parser_to_string(p);
 
       ensure(s ===f ""
-        "abr_rep(\n"
-        "  abr_alt(\n"
-        "    abr_string(\"x\"),\n"
-        "    abr_string(\"y\"),\n"
+        "abr_rep( /* 0 */\n"
+        "  abr_alt( /* 00 */\n"
+        "    abr_string(\"x\") /* 000 */,\n"
+        "    abr_string(\"y\") /* 001 */,\n"
         "    NULL), 3, 3)");
     }
 
@@ -89,11 +89,11 @@ describe "abr_r(), final child"
       char *s = abr_parser_to_string(p);
 
       ensure(s ===f ""
-        "abr_n_rep(\n"
+        "abr_n_rep( /* 0 */\n"
         "  \"n\",\n"
-        "  abr_alt(\n"
-        "    abr_string(\"x\"),\n"
-        "    abr_string(\"y\"),\n"
+        "  abr_alt( /* 00 */\n"
+        "    abr_string(\"x\") /* 000 */,\n"
+        "    abr_string(\"y\") /* 001 */,\n"
         "    NULL), 4, 5)");
     }
   }
@@ -106,12 +106,12 @@ describe "abr_r(), final child"
       char *s = abr_parser_to_string(p);
 
       ensure(s ===f ""
-        "abr_n_rep(\n"
+        "abr_n_rep( /* 0 */\n"
         "  \"\",\n"
-        "  abr_n_alt(\n"
+        "  abr_n_alt( /* 00 */\n"
         "    \"n\",\n"
-        "    abr_string(\"x\"),\n"
-        "    abr_string(\"y\"),\n"
+        "    abr_string(\"x\") /* 000 */,\n"
+        "    abr_string(\"y\") /* 001 */,\n"
         "    NULL), 0, -1)");
     }
   }

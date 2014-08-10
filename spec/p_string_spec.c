@@ -51,7 +51,7 @@ context "strings"
       p = abr_string("toto");
       char *s = abr_parser_to_string(p);
 
-      ensure(s ===f "abr_string(\"toto\")");
+      ensure(s ===f "abr_string(\"toto\") /* 0 */");
     }
 
     it "returns a string representation of the named parser struct"
@@ -59,7 +59,7 @@ context "strings"
       p = abr_n_string("to", "toto");
       char *s = abr_parser_to_string(p);
 
-      ensure(s ===f "abr_n_string(\"to\", \"toto\")");
+      ensure(s ===f "abr_n_string(\"to\", \"toto\") /* 0 */");
     }
   }
 

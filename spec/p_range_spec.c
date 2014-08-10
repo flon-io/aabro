@@ -29,7 +29,7 @@ context "abr_range"
 
       ensure(p->type == 11);
       ensure(p->string === "abc");
-      ensure(abr_parser_to_string(p) ===f "abr_range(\"abc\")");
+      ensure(abr_parser_to_string(p) ===f "abr_range(\"abc\") /* 0 */");
     }
 
     context "parsing"

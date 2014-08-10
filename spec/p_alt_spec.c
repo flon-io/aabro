@@ -55,9 +55,9 @@ context "alternative"
       char *s = abr_parser_to_string(p);
 
       ensure(s ===f ""
-        "abr_alt(\n"
-        "  abr_string(\"x\"),\n"
-        "  abr_string(\"y\"),\n"
+        "abr_alt( /* 0 */\n"
+        "  abr_string(\"x\") /* 00 */,\n"
+        "  abr_string(\"y\") /* 01 */,\n"
         "  NULL)");
     }
     it "returns a string representation of the named parser struct"
@@ -66,10 +66,10 @@ context "alternative"
       char *s = abr_parser_to_string(p);
 
       ensure(s ===f ""
-        "abr_n_alt(\n"
+        "abr_n_alt( /* 0 */\n"
         "  \"xory\",\n"
-        "  abr_string(\"x\"),\n"
-        "  abr_string(\"y\"),\n"
+        "  abr_string(\"x\") /* 00 */,\n"
+        "  abr_string(\"y\") /* 01 */,\n"
         "  NULL)");
     }
   }

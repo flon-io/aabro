@@ -87,7 +87,7 @@ context "regular expressions"
       p = abr_regex("^a+");
       char *s = abr_parser_to_string(p);
 
-      ensure(s ===f "abr_regex(\"^a+\")");
+      ensure(s ===f "abr_regex(\"^a+\") /* 0 */");
     }
 
     it "returns a string representation of the named parser struct"
@@ -95,7 +95,7 @@ context "regular expressions"
       p = abr_n_regex("aas", "^a+");
       char *s = abr_parser_to_string(p);
 
-      ensure(s ===f "abr_n_regex(\"aas\", \"^a+\")");
+      ensure(s ===f "abr_n_regex(\"aas\", \"^a+\") /* 0 */");
     }
 
     it "returns a string representation of the parser struct (_r)"
@@ -106,8 +106,10 @@ context "regular expressions"
 
       char *s = abr_parser_to_string(p);
 
-      ensure(s ~==f "^abr_regex_r.0x[0-9a-f]+.$");
+      //ensure(s ~==f "^abr_regex_r.0x[0-9a-f]+.$");
         // why can't I use \( and \) ??? investigate
+      ensure(strncmp(s, "abr_regex_r(0x", 14) == 0);
+      free(s);
     }
 
     it "returns a string representation of the named parser struct (_r)"
@@ -118,8 +120,10 @@ context "regular expressions"
 
       char *s = abr_parser_to_string(p);
 
-      ensure(s ~==f "^abr_n_regex_r.\"as\", 0x[0-9a-f]+.$");
+      //ensure(s ~==f "^abr_n_regex_r.\"as\", 0x[0-9a-f]+. \/\* 0 \*\/$");
         // why can't I use \( and \) ??? investigate
+      ensure(strncmp(s, "abr_n_regex_r(\"as\", 0x", 22) == 0);
+      free(s);
     }
   }
 

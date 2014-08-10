@@ -40,7 +40,7 @@ context "name"
       p = abr_n("y");
       char *s = abr_parser_to_string(p);
 
-      ensure(s ===f "abr_n(\"y\") /* not linked */");
+      ensure(s ===f "abr_n(\"y\") /* 0 */ /* not linked */");
     }
     it "returns a string representation of the parser struct (linked)"
     {
@@ -48,10 +48,10 @@ context "name"
       char *s = abr_parser_to_string(p);
 
       ensure(s ===f ""
-        "abr_n_alt(\n"
+        "abr_n_alt( /* 0 */\n"
         "  \"p\",\n"
-        "  abr_string(\"p\"),\n"
-        "  abr_n(\"p\"),\n"
+        "  abr_string(\"p\") /* 00 */,\n"
+        "  abr_n(\"p\") /* 01 */,\n"
         "  NULL)");
     }
   }
@@ -157,23 +157,23 @@ context "abr_n_xxx"
         NULL);
 
     ensure(abr_parser_to_string(p) ===f ""
-      "abr_n_alt(\n"
+      "abr_n_alt( /* 0 */\n"
       "  \"value\",\n"
-      "  abr_n_regex(\"number\", \"^-?[0-9]+(\\.[0-9]+)?([eE][+-]?[0-9]+)?\"),\n"
-      "  abr_n_seq(\n"
+      "  abr_n_regex(\"number\", \"^-?[0-9]+(\\.[0-9]+)?([eE][+-]?[0-9]+)?\") /* 00 */,\n"
+      "  abr_n_seq( /* 01 */\n"
       "    \"object\",\n"
-      "    abr_string(\"{\"),\n"
-      "    abr_n_rep(\n"
+      "    abr_string(\"{\") /* 010 */,\n"
+      "    abr_n_rep( /* 011 */\n"
       "      \"entries\",\n"
-      "      abr_seq(\n"
-      "        abr_n_seq(\n"
+      "      abr_seq( /* 0110 */\n"
+      "        abr_n_seq( /* 01100 */\n"
       "          \"entry\",\n"
-      "          abr_n(\"value\"),\n"
+      "          abr_n(\"value\") /* 011000 */,\n"
       "          NULL),\n"
-      "        abr_rep(\n"
-      "          abr_n(\"entry\"), 0, -1),\n"
+      "        abr_rep( /* 01101 */\n"
+      "          abr_n(\"entry\") /* 01100 */, 0, -1),\n"
       "        NULL), 0, 1),\n"
-      "    abr_string(\"}\"),\n"
+      "    abr_string(\"}\") /* 012 */,\n"
       "    NULL),\n"
       "  NULL)");
   }

@@ -41,9 +41,9 @@ context "name"
       char *s = abr_parser_to_string(p);
 
       ensure(s ===f ""
-        "abr_name(\n"
+        "abr_name( /* 0 */\n"
         "  \"y\",\n"
-        "  abr_string(\"x\"))");
+        "  abr_string(\"x\") /* 00 */)");
     }
   }
 

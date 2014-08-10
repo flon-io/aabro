@@ -56,9 +56,9 @@ context "sequence"
       char *s = abr_parser_to_string(p);
 
       ensure(s ===f ""
-        "abr_seq(\n"
-        "  abr_string(\"x\"),\n"
-        "  abr_string(\"y\"),\n"
+        "abr_seq( /* 0 */\n"
+        "  abr_string(\"x\") /* 00 */,\n"
+        "  abr_string(\"y\") /* 01 */,\n"
         "  NULL)");
     }
 
@@ -68,10 +68,10 @@ context "sequence"
       char *s = abr_parser_to_string(p);
 
       ensure(s ===f ""
-        "abr_n_seq(\n"
+        "abr_n_seq( /* 0 */\n"
         "  \"xtheny\",\n"
-        "  abr_string(\"x\"),\n"
-        "  abr_string(\"y\"),\n"
+        "  abr_string(\"x\") /* 00 */,\n"
+        "  abr_string(\"y\") /* 01 */,\n"
         "  NULL)");
     }
   }

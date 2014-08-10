@@ -111,7 +111,8 @@ char *abr_p_names[] = { // const ?
   "error"
 };
 
-void abr_t_to_s(abr_tree *t, const char *input, flu_sbuffer *b, int indent)
+static void abr_t_to_s(
+  abr_tree *t, const char *input, flu_sbuffer *b, int indent)
 {
   for (int i = 0; i < indent; i++) flu_sbprintf(b, "  ");
 
@@ -487,48 +488,57 @@ abr_parser *abr_n_r(const char *name, const char *code)
 //
 // the to_s methods
 
-// TODO: make them static
-
 typedef void abr_p_to_s_func(flu_sbuffer *, flu_list *, int, abr_parser *);
 
-void abr_p_to_s(flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p);
+static void abr_p_to_s(
+  flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p);
 
-void abr_p_string_to_s( // works for range and rex as well
+static void abr_p_string_to_s( // works for range and rex as well
   flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
 {
   if (p->name == NULL)
     flu_sbprintf(
-      b, "abr_%s(\"%s\")", abr_p_names[p->type], p->string);
+      b, "abr_%s(\"%s\") /* %s */",
+      abr_p_names[p->type], p->string, p->id);
   else
     flu_sbprintf(
-      b, "abr_n_%s(\"%s\", \"%s\")", abr_p_names[p->type], p->name, p->string);
+      b, "abr_n_%s(\"%s\", \"%s\") /* %s */",
+      abr_p_names[p->type], p->name, p->string, p->id);
 }
 
-void abr_p_regex_to_s(
+static void abr_p_regex_to_s(
   flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
 {
   if (p->string == NULL)
   {
-    if (p->name == NULL) flu_sbprintf(b, "abr_regex_r(%p)", p->regex);
-    else flu_sbprintf(b, "abr_n_regex_r(\"%s\", %p)", p->name, p->regex);
+    if (p->name == NULL)
+      flu_sbprintf(
+        b, "abr_regex_r(%p) /* %s */", p->regex, p->id);
+    else
+      flu_sbprintf(
+        b, "abr_n_regex_r(\"%s\", %p) /* %s */", p->name, p->regex, p->id);
   }
   else
   {
-    if (p->name == NULL) flu_sbprintf(b, "abr_regex(\"%s\")", p->string);
-    else flu_sbprintf(b, "abr_n_regex(\"%s\", \"%s\")", p->name, p->string);
+    if (p->name == NULL)
+      flu_sbprintf(
+        b, "abr_regex(\"%s\") /* %s */", p->string, p->id);
+    else
+      flu_sbprintf(
+        b, "abr_n_regex(\"%s\", \"%s\") /* %s */", p->name, p->string, p->id);
   }
 }
 
-void abr_p_rep_to_s(
+static void abr_p_rep_to_s(
   flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
 {
   if (p->name == NULL)
   {
-    flu_sbprintf(b, "abr_rep(\n");
+    flu_sbprintf(b, "abr_rep( /* %s */\n", p->id);
   }
   else
   {
-    flu_sbprintf(b, "abr_n_rep(\n");
+    flu_sbprintf(b, "abr_n_rep( /* %s */\n", p->id);
     for (int i = 0; i < indent + 1; i++) flu_sbprintf(b, "  ");
     flu_sbprintf(b, "\"%s\",\n", p->name);
   }
@@ -536,16 +546,16 @@ void abr_p_rep_to_s(
   flu_sbprintf(b, ", %i, %i)", p->min, p->max);
 }
 
-void abr_p_wchildren_to_s(
+static void abr_p_wchildren_to_s(
   const char *n, flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
 {
   if (p->name == NULL)
   {
-    flu_sbprintf(b, "abr_%s(\n", n);
+    flu_sbprintf(b, "abr_%s( /* %s */\n", n, p->id);
   }
   else
   {
-    flu_sbprintf(b, "abr_n_%s(\n", n);
+    flu_sbprintf(b, "abr_n_%s( /* %s */\n", n, p->id);
     for (int i = 0; i < indent + 1; i++) flu_sbprintf(b, "  ");
     flu_sbprintf(b, "\"%s\",\n", p->name);
   }
@@ -559,58 +569,58 @@ void abr_p_wchildren_to_s(
   flu_sbprintf(b, ")");
 }
 
-void abr_p_alt_to_s(
+static void abr_p_alt_to_s(
   flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
 {
   abr_p_wchildren_to_s("alt", b, seen, indent, p);
 }
 
-void abr_p_seq_to_s(
+static void abr_p_seq_to_s(
   flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
 {
   abr_p_wchildren_to_s("seq", b, seen, indent, p);
 }
 
-void abr_p_name_to_s(
+static void abr_p_name_to_s(
   flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
 {
-  flu_sbprintf(b, "abr_name(\n");
+  flu_sbprintf(b, "abr_name( /* %s */\n", p->id);
   for (int i = 0; i < indent + 1; i++) flu_sbprintf(b, "  ");
   flu_sbprintf(b, "\"%s\",\n", p->name);
   abr_p_to_s(b, seen, indent + 1, p->children[0]);
   flu_sbprintf(b, ")");
 }
 
-void abr_p_not_to_s(
+static void abr_p_not_to_s(
   flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
 {
   flu_sbprintf(b, "abr_not(...)");
 }
 
-void abr_p_presence_to_s(
+static void abr_p_presence_to_s(
   flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
 {
   flu_sbprintf(b, "abr_presence(...)");
 }
 
-void abr_p_absence_to_s(
+static void abr_p_absence_to_s(
   flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
 {
   flu_sbprintf(b, "abr_absence(...)");
 }
 
-void abr_p_n_to_s(
+static void abr_p_n_to_s(
   flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
 {
-  flu_sbprintf(b, "abr_n(\"%s\")", p->name);
+  flu_sbprintf(b, "abr_n(\"%s\") /* %s */", p->name, p->id);
   if (p->children == NULL) flu_sbprintf(b, " /* not linked */", p->name);
   //else flu_sbprintf(b, " /* linked */", p->name);
 }
 
-void abr_p_r_to_s(
+static void abr_p_r_to_s(
   flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
 {
-  flu_sbprintf(b, "abr_r(\"%s\")", p->string);
+  flu_sbprintf(b, "abr_r(\"%s\") /* %s */", p->string, p->id);
 }
 
 abr_p_to_s_func *abr_p_to_s_funcs[] = { // const ?
@@ -641,7 +651,7 @@ void abr_p_to_s(flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
   {
     int r = flu_list_add_unique(seen, p);
     if (r) abr_p_to_s_funcs[p->type](b, seen, indent, p);
-    else flu_sbprintf(b, "abr_n(\"%s\")", p->name);
+    else flu_sbprintf(b, "abr_n(\"%s\") /* %s */", p->name, p->id);
   }
 }
 

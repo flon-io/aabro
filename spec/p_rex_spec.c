@@ -28,9 +28,9 @@ context "abr_rex"
       p = abr_rex("a");
 
       ensure(abr_parser_to_string(p) ===f ""
-        "abr_rex(\"a\")");
+        "abr_rex(\"a\") /* 0 */");
       ensure(abr_parser_to_string(p->children[0]) ===f ""
-        "abr_string(\"a\")");
+        "abr_string(\"a\") /* 00 */");
     }
 
     it "accepts \"a\\?\""
@@ -38,9 +38,9 @@ context "abr_rex"
       p = abr_rex("a\\?");
 
       ensure(abr_parser_to_string(p) ===f ""
-        "abr_rex(\"a\\?\")");
+        "abr_rex(\"a\\?\") /* 0 */");
       ensure(abr_parser_to_string(p->children[0]) ===f ""
-        "abr_string(\"a?\")");
+        "abr_string(\"a?\") /* 00 */");
     }
 
     it "accepts \"a+\""
@@ -48,10 +48,10 @@ context "abr_rex"
       p = abr_rex("a+");
 
       ensure(abr_parser_to_string(p) ===f ""
-        "abr_rex(\"a+\")");
+        "abr_rex(\"a+\") /* 0 */");
       ensure(abr_parser_to_string(p->children[0]) ===f ""
-        "abr_rep(\n"
-        "  abr_string(\"a\"), 1, -1)");
+        "abr_rep( /* 00 */\n"
+        "  abr_string(\"a\") /* 000 */, 1, -1)");
     }
 
     it "accepts \"ab+\""
@@ -59,12 +59,12 @@ context "abr_rex"
       p = abr_rex("ab+");
 
       ensure(abr_parser_to_string(p) ===f ""
-        "abr_rex(\"ab+\")");
+        "abr_rex(\"ab+\") /* 0 */");
       ensure(abr_parser_to_string(p->children[0]) ===f ""
-        "abr_seq(\n"
-        "  abr_string(\"a\"),\n"
-        "  abr_rep(\n"
-        "    abr_string(\"b\"), 1, -1),\n"
+        "abr_seq( /* 00 */\n"
+        "  abr_string(\"a\") /* 000 */,\n"
+        "  abr_rep( /* 001 */\n"
+        "    abr_string(\"b\") /* 0010 */, 1, -1),\n"
         "  NULL)");
     }
 
@@ -73,11 +73,11 @@ context "abr_rex"
       p = abr_rex("ab+c");
 
       ensure(abr_parser_to_string(p->children[0]) ===f ""
-        "abr_seq(\n"
-        "  abr_string(\"a\"),\n"
-        "  abr_rep(\n"
-        "    abr_string(\"b\"), 1, -1),\n"
-        "  abr_string(\"c\"),\n"
+        "abr_seq( /* 0 */\n"
+        "  abr_string(\"a\") /* 00 */,\n"
+        "  abr_rep( /* 01 */\n"
+        "    abr_string(\"b\") /* 010 */, 1, -1),\n"
+        "  abr_string(\"c\") /* 02 */,\n"
         "  NULL)");
     }
 
@@ -86,8 +86,8 @@ context "abr_rex"
       p = abr_rex("[a-z]+");
 
       ensure(abr_parser_to_string(p->children[0]) ===f ""
-        "abr_rep(\n"
-        "  abr_range(\"a-z\"), 1, -1)");
+        "abr_rep( /* 0 */\n"
+        "  abr_range(\"a-z\") /* 00 */, 1, -1)");
     }
 
     it "accepts \"[)(]\""
@@ -95,7 +95,7 @@ context "abr_rex"
       p = abr_rex("[)(]");
 
       ensure(abr_parser_to_string(p->children[0]) ===f ""
-        "abr_range(\")(\")");
+        "abr_range(\")(\") /* 0 */");
     }
 
     it "accepts \"([)(])\""
@@ -103,7 +103,7 @@ context "abr_rex"
       p = abr_rex("([)(])");
 
       ensure(abr_parser_to_string(p->children[0]) ===f ""
-        "abr_range(\")(\")");
+        "abr_range(\")(\") /* 0 */");
     }
 
     it "accepts \"(ab)\""
@@ -111,7 +111,7 @@ context "abr_rex"
       p = abr_rex("(ab)");
 
       ensure(abr_parser_to_string(p->children[0]) ===f ""
-        "abr_string(\"ab\")");
+        "abr_string(\"ab\") /* 0 */");
     }
 
     it "accepts \"ab[c-d]ef\""
@@ -119,10 +119,10 @@ context "abr_rex"
       p = abr_rex("ab[c-d]ef");
 
       ensure(abr_parser_to_string(p->children[0]) ===f ""
-        "abr_seq(\n"
-        "  abr_string(\"ab\"),\n"
-        "  abr_range(\"c-d\"),\n"
-        "  abr_string(\"ef\"),\n"
+        "abr_seq( /* 0 */\n"
+        "  abr_string(\"ab\") /* 00 */,\n"
+        "  abr_range(\"c-d\") /* 01 */,\n"
+        "  abr_string(\"ef\") /* 02 */,\n"
         "  NULL)");
     }
 
@@ -131,9 +131,9 @@ context "abr_rex"
       p = abr_rex("ab|cd");
 
       ensure(abr_parser_to_string(p->children[0]) ===f ""
-        "abr_alt(\n"
-        "  abr_string(\"ab\"),\n"
-        "  abr_string(\"cd\"),\n"
+        "abr_alt( /* 0 */\n"
+        "  abr_string(\"ab\") /* 00 */,\n"
+        "  abr_string(\"cd\") /* 01 */,\n"
         "  NULL)");
     }
 
@@ -142,11 +142,11 @@ context "abr_rex"
       p = abr_rex("ab|[a-z|]+|cd");
 
       ensure(abr_parser_to_string(p->children[0]) ===f ""
-        "abr_alt(\n"
-        "  abr_string(\"ab\"),\n"
-        "  abr_rep(\n"
-        "    abr_range(\"a-z|\"), 1, -1),\n"
-        "  abr_string(\"cd\"),\n"
+        "abr_alt( /* 0 */\n"
+        "  abr_string(\"ab\") /* 00 */,\n"
+        "  abr_rep( /* 01 */\n"
+        "    abr_range(\"a-z|\") /* 010 */, 1, -1),\n"
+        "  abr_string(\"cd\") /* 02 */,\n"
         "  NULL)");
     }
 
@@ -155,10 +155,10 @@ context "abr_rex"
       p = abr_rex("ab(cd)ef");
 
       ensure(abr_parser_to_string(p->children[0]) ===f ""
-        "abr_seq(\n"
-        "  abr_string(\"ab\"),\n"
-        "  abr_string(\"cd\"),\n"
-        "  abr_string(\"ef\"),\n"
+        "abr_seq( /* 0 */\n"
+        "  abr_string(\"ab\") /* 00 */,\n"
+        "  abr_string(\"cd\") /* 01 */,\n"
+        "  abr_string(\"ef\") /* 02 */,\n"
         "  NULL)");
     }
 
@@ -167,11 +167,11 @@ context "abr_rex"
       p = abr_rex("ab(cd)?ef");
 
       ensure(abr_parser_to_string(p->children[0]) ===f ""
-        "abr_seq(\n"
-        "  abr_string(\"ab\"),\n"
-        "  abr_rep(\n"
-        "    abr_string(\"cd\"), 0, 1),\n"
-        "  abr_string(\"ef\"),\n"
+        "abr_seq( /* 0 */\n"
+        "  abr_string(\"ab\") /* 00 */,\n"
+        "  abr_rep( /* 01 */\n"
+        "    abr_string(\"cd\") /* 010 */, 0, 1),\n"
+        "  abr_string(\"ef\") /* 02 */,\n"
         "  NULL)");
     }
 
@@ -180,11 +180,11 @@ context "abr_rex"
       p = abr_rex("ab|(cd|ef)|gh");
 
       ensure(abr_parser_to_string(p->children[0]) ===f ""
-        "abr_alt(\n"
-        "  abr_string(\"ab\"),\n"
-        "  abr_string(\"cd\"),\n"
-        "  abr_string(\"ef\"),\n"
-        "  abr_string(\"gh\"),\n"
+        "abr_alt( /* 0 */\n"
+        "  abr_string(\"ab\") /* 00 */,\n"
+        "  abr_string(\"cd\") /* 01 */,\n"
+        "  abr_string(\"ef\") /* 02 */,\n"
+        "  abr_string(\"gh\") /* 03 */,\n"
         "  NULL)");
     }
 
@@ -193,12 +193,12 @@ context "abr_rex"
       p = abr_rex("ab|(cd[a-z\\(])ef");
 
       ensure(abr_parser_to_string(p->children[0]) ===f ""
-        "abr_alt(\n"
-        "  abr_string(\"ab\"),\n"
-        "  abr_seq(\n"
-        "    abr_string(\"cd\"),\n"
-        "    abr_range(\"a-z\\(\"),\n"
-        "    abr_string(\"ef\"),\n"
+        "abr_alt( /* 0 */\n"
+        "  abr_string(\"ab\") /* 00 */,\n"
+        "  abr_seq( /* 01 */\n"
+        "    abr_string(\"cd\") /* 010 */,\n"
+        "    abr_range(\"a-z\\(\") /* 011 */,\n"
+        "    abr_string(\"ef\") /* 012 */,\n"
         "    NULL),\n"
         "  NULL)");
     }
@@ -208,10 +208,10 @@ context "abr_rex"
       p = abr_rex("a.b");
 
       ensure(abr_parser_to_string(p->children[0]) ===f ""
-        "abr_seq(\n"
-        "  abr_string(\"a\"),\n"
-        "  abr_range(\".\"),\n"
-        "  abr_string(\"b\"),\n"
+        "abr_seq( /* 0 */\n"
+        "  abr_string(\"a\") /* 00 */,\n"
+        "  abr_range(\".\") /* 01 */,\n"
+        "  abr_string(\"b\") /* 02 */,\n"
         "  NULL)");
     }
 
@@ -220,11 +220,11 @@ context "abr_rex"
       p = abr_rex("a.?b");
 
       ensure(abr_parser_to_string(p->children[0]) ===f ""
-        "abr_seq(\n"
-        "  abr_string(\"a\"),\n"
-        "  abr_rep(\n"
-        "    abr_range(\".\"), 0, 1),\n"
-        "  abr_string(\"b\"),\n"
+        "abr_seq( /* 0 */\n"
+        "  abr_string(\"a\") /* 00 */,\n"
+        "  abr_rep( /* 01 */\n"
+        "    abr_range(\".\") /* 010 */, 0, 1),\n"
+        "  abr_string(\"b\") /* 02 */,\n"
         "  NULL)");
     }
 
@@ -233,21 +233,21 @@ context "abr_rex"
       p = abr_rex("([ \t]*((#[^\r\n]*)?([\r\n]|$))?)*");
 
       ensure(abr_parser_to_string(p->children[0]) ===f ""
-        "abr_rep(\n"
-        "  abr_seq(\n"
-        "    abr_rep(\n"
-        "      abr_range(\" \t\"), 0, -1),\n"
-        "    abr_rep(\n"
-        "      abr_seq(\n"
-        "        abr_rep(\n"
-        "          abr_seq(\n"
-        "            abr_string(\"#\"),\n"
-        "            abr_rep(\n"
-        "              abr_range(\"^\r\n\"), 0, -1),\n"
+        "abr_rep( /* 0 */\n"
+        "  abr_seq( /* 00 */\n"
+        "    abr_rep( /* 000 */\n"
+        "      abr_range(\" \t\") /* 0000 */, 0, -1),\n"
+        "    abr_rep( /* 001 */\n"
+        "      abr_seq( /* 0010 */\n"
+        "        abr_rep( /* 00100 */\n"
+        "          abr_seq( /* 001000 */\n"
+        "            abr_string(\"#\") /* 0010000 */,\n"
+        "            abr_rep( /* 0010001 */\n"
+        "              abr_range(\"^\r\n\") /* 00100010 */, 0, -1),\n"
         "            NULL), 0, 1),\n"
-        "        abr_alt(\n"
-        "          abr_range(\"\r\n\"),\n"
-        "          abr_range(\"$\"),\n"
+        "        abr_alt( /* 00101 */\n"
+        "          abr_range(\"\r\n\") /* 001010 */,\n"
+        "          abr_range(\"$\") /* 001011 */,\n"
         "          NULL),\n"
         "        NULL), 0, 1),\n"
         "    NULL), 0, -1)");
@@ -258,13 +258,13 @@ context "abr_rex"
       p = abr_rex("a[0-9]{4}|b");
 
       ensure(abr_parser_to_string(p->children[0]) ===f ""
-        "abr_alt(\n"
-        "  abr_seq(\n"
-        "    abr_string(\"a\"),\n"
-        "    abr_rep(\n"
-        "      abr_range(\"0-9\"), 4, 4),\n"
+        "abr_alt( /* 0 */\n"
+        "  abr_seq( /* 00 */\n"
+        "    abr_string(\"a\") /* 000 */,\n"
+        "    abr_rep( /* 001 */\n"
+        "      abr_range(\"0-9\") /* 0010 */, 4, 4),\n"
         "    NULL),\n"
-        "  abr_string(\"b\"),\n"
+        "  abr_string(\"b\") /* 01 */,\n"
         "  NULL)");
     }
 
@@ -273,13 +273,13 @@ context "abr_rex"
       p = abr_rex("a[0-9]{4,5}|b");
 
       ensure(abr_parser_to_string(p->children[0]) ===f ""
-        "abr_alt(\n"
-        "  abr_seq(\n"
-        "    abr_string(\"a\"),\n"
-        "    abr_rep(\n"
-        "      abr_range(\"0-9\"), 4, 5),\n"
+        "abr_alt( /* 0 */\n"
+        "  abr_seq( /* 00 */\n"
+        "    abr_string(\"a\") /* 000 */,\n"
+        "    abr_rep( /* 001 */\n"
+        "      abr_range(\"0-9\") /* 0010 */, 4, 5),\n"
         "    NULL),\n"
-        "  abr_string(\"b\"),\n"
+        "  abr_string(\"b\") /* 01 */,\n"
         "  NULL)");
     }
   }
@@ -291,12 +291,12 @@ context "abr_rex"
       p = abr_n_rex("a_and_bs", "ab+");
 
       ensure(abr_parser_to_string(p) ===f ""
-        "abr_n_rex(\"a_and_bs\", \"ab+\")");
+        "abr_n_rex(\"a_and_bs\", \"ab+\") /* 0 */");
       ensure(abr_parser_to_string(p->children[0]) ===f ""
-        "abr_seq(\n"
-        "  abr_string(\"a\"),\n"
-        "  abr_rep(\n"
-        "    abr_string(\"b\"), 1, -1),\n"
+        "abr_seq( /* 00 */\n"
+        "  abr_string(\"a\") /* 000 */,\n"
+        "  abr_rep( /* 001 */\n"
+        "    abr_string(\"b\") /* 0010 */, 1, -1),\n"
         "  NULL)");
     }
   }
@@ -308,7 +308,7 @@ context "abr_rex"
       p = abr_rex("{1,2}");
 
       ensure(abr_parser_to_string(p->children[0]) ===f ""
-        "abr_error(\"orphan quantifier >{1,2}<\")");
+        "abr_error(\"orphan quantifier >{1,2}<\") /* 0 */");
     }
 
     it "fails when a range isn't closed"
@@ -316,7 +316,7 @@ context "abr_rex"
       p = abr_rex("[a-z");
 
       ensure(abr_parser_to_string(p->children[0]) ===f ""
-        "abr_error(\"range not closed >[a-z<\")");
+        "abr_error(\"range not closed >[a-z<\") /* 0 */");
     }
   }
 

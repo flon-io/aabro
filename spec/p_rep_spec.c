@@ -58,8 +58,8 @@ context "repetition"
       char *s = abr_parser_to_string(p);
 
       ensure(s ===f ""
-        "abr_rep(\n"
-        "  abr_string(\"xy\"), 1, 2)");
+        "abr_rep( /* 0 */\n"
+        "  abr_string(\"xy\") /* 00 */, 1, 2)");
     }
     it "returns a string representation of the named parser struct"
     {
@@ -67,9 +67,9 @@ context "repetition"
       char *s = abr_parser_to_string(p);
 
       ensure(s ===f ""
-        "abr_n_rep(\n"
+        "abr_n_rep( /* 0 */\n"
         "  \"xandy\",\n"
-        "  abr_string(\"xy\"), 1, 2)");
+        "  abr_string(\"xy\") /* 00 */, 1, 2)");
     }
   }
 
