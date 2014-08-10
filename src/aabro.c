@@ -1182,7 +1182,7 @@ static ssize_t abr_find_range_end(const char *s)
     char c = s[i];
 
     if (c == '\0') break;
-    if (c == '\\') continue;
+    if (c == '\\') { ++i; continue; }
     if (c == ']') return i;
   }
 

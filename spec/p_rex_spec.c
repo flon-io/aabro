@@ -282,6 +282,15 @@ context "abr_rex"
         "  abr_string(\"b\") /* 01 */,\n"
         "  NULL)");
     }
+
+    it "accepts \"[\"\\]]+\""
+    {
+      p = abr_rex("[\"\\]]+");
+
+      ensure(abr_parser_to_string(p->children[0]) ===f ""
+        "abr_rep( /* 0 */\n"
+        "  abr_range(\"\"\\]\") /* 00 */, 1, -1)");
+    }
   }
 
   describe "abr_n_rex(name, s)"
@@ -464,6 +473,18 @@ context "abr_rex"
       //p = abr_rep(abr_rep(abr_string("x"), 0, -1), 0, -1); // loops
 
       t = abr_parse("", 0, p);
+      ensure(t->result == 1);
+    }
+
+    it "parses ranges with escapes"
+    {
+      p = abr_rex("[\\]]");
+
+      t = abr_parse("a", 0, p);
+      ensure(t->result == 0);
+
+      abr_tree_free(t);
+      t = abr_parse("]", 0, p);
       ensure(t->result == 1);
     }
   }

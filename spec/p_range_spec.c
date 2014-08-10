@@ -230,6 +230,20 @@ context "abr_range"
         ensure(t->result == 0);
         ensure(t->length == 0);
       }
+
+      it "accepts \"\\\\\" (backslashing the backslash)"
+      {
+        p = abr_range("\\\\");
+
+        t = abr_parse("a", 0, p);
+
+        ensure(t->result == 0);
+
+        abr_tree_free(t);
+        t = abr_parse("\\", 0, p);
+
+        ensure(t->result == 1);
+      }
     }
   }
 }
