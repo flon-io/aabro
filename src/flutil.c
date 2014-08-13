@@ -155,6 +155,11 @@ int flu_sbputs_n(flu_sbuffer *b, const char *s, size_t n)
   return r;
 }
 
+size_t flu_sbwrite(flu_sbuffer *b, const char *s, size_t n)
+{
+  return fwrite(s, sizeof(char), n, b->stream);
+}
+
 int flu_sbuffer_close(flu_sbuffer *b)
 {
   int r = 0;

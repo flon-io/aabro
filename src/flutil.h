@@ -100,6 +100,10 @@ int flu_sbputs(flu_sbuffer *b, const char *s);
  */
 int flu_sbputs_n(flu_sbuffer *b, const char *s, size_t n);
 
+/* Merely encapsulates a fwrite().
+ */
+size_t flu_sbwrite(flu_sbuffer *b, const char *s, size_t n);
+
 /* Closes the buffer (stream) which causes the string to be made available.
  *
  * Doesn't not free the buffer, it still is around for further reading
