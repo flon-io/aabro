@@ -183,14 +183,19 @@ char *flu_sbuffer_to_string(flu_sbuffer *b)
   return s;
 }
 
-char *flu_sprintf(const char *format, ...)
+char *flu_svprintf(const char *format, va_list ap)
 {
-  va_list ap;
-  va_start(ap, format);
-
   flu_sbuffer *b = flu_sbuffer_malloc();
   flu_sbvprintf(b, format, ap);
-  char *s = flu_sbuffer_to_string(b);
+
+  return flu_sbuffer_to_string(b);
+}
+
+char *flu_sprintf(const char *format, ...)
+{
+  va_list ap; va_start(ap, format);
+
+  char *s = flu_svprintf(format, ap);
 
   va_end(ap);
 
