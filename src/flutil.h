@@ -261,5 +261,13 @@ void *flu_list_shift(flu_list *l);
  */
 char *flu_strdup(char *s);
 
+/* Returns the count of milliseconds (10-3) since the Epoch.
+ */
+long long flu_getms();
+
+/* Returns the count of microseconds (10-6) since the Epoch.
+ */
+long long flu_getMs();
+
 #endif // FLON_FLUTIL_H
 

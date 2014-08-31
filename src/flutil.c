@@ -27,6 +27,8 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+#include <sys/time.h>
 
 #include "flutil.h"
 
@@ -476,5 +478,19 @@ char *flu_strdup(char *s)
   char *r = calloc(l + 1, sizeof(char));
   strcpy(r, s);
   return r;
+}
+
+long long flu_getms()
+{
+  struct timeval tv;
+  int r = gettimeofday(&tv, NULL);
+  return r == 0 ? tv.tv_sec * 1000 + tv.tv_usec / 1000 : 0;
+}
+
+long long flu_getMs()
+{
+  struct timeval tv;
+  int r = gettimeofday(&tv, NULL);
+  return r == 0 ? tv.tv_sec * 1000000 + tv.tv_usec : 0;
 }
 
