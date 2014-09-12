@@ -1,11 +1,10 @@
 
 NAME=aabro
-FLIBS=flutil
 
 default: $(NAME).o
 
 .DEFAULT spec clean:
-	$(MAKE) -C tmp/ $@ NAME=$(NAME) FLIBS="$(FLIBS)"
+	$(MAKE) -C tmp/ $@ NAME=$(NAME)
 
 # copy updated version of dep libs into src/
 #
