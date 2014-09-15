@@ -315,31 +315,18 @@ static abr_parser *abr_r_expand(abr_parser *r, abr_parser *child)
   return r;
 }
 
-//typedef struct abr_parser {
-//  char *id;
-//  char *name;
-//  short type;
-//  char *string;
-//  regex_t *regex;
-//  ssize_t min; ssize_t max;
-//  struct abr_parser **children;
-//} abr_parser;
-
 static void abr_q_wrap(abr_parser *last, abr_parser *q)
 {
   char *quantifier = q->string;
-  char *q_name = q->name;
 
   // last becomes q, q becomes last
 
-  q->name = last->name;
   q->type = last->type;
   q->string = last->string;
   q->min = last->min;
   q->max = last->max;
   q->children = last->children;
 
-  last->name = q_name;
   last->type = abr_pt_rep;
   last->string = NULL;
   abr_parse_rex_quant(quantifier, last); free(quantifier);

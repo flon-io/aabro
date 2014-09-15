@@ -62,8 +62,8 @@ describe "abr_q()"
       ensure(s ===f ""
         "abr_seq( /* 0 */\n"
         "  abr_n_rep( /* 00 */\n"
-        "    \"qn\",\n"
-        "    abr_n_string(\"sn\", \"x\") /* 000 */, 1, -1),\n"
+        "    \"sn\",\n"
+        "    abr_n_string(\"qn\", \"x\") /* 000 */, 1, -1),\n"
         "  NULL)");
     }
   }
