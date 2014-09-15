@@ -98,6 +98,7 @@ typedef enum abr_p_type
   abr_pt_absence,
   abr_pt_n,
   abr_pt_r,
+  abr_pt_q,
   abr_pt_range,
   abr_pt_rex,
   abr_pt_error
@@ -107,7 +108,7 @@ char *abr_p_names[] = { // const ?
   "string", "regex",
   "rep", "alt", "seq",
   "not", "name", "presence", "absence", "n",
-  "r", "range", "rex",
+  "r", "q", "range", "rex",
   "error"
 };
 
@@ -314,18 +315,65 @@ static abr_parser *abr_r_expand(abr_parser *r, abr_parser *child)
   return r;
 }
 
+//typedef struct abr_parser {
+//  char *id;
+//  char *name;
+//  short type;
+//  char *string;
+//  regex_t *regex;
+//  ssize_t min; ssize_t max;
+//  struct abr_parser **children;
+//} abr_parser;
+
+static void abr_q_wrap(abr_parser *last, abr_parser *q)
+{
+  char *quantifier = q->string;
+  char *q_name = q->name;
+
+  // last becomes q, q becomes last
+
+  q->name = last->name;
+  q->type = last->type;
+  q->string = last->string;
+  q->min = last->min;
+  q->max = last->max;
+  q->children = last->children;
+
+  last->name = q_name;
+  last->type = abr_pt_rep;
+  last->string = NULL;
+  abr_parse_rex_quant(quantifier, last); free(quantifier);
+  last->children = abr_single_child(q);
+}
+
 static abr_parser *abr_wrap_children(abr_parser *p, abr_parser *c0, va_list ap)
 {
+  if (c0->type == abr_pt_q)
+  {
+    c0->type = abr_pt_error;
+    char *ns = flu_sprintf("'%s': no preceding parser to wrap", c0->string);
+    free(c0->string);
+    c0->string = ns;
+  }
+
   flu_list *l = flu_list_malloc();
 
   flu_list_add(l, c0);
 
   abr_parser *child = NULL;
-  while(1)
+
+  while (1)
   {
     child = va_arg(ap, abr_parser *);
+
     if (child == NULL) break;
     if (child->type == abr_pt_r) break;
+
+    if (child->type == abr_pt_q)
+    {
+      abr_q_wrap((abr_parser *)l->last->item, child); continue;
+    }
+
     flu_list_add(l, child);
   }
 
@@ -333,7 +381,7 @@ static abr_parser *abr_wrap_children(abr_parser *p, abr_parser *c0, va_list ap)
 
   flu_list_free(l);
 
-  if (child == NULL) return p;
+  if (child == NULL || child->type == abr_pt_q) return p;
 
   return abr_r_expand(child, p);
 }
@@ -463,6 +511,7 @@ abr_parser *abr_name(const char *name, abr_parser *p)
   abr_parser *r = abr_parser_malloc(abr_pt_name, name);
   r->children = abr_single_child(p);
   abr_do_name(r, r);
+
   return r;
 }
 
@@ -479,6 +528,20 @@ abr_parser *abr_r(const char *code)
 abr_parser *abr_n_r(const char *name, const char *code)
 {
   abr_parser *r = abr_parser_malloc(abr_pt_r, name);
+  r->string = strdup(code);
+  abr_do_name(r, r);
+
+  return r;
+}
+
+abr_parser *abr_q(const char *code)
+{
+  return abr_n_q(NULL, code);
+}
+
+abr_parser *abr_n_q(const char *name, const char *code)
+{
+  abr_parser *r = abr_parser_malloc(abr_pt_q, name);
   r->string = strdup(code);
   abr_do_name(r, r);
 
@@ -623,6 +686,12 @@ static void abr_p_r_to_s(
   flu_sbprintf(b, "abr_r(\"%s\") /* %s */", p->string, p->id);
 }
 
+static void abr_p_q_to_s(
+  flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
+{
+  flu_sbprintf(b, "abr_q(\"%s\") /* %s */", p->string, p->id);
+}
+
 abr_p_to_s_func *abr_p_to_s_funcs[] = { // const ?
   abr_p_string_to_s,
   abr_p_regex_to_s,
@@ -635,6 +704,7 @@ abr_p_to_s_func *abr_p_to_s_funcs[] = { // const ?
   abr_p_absence_to_s,
   abr_p_n_to_s,
   abr_p_r_to_s,
+  abr_p_q_to_s,
   abr_p_string_to_s, // range
   abr_p_string_to_s, // rex
   abr_p_string_to_s  // "error" parser
@@ -671,7 +741,7 @@ char *abr_parser_to_string(abr_parser *p)
 
 char *abr_parser_to_s(abr_parser *p)
 {
-  if (p->id == NULL) abr_set_ids(p);
+  //if (p->id == NULL) abr_set_ids(p);
 
   size_t ccount = 0;
   if (p->children) while (p->children[ccount] != NULL) { ++ccount; }
@@ -978,6 +1048,7 @@ abr_p_func *abr_p_funcs[] = { // const ?
   abr_p_not_implemented, //abr_p_absence,
   abr_p_n,
   abr_p_not_implemented, //abr_p_r
+  abr_p_not_implemented, //abr_p_q
   abr_p_range,
   abr_p_rex,
   abr_p_error

@@ -27,7 +27,7 @@ context "abr_range"
     {
       p = abr_range("abc");
 
-      ensure(p->type == 11);
+      ensure(p->type == 12);
       ensure(p->string === "abc");
       ensure(abr_parser_to_string(p) ===f "abr_range(\"abc\") /* 0 */");
     }

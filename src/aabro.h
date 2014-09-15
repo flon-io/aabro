@@ -127,6 +127,8 @@ abr_parser *abr_n(const char *name);
 
 abr_parser *abr_r(const char *code);
 abr_parser *abr_n_r(const char *name, const char *code);
+abr_parser *abr_q(const char *code);
+abr_parser *abr_n_q(const char *name, const char *code);
 
 //abr_parser *abr_not(abr_parser *p);
 //abr_parser *abr_presence(abr_parser *p);
