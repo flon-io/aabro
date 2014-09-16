@@ -88,7 +88,6 @@ char *abr_tree_str(char *input, abr_tree *t)
 typedef enum abr_p_type
 {
   abr_pt_string,
-  abr_pt_regex,
   abr_pt_rep,
   abr_pt_alt,
   abr_pt_seq,
@@ -105,7 +104,7 @@ typedef enum abr_p_type
 } abr_p_type;
 
 char *abr_p_names[] = { // const ?
-  "string", "regex",
+  "string",
   "rep", "alt", "seq",
   "not", "name", "presence", "absence", "n",
   "r", "q", "range", "rex",
@@ -203,14 +202,6 @@ static void abr_p_free(void *v)
 
   if (p->id != NULL) free(p->id);
   if (p->name != NULL) free(p->name);
-
-  // free the regex if it was created with abr_regex_s(char *s)
-  if (p->regex != NULL && p->string != NULL)
-  {
-     regfree(p->regex);
-     free(p->regex);
-  }
-
   if (p->string != NULL) free(p->string);
   if (p->children != NULL) free(p->children);
 
@@ -233,7 +224,6 @@ static abr_parser *abr_parser_malloc(abr_p_type type, const char *name)
   p->name = (name == NULL) ? NULL : strdup(name);
   p->type = type;
   p->string = NULL;
-  p->regex = NULL;
   p->min = -1; p->max = -1;
   p->children = NULL;
 
@@ -385,32 +375,6 @@ abr_parser *abr_n_string(const char *name, const char *s)
   return p;
 }
 
-abr_parser *abr_regex(const char *s)
-{
-  return abr_n_regex(NULL, s);
-}
-
-abr_parser *abr_n_regex(const char *name, const char *s)
-{
-  abr_parser *p = abr_parser_malloc(abr_pt_regex, name);
-  p->string = strdup(s); // keep a copy of the original
-  p->regex = calloc(1, sizeof(regex_t));
-  regcomp(p->regex, p->string, REG_EXTENDED);
-  return p;
-}
-
-abr_parser *abr_regex_r(regex_t *r)
-{
-  return abr_n_regex_r(NULL, r);
-}
-
-abr_parser *abr_n_regex_r(const char *name, regex_t *r)
-{
-  abr_parser *p = abr_parser_malloc(abr_pt_regex, name);
-  p->regex = r;
-  return p;
-}
-
 abr_parser *abr_range(const char *range)
 {
   return abr_n_range(NULL, range);
@@ -556,29 +520,6 @@ static void abr_p_string_to_s( // works for range and rex as well
       abr_p_names[p->type], p->name, p->string, p->id);
 }
 
-static void abr_p_regex_to_s(
-  flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
-{
-  if (p->string == NULL)
-  {
-    if (p->name == NULL)
-      flu_sbprintf(
-        b, "abr_regex_r(%p) /* %s */", p->regex, p->id);
-    else
-      flu_sbprintf(
-        b, "abr_n_regex_r(\"%s\", %p) /* %s */", p->name, p->regex, p->id);
-  }
-  else
-  {
-    if (p->name == NULL)
-      flu_sbprintf(
-        b, "abr_regex(\"%s\") /* %s */", p->string, p->id);
-    else
-      flu_sbprintf(
-        b, "abr_n_regex(\"%s\", \"%s\") /* %s */", p->name, p->string, p->id);
-  }
-}
-
 static void abr_p_rep_to_s(
   flu_sbuffer *b, flu_list *seen, int indent, abr_parser *p)
 {
@@ -681,7 +622,6 @@ static void abr_p_q_to_s(
 
 abr_p_to_s_func *abr_p_to_s_funcs[] = { // const ?
   abr_p_string_to_s,
-  abr_p_regex_to_s,
   abr_p_rep_to_s,
   abr_p_alt_to_s,
   abr_p_seq_to_s,
@@ -781,24 +721,6 @@ abr_tree *abr_p_string(
   if (strncmp(input + offset, p->string, le) != 0) { su = 0; le = 0; }
 
   return abr_tree_malloc(su, offset, le, NULL, p, NULL);
-}
-
-abr_tree *abr_p_regex(
-  const char *input,
-  size_t offset, size_t depth,
-  abr_parser *p,
-  int flags)
-{
-  regmatch_t ms[1];
-
-  if (regexec(p->regex, input + offset, 1, ms, 0))
-  {
-    // failure
-    return abr_tree_malloc(0, offset, 0, NULL, p, NULL);
-  }
-
-  // success
-  return abr_tree_malloc(1, offset, ms[0].rm_eo - ms[0].rm_so, NULL, p, NULL);
 }
 
 abr_tree *abr_p_rep(
@@ -1025,7 +947,6 @@ abr_tree *abr_p_not_implemented(
 
 abr_p_func *abr_p_funcs[] = { // const ?
   abr_p_string,
-  abr_p_regex,
   abr_p_rep,
   abr_p_alt,
   abr_p_seq,

@@ -76,14 +76,14 @@ context "name"
       abr_parser *val =
         abr_n_alt(
           "val",
-          abr_regex("^-?[0-9]+"),
+          abr_rex("-?[0-9]+"),
           abr_seq(abr_string("("), abr_n("exp"), abr_string(")"), NULL),
           NULL);
       abr_parser *op =
         abr_n_seq(
           "op",
           abr_n("exp"),
-          abr_regex("^[\+\-\*\/]"),
+          abr_rex("[\+\-\*\/]"),
           abr_n("exp"),
           NULL);
       abr_parser *exp =
@@ -96,7 +96,7 @@ context "name"
       ensure(s ===f ""
         "[ \"exp\", 1, 0, 1, null, \"alt-0\", [\n"
         "  [ \"val\", 1, 0, 1, null, \"alt-00\", [\n"
-        "    [ null, 1, 0, 1, null, \"regex-000\", [] ]\n"
+        "    [ null, 1, 0, 1, null, \"rex-000\", [] ]\n"
         "  ] ]\n"
         "] ]");
     }
@@ -131,8 +131,6 @@ context "abr_n_xxx"
     abr_parser *entry =
       abr_n_seq(
         "entry",
-        //abr_n_regex("symbol", "^[a-zA-Z_]+"),
-        //abr_string(":"),
         abr_n("value"),
         NULL);
 
@@ -142,7 +140,6 @@ context "abr_n_xxx"
         abr_seq(
           entry,
           abr_rep(
-            //abr_seq(abr_string(","), entry, NULL),
             entry,
             0, -1),
           NULL
@@ -152,14 +149,14 @@ context "abr_n_xxx"
     p =
       abr_n_alt(
         "value",
-        abr_n_regex("number", "^-?[0-9]+(\\.[0-9]+)?([eE][+-]?[0-9]+)?"),
+        abr_n_rex("number", "-?[0-9]+(\\.[0-9]+)?([eE][+-]?[0-9]+)?"),
         abr_n_seq("object", abr_string("{"), entries, abr_string("}"), NULL),
         NULL);
 
     ensure(abr_parser_to_string(p) ===f ""
       "abr_n_alt( /* 0 */\n"
       "  \"value\",\n"
-      "  abr_n_regex(\"number\", \"^-?[0-9]+(\\.[0-9]+)?([eE][+-]?[0-9]+)?\") /* 00 */,\n"
+      "  abr_n_rex(\"number\", \"-?[0-9]+(\\.[0-9]+)?([eE][+-]?[0-9]+)?\") /* 00 */,\n"
       "  abr_n_seq( /* 01 */\n"
       "    \"object\",\n"
       "    abr_string(\"{\") /* 010 */,\n"

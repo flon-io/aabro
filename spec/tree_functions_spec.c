@@ -15,14 +15,23 @@ context "tree functions"
     abr_tree *t = NULL;
 
     abr_parser *string =
-      abr_n_regex(
+      abr_n_rex(
         "string",
-        "^\"("
+        "\"("
           //"\\\\." "|"
           "\\\\[\"\\/\\\\bfnrt]" "|"
           "\\\\u[0-9a-fA-F]{4}" "|"
-          "[^\"\\]"
+          "[^\"\\\\]"
         ")*\"");
+    //abr_parser *string =
+    //  abr_n_regex(
+    //    "string",
+    //    "^\"("
+    //      //"\\\\." "|"
+    //      "\\\\[\"\\/\\\\bfnrt]" "|"
+    //      "\\\\u[0-9a-fA-F]{4}" "|"
+    //      "[^\"\\]"
+    //    ")*\"");
 
     abr_parser *values =
       abr_n_rep(
@@ -40,7 +49,7 @@ context "tree functions"
       abr_n_seq("array", abr_string("["), values, abr_string("]"), NULL);
 
     abr_parser *number =
-      abr_n_regex("number", "^-?[0-9]+(\\.[0-9]+)?");
+      abr_n_rex("number", "-?[0-9]+(\\.[0-9]+)?");
 
     abr_parser *p=
       abr_n_alt(
@@ -93,7 +102,7 @@ context "tree functions"
 
       ensure(abr_tree_to_string(t0) ===f ""
         "[ \"value\", 1, 1, 1, null, \"alt-0\", [\n"
-        "  [ \"number\", 1, 1, 1, null, \"regex-00\", [] ]\n"
+        "  [ \"number\", 1, 1, 1, null, \"rex-00\", [] ]\n"
         "] ]"
       );
 
@@ -156,7 +165,7 @@ context "tree functions"
 
       ensure(abr_tree_to_string(ts[0]) ===f ""
         "[ \"value\", 1, 1, 1, null, \"alt-0\", [\n"
-        "  [ \"number\", 1, 1, 1, null, \"regex-00\", [] ]\n"
+        "  [ \"number\", 1, 1, 1, null, \"rex-00\", [] ]\n"
         "] ]"
       );
 
@@ -232,7 +241,7 @@ context "tree functions"
       //puts(s);
       ensure(s ===f ""
         "[ \"value\", 1, 0, 2, null, \"alt-0\", [\n"
-        "  [ \"number\", 1, 0, 2, null, \"regex-00\", [] ]\n"
+        "  [ \"number\", 1, 0, 2, null, \"rex-00\", [] ]\n"
         "] ]");
     }
   }
@@ -253,19 +262,19 @@ context "tree functions"
         "    [ \"values\", 1, 1, 6, null, \"rep-011\", [\n"
         "      [ null, 1, 1, 6, null, \"seq-0110\", [\n"
         "        [ \"value\", 1, 1, 2, null, \"alt-0\", [\n"
-        "          [ \"number\", 1, 1, 2, null, \"regex-00\", \"-1\" ]\n"
+        "          [ \"number\", 1, 1, 2, null, \"rex-00\", \"-1\" ]\n"
         "        ] ],\n"
         "        [ null, 1, 3, 4, null, \"rep-01101\", [\n"
         "          [ null, 1, 3, 2, null, \"seq-011010\", [\n"
         "            [ null, 1, 3, 1, null, \"string-0110100\", \",\" ],\n"
         "            [ \"value\", 1, 4, 1, null, \"alt-0\", [\n"
-        "              [ \"number\", 1, 4, 1, null, \"regex-00\", \"0\" ]\n"
+        "              [ \"number\", 1, 4, 1, null, \"rex-00\", \"0\" ]\n"
         "            ] ]\n"
         "          ] ],\n"
         "          [ null, 1, 5, 2, null, \"seq-011010\", [\n"
         "            [ null, 1, 5, 1, null, \"string-0110100\", \",\" ],\n"
         "            [ \"value\", 1, 6, 1, null, \"alt-0\", [\n"
-        "              [ \"number\", 1, 6, 1, null, \"regex-00\", \"1\" ]\n"
+        "              [ \"number\", 1, 6, 1, null, \"rex-00\", \"1\" ]\n"
         "            ] ]\n"
         "          ] ]\n"
         "        ] ]\n"
@@ -284,7 +293,7 @@ context "tree functions"
 
       ensure(s ===f ""
         "[ \"value\", 1, 0, 13, null, \"alt-0\", [\n"
-        "  [ \"string\", 1, 0, 13, null, \"regex-02\", \"\\\"hello\\nworld\\\"\" ]\n"
+        "  [ \"string\", 1, 0, 13, null, \"rex-02\", \"\\\"hello\\nworld\\\"\" ]\n"
         "] ]");
     }
   }

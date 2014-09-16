@@ -27,7 +27,7 @@ describe "abr_q()"
     {
       p = abr_q("{4,5}");
 
-      ensure(p->type == 11);
+      ensure(p->type == 10);
       ensure(p->string === "{4,5}");
     }
 

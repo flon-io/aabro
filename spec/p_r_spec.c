@@ -27,7 +27,7 @@ describe "abr_r(), final child"
     {
       p = abr_r("{4,5}");
 
-      ensure(p->type == 10);
+      ensure(p->type == 9);
       ensure(p->string === "{4,5}");
     }
 

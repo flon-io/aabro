@@ -26,8 +26,6 @@
 #ifndef AABRO_H
 #define AABRO_H
 
-#include <regex.h>
-
 #include "flutil.h"
 
 //
@@ -38,7 +36,6 @@ typedef struct abr_parser {
   char *name;
   short type;
   char *string;
-  regex_t *regex;
   ssize_t min; ssize_t max;
   struct abr_parser **children;
 } abr_parser;
@@ -102,8 +99,6 @@ char *abr_tree_str(char *input, abr_tree *t);
 // last argument to stop iterating (over their arguments).
 
 abr_parser *abr_string(const char *s);
-abr_parser *abr_regex(const char *s);
-abr_parser *abr_regex_r(regex_t *r);
 abr_parser *abr_range(const char *range);
 abr_parser *abr_rex(const char *s);
 
@@ -112,8 +107,6 @@ abr_parser *abr_alt(abr_parser *p, ...);
 abr_parser *abr_seq(abr_parser *p, ...);
 
 abr_parser *abr_n_alt(const char *name, abr_parser *p, ...);
-abr_parser *abr_n_regex(const char *name, const char *s);
-abr_parser *abr_n_regex_r(const char *name, regex_t *r);
 abr_parser *abr_n_range(const char *name, const char *range);
 abr_parser *abr_n_rex(const char *name, const char *s);
 

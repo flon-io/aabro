@@ -80,14 +80,14 @@ context "repetition"
       p = abr_rep(abr_string("xy"), 1, 2);
       char *s = abr_parser_to_s(p);
 
-      ensure(s ===f "rep t2 c1 mn1 mx2");
+      ensure(s ===f "rep t1 c1 mn1 mx2");
     }
     it "returns a string representation of the named parser"
     {
       p = abr_n_rep("xandy", abr_string("xy"), 1, 2);
       char *s = abr_parser_to_s(p);
 
-      ensure(s ===f "rep t2 'xandy' c1 mn1 mx2");
+      ensure(s ===f "rep t1 'xandy' c1 mn1 mx2");
     }
   }
 
