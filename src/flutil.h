@@ -104,6 +104,10 @@ int flu_sbputs_n(flu_sbuffer *b, const char *s, size_t n);
  */
 size_t flu_sbwrite(flu_sbuffer *b, const char *s, size_t n);
 
+/* Encapsulates a fwrite().
+ */
+size_t flu_sbfwrite(flu_sbuffer *b, const void *s, size_t l, size_t n);
+
 /* Closes the buffer (stream) which causes the string to be made available.
  *
  * Doesn't not free the buffer, it still is around for further reading
@@ -145,32 +149,6 @@ char *flu_freadall(FILE *in);
 
 
 //
-// die
-
-/* Makes the process exit with the given exit_value. Right before
- * that it does perror(msg) where msg is composed with the given format
- * and arguments.
- */
-void flu_die(int exit_value, const char *format, ...);
-
-
-//
-// escape
-
-/* Returns an escaped copy of the given string.
- * Only escapes \ " \b \f \n \r \t. It doesn't escape UTF-8 chars (the
- * ones above ASCII).
- */
-char *flu_escape(const char *s);
-char *flu_n_escape(const char *s, size_t n);
-
-/* Returns an unescaped copy of the given string.
- */
-char *flu_unescape(const char *s);
-char *flu_n_unescape(const char *s, size_t n);
-
-
-//
 // flu_list
 //
 // a minimal list/stack/set with no ambition
@@ -178,7 +156,7 @@ char *flu_n_unescape(const char *s, size_t n);
 typedef struct flu_node {
   struct flu_node *next;
   void *item;
-  //char *key;
+  char *key;
 } flu_node;
 
 typedef struct flu_list {
@@ -187,10 +165,11 @@ typedef struct flu_list {
   size_t size;
 } flu_list;
 
+#define flu_dict flu_list
+
 /* Creates a new, empty, flu_list
  */
 flu_list *flu_list_malloc();
-
 
 /* Frees a flu_list and all its nodes. But doesn't attempt freeing the
  * items in the nodes.
@@ -250,12 +229,63 @@ void *flu_list_shift(flu_list *l);
 //void *flu_list_pop(flu_list *l);
 //void flu_list_insert(flu_list *l, size_t index, const void *item);
 
-//flu_htable h=100, k=1000
-//flu_set
+//
+// flu_list dictionary functions
+//
+// Where flu_list is used as a dictionary (warning: no hashing underneath,
+// plain unshifting of new bindings).
+
+/* Sets an item under a given key.
+ * Unshifts the new binding (O(1)).
+ */
+void flu_list_set(flu_list *l, const char *key, void *item);
+
+/* Given a key, returns the item bound for it, NULL instead.
+ * (O(n)).
+ */
+void *flu_list_get(flu_list *l, const char *key);
+
+/* Returns a trimmed (a unique value per key) version of the given flu_list
+ * dictionary. Meant for iterating over key/values.
+ */
+flu_list *flu_list_dtrim(flu_list *l);
+
+/* Given a va_list builds a flu_list dict. Is used underneath by flu_d().
+ */
+flu_list *flu_vd(va_list ap);
+
+/* Given a succession, key/value, key/value, builds a flu_list dict.
+ *
+ * Warning, it must be stopped with a NULL key, else it'll loop until
+ * it has made a dict of all the memory from v0...
+ */
+flu_list *flu_d(char *k0, void *v0, ...);
+
+
+//
+// escape
+
+/* Returns an escaped copy of the given string.
+ * Only escapes \ " \b \f \n \r \t. It doesn't escape UTF-8 chars (the
+ * ones above ASCII).
+ */
+char *flu_escape(const char *s);
+char *flu_n_escape(const char *s, size_t n);
+
+/* Returns an unescaped copy of the given string.
+ */
+char *flu_unescape(const char *s);
+char *flu_n_unescape(const char *s, size_t n);
 
 
 //
 // misc
+
+/* Makes the process exit with the given exit_value. Right before
+ * that it does perror(msg) where msg is composed with the given format
+ * and arguments.
+ */
+void flu_die(int exit_value, const char *format, ...);
 
 /* For those "warning: implicit declaration of function 'strdup'" times.
  */

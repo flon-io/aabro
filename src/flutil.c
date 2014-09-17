@@ -114,7 +114,7 @@ void flu_sbuffer_free(flu_sbuffer *b)
   if (b == NULL) return;
 
   if (b->stream != NULL) fclose(b->stream);
-  free(b->string);
+  if (b->string != NULL) free(b->string);
   free(b);
 }
 
@@ -162,6 +162,11 @@ size_t flu_sbwrite(flu_sbuffer *b, const char *s, size_t n)
   return fwrite(s, sizeof(char), n, b->stream);
 }
 
+size_t flu_sbfwrite(flu_sbuffer *b, const void *s, size_t l, size_t n)
+{
+  return fwrite(s, l, n, b->stream);
+}
+
 int flu_sbuffer_close(flu_sbuffer *b)
 {
   int r = 0;
@@ -180,6 +185,8 @@ char *flu_sbuffer_to_string(flu_sbuffer *b)
     // the string should be NULL, let flow and reach free(b)
 
   char *s = b->string;
+  b->string = NULL;
+
   free(b);
 
   return s;
@@ -247,113 +254,6 @@ char *flu_freadall(FILE *in)
 
 
 //
-// die
-
-void flu_die(int exit_value, const char *format, ...)
-{
-  va_list ap;
-  va_start(ap, format);
-
-  flu_sbuffer *b = flu_sbuffer_malloc();
-  flu_sbvprintf(b, format, ap);
-  char *s = flu_sbuffer_to_string(b);
-
-  perror(s);
-
-  free(s);
-
-  va_end(ap);
-
-  exit(exit_value);
-}
-
-
-//
-// escape
-
-char *flu_escape(const char *s)
-{
-  return flu_n_escape(s, strlen(s));
-}
-
-char *flu_n_escape(const char *s, size_t n)
-{
-  flu_sbuffer *b = flu_sbuffer_malloc();
-
-  for (size_t i = 0; i < n; i++)
-  {
-    char c = s[i];
-    if (c == '\0') break;
-    if (c == '\\') flu_sbprintf(b, "\\\\");
-    else if (c == '"') flu_sbprintf(b, "\\\"");
-    else if (c == '\b') flu_sbprintf(b, "\\b");
-    else if (c == '\f') flu_sbprintf(b, "\\f");
-    else if (c == '\n') flu_sbprintf(b, "\\n");
-    else if (c == '\r') flu_sbprintf(b, "\\r");
-    else if (c == '\t') flu_sbprintf(b, "\\t");
-    else flu_sbputc(b, c);
-  }
-
-  return flu_sbuffer_to_string(b);
-}
-
-char *flu_unescape(const char *s)
-{
-  return flu_n_unescape(s, strlen(s));
-}
-
-// based on cutef8 by Jeff Bezanson
-//
-char *flu_n_unescape(const char *s, size_t n)
-{
-  char *d = calloc(n + 1, sizeof(char));
-
-  for (size_t is = 0, id = 0; is < n; is++)
-  {
-    if (s[is] != '\\') { d[id++] = s[is]; continue; }
-
-    char c = s[is + 1];
-    if (c == '\\') d[id++] = '\\';
-    else if (c == '"') d[id++] = '"';
-    else if (c == 'b') d[id++] = '\b';
-    else if (c == 'f') d[id++] = '\f';
-    else if (c == 'n') d[id++] = '\n';
-    else if (c == 'r') d[id++] = '\r';
-    else if (c == 't') d[id++] = '\t';
-    else if (c == 'u')
-    {
-      char *su = strndup(s + is + 2, 4);
-      unsigned int u = strtol(su, NULL, 16);
-      free(su);
-      if (u < 0x80)
-      {
-        d[id++] = (char)u;
-      }
-      else if (u < 0x800)
-      {
-        d[id++] = (u >> 6) | 0xc0;
-        d[id++] = (u & 0x3f) | 0x80;
-      }
-      else //if (u < 0x8000)
-      {
-        d[id++] = (u >> 12) | 0xe0;
-        d[id++] = ((u >> 6) & 0x3f) | 0x80;
-        d[id++] = (u & 0x3f) | 0x80;
-      }
-      is += 4;
-    }
-    else // leave as is
-    {
-      d[id++] = '\\'; d[id++] = c;
-    }
-    is++;
-  }
-
-  return d;
-}
-
-
-//
 // flu_list
 
 static flu_node *flu_node_malloc(void *item)
@@ -361,14 +261,14 @@ static flu_node *flu_node_malloc(void *item)
   flu_node *n = calloc(1, sizeof(flu_node));
   n->item = item;
   n->next = NULL;
-  //n->key = ...
+  n->key = NULL;
 
   return n;
 }
 
 void flu_node_free(flu_node *n)
 {
-  //if (n->key != NULL) free(n->key)
+  if (n->key != NULL) free(n->key);
   free(n);
 }
 
@@ -468,9 +368,174 @@ void **flu_list_to_array(const flu_list *l, int flags)
   return a;
 }
 
+void flu_list_set(flu_list *l, const char *key, void *item)
+{
+  flu_list_unshift(l, item); l->first->key = strdup(key);
+}
+
+static flu_node *flu_list_getn(flu_list *l, const char *key)
+{
+  for (flu_node *n = l->first; n != NULL; n = n->next)
+  {
+    if (n->key != NULL && strcmp(n->key, key) == 0) return n;
+  }
+  return NULL;
+}
+
+void *flu_list_get(flu_list *l, const char *key)
+{
+  flu_node *n = flu_list_getn(l, key);
+
+  return n == NULL ? NULL : n->item;
+}
+
+flu_list *flu_list_dtrim(flu_list *l)
+{
+  flu_list *r = flu_list_malloc();
+
+  for (flu_node *n = l->first; n != NULL; n = n->next)
+  {
+    if (n->key == NULL) continue;
+    if (flu_list_getn(r, n->key) != NULL) continue;
+    flu_list_add(r, n->item); r->last->key = strdup(n->key);
+  }
+
+  return r;
+}
+
+flu_list *flu_vd(va_list ap)
+{
+  flu_list *d = flu_list_malloc();
+
+  while (1)
+  {
+    char *k = va_arg(ap, char *);
+    if (k == NULL) break;
+    void *v = va_arg(ap, void *);
+    flu_list_set(d, k, v);
+  }
+
+  return d;
+}
+
+flu_list *flu_d(char *k0, void *v0, ...)
+{
+  va_list ap; va_start(ap, v0);
+  flu_list *d = flu_vd(ap);
+  va_end(ap);
+
+  flu_list_set(d, k0, v0);
+
+  return d;
+}
+
+
+//
+// escape
+
+char *flu_escape(const char *s)
+{
+  return flu_n_escape(s, strlen(s));
+}
+
+char *flu_n_escape(const char *s, size_t n)
+{
+  flu_sbuffer *b = flu_sbuffer_malloc();
+
+  for (size_t i = 0; i < n; i++)
+  {
+    char c = s[i];
+    if (c == '\0') break;
+    if (c == '\\') flu_sbprintf(b, "\\\\");
+    else if (c == '"') flu_sbprintf(b, "\\\"");
+    else if (c == '\b') flu_sbprintf(b, "\\b");
+    else if (c == '\f') flu_sbprintf(b, "\\f");
+    else if (c == '\n') flu_sbprintf(b, "\\n");
+    else if (c == '\r') flu_sbprintf(b, "\\r");
+    else if (c == '\t') flu_sbprintf(b, "\\t");
+    else flu_sbputc(b, c);
+  }
+
+  return flu_sbuffer_to_string(b);
+}
+
+char *flu_unescape(const char *s)
+{
+  return flu_n_unescape(s, strlen(s));
+}
+
+// based on cutef8 by Jeff Bezanson
+//
+char *flu_n_unescape(const char *s, size_t n)
+{
+  char *d = calloc(n + 1, sizeof(char));
+
+  for (size_t is = 0, id = 0; is < n; is++)
+  {
+    if (s[is] != '\\') { d[id++] = s[is]; continue; }
+
+    char c = s[is + 1];
+    if (c == '\\') d[id++] = '\\';
+    else if (c == '"') d[id++] = '"';
+    else if (c == 'b') d[id++] = '\b';
+    else if (c == 'f') d[id++] = '\f';
+    else if (c == 'n') d[id++] = '\n';
+    else if (c == 'r') d[id++] = '\r';
+    else if (c == 't') d[id++] = '\t';
+    else if (c == 'u')
+    {
+      char *su = strndup(s + is + 2, 4);
+      unsigned int u = strtol(su, NULL, 16);
+      free(su);
+      if (u < 0x80)
+      {
+        d[id++] = (char)u;
+      }
+      else if (u < 0x800)
+      {
+        d[id++] = (u >> 6) | 0xc0;
+        d[id++] = (u & 0x3f) | 0x80;
+      }
+      else //if (u < 0x8000)
+      {
+        d[id++] = (u >> 12) | 0xe0;
+        d[id++] = ((u >> 6) & 0x3f) | 0x80;
+        d[id++] = (u & 0x3f) | 0x80;
+      }
+      is += 4;
+    }
+    else // leave as is
+    {
+      d[id++] = '\\'; d[id++] = c;
+    }
+    is++;
+  }
+
+  return d;
+}
+
 
 //
 // misc
+
+void flu_die(int exit_value, const char *format, ...)
+{
+  va_list ap;
+  va_start(ap, format);
+
+  flu_sbuffer *b = flu_sbuffer_malloc();
+  flu_sbvprintf(b, format, ap);
+
+  va_end(ap);
+
+  char *s = flu_sbuffer_to_string(b);
+
+  perror(s);
+
+  free(s);
+
+  exit(exit_value);
+}
 
 char *flu_strdup(char *s)
 {
