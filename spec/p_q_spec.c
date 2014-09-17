@@ -56,14 +56,26 @@ describe "abr_q()"
 
     it "preserves the name of the wrapped parser"
     {
+      p = abr_seq(abr_n_string("sn", "x"), abr_q("+"), NULL);
+      char *s = abr_parser_to_string(p);
+
+      ensure(s ===f ""
+        "abr_seq( /* 0 */\n"
+        "  abr_rep( /* 00 */\n"
+        "    abr_n_string(\"sn\", \"x\") /* 000 */, 1, -1),\n"
+        "  NULL)");
+    }
+
+    it "preserves the name of the wrapped parser (2)"
+    {
       p = abr_seq(abr_n_string("sn", "x"), abr_n_q("qn", "+"), NULL);
       char *s = abr_parser_to_string(p);
 
       ensure(s ===f ""
         "abr_seq( /* 0 */\n"
         "  abr_n_rep( /* 00 */\n"
-        "    \"sn\",\n"
-        "    abr_n_string(\"qn\", \"x\") /* 000 */, 1, -1),\n"
+        "    \"qn\",\n"
+        "    abr_n_string(\"sn\", \"x\") /* 000 */, 1, -1),\n"
         "  NULL)");
     }
   }

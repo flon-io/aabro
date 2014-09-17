@@ -308,16 +308,19 @@ static abr_parser *abr_r_expand(abr_parser *r, abr_parser *child)
 static void abr_q_wrap(abr_parser *last, abr_parser *q)
 {
   char *quantifier = q->string;
+  char *q_name = q->name;
 
   // last becomes q, q becomes last
 
   q->type = last->type;
+  q->name = last->name;
   q->string = last->string;
   q->min = last->min;
   q->max = last->max;
   q->children = last->children;
 
   last->type = abr_pt_rep;
+  last->name = q_name;
   last->string = NULL;
   abr_parse_rex_quant(quantifier, last); free(quantifier);
   last->children = abr_single_child(q);
