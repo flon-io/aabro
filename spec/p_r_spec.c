@@ -100,16 +100,31 @@ describe "abr_r(), final child"
 
   describe "abr_n_r()"
   {
-    it "doesn't steal the parent name if it has its own name"
+    it "keeps its own name"
     {
-      p = abr_n_alt("n", abr_string("x"), abr_string("y"), abr_n_r("", "*"));
+      p = abr_n_alt("an", abr_string("x"), abr_string("y"), abr_n_r("rn", "*"));
+      char *s = abr_parser_to_string(p);
+
+      ensure(s ===f ""
+        "abr_n_rep( /* 0 */\n"
+        "  \"rn\",\n"
+        "  abr_n_alt( /* 00 */\n"
+        "    \"an\",\n"
+        "    abr_string(\"x\") /* 000 */,\n"
+        "    abr_string(\"y\") /* 001 */,\n"
+        "    NULL), 0, -1)");
+    }
+
+    it "keeps its own name (2)"
+    {
+      p = abr_n_alt("an", abr_string("x"), abr_string("y"), abr_n_r("", "*"));
       char *s = abr_parser_to_string(p);
 
       ensure(s ===f ""
         "abr_n_rep( /* 0 */\n"
         "  \"\",\n"
         "  abr_n_alt( /* 00 */\n"
-        "    \"n\",\n"
+        "    \"an\",\n"
         "    abr_string(\"x\") /* 000 */,\n"
         "    abr_string(\"y\") /* 001 */,\n"
         "    NULL), 0, -1)");

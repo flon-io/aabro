@@ -54,7 +54,7 @@ describe "abr_q()"
         "  NULL)");
     }
 
-    it "preserves the name of the wrapped parser"
+    it "does not steal the name of the wrapped parser"
     {
       p = abr_seq(abr_n_string("sn", "x"), abr_q("+"), NULL);
       char *s = abr_parser_to_string(p);
@@ -65,8 +65,11 @@ describe "abr_q()"
         "    abr_n_string(\"sn\", \"x\") /* 000 */, 1, -1),\n"
         "  NULL)");
     }
+  }
 
-    it "preserves the name of the wrapped parser (2)"
+  describe "abr_n_q()"
+  {
+    it "keeps its own name"
     {
       p = abr_seq(abr_n_string("sn", "x"), abr_n_q("qn", "+"), NULL);
       char *s = abr_parser_to_string(p);
@@ -78,10 +81,19 @@ describe "abr_q()"
         "    abr_n_string(\"sn\", \"x\") /* 000 */, 1, -1),\n"
         "  NULL)");
     }
-  }
 
-  //describe "abr_n_q()"
-  //{
-  //}
+    it "keeps its own name (2)"
+    {
+      p = abr_seq(abr_n_string("sn", "x"), abr_n_q("", "+"), NULL);
+      char *s = abr_parser_to_string(p);
+
+      ensure(s ===f ""
+        "abr_seq( /* 0 */\n"
+        "  abr_n_rep( /* 00 */\n"
+        "    \"\",\n"
+        "    abr_n_string(\"sn\", \"x\") /* 000 */, 1, -1),\n"
+        "  NULL)");
+    }
+  }
 }
 
