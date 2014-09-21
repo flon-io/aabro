@@ -300,6 +300,11 @@ void flu_list_and_items_free(flu_list *l, void (*free_item)(void *))
   flu_list_free(l);
 }
 
+void flu_list_free_all(flu_list *l)
+{
+  flu_list_and_items_free(l, free);
+}
+
 void *flu_list_at(const flu_list *l, size_t n)
 {
   size_t i = 0;
@@ -371,6 +376,11 @@ void **flu_list_to_array(const flu_list *l, int flags)
 void flu_list_set(flu_list *l, const char *key, void *item)
 {
   flu_list_unshift(l, item); l->first->key = strdup(key);
+}
+
+void flu_list_set_last(flu_list *l, const char *key, void *item)
+{
+  flu_list_add(l, item); l->last->key = strdup(key);
 }
 
 static flu_node *flu_list_getn(flu_list *l, const char *key)
