@@ -150,7 +150,7 @@ context "alternative"
         "[ \"xory\", 0, 0, 0, null, \"alt-0\", [] ]");
     }
 
-    it "reports the failed attempted if not ABR_F_PRUNE"
+    it "reports the failed attempt if not ABR_F_PRUNE"
     {
       p = abr_alt(abr_string("x"), abr_string("y"), NULL);
       t = abr_parse_f("y", 0, p, ABR_F_ALL);
