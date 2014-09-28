@@ -112,9 +112,9 @@ char *abr_p_names[] = { // const ?
 };
 
 static void abr_t_to_s(
-  abr_tree *t, const char *input, flu_sbuffer *b, int indent)
+  abr_tree *t, const char *input, flu_sbuffer *b, size_t indent, int children)
 {
-  for (int i = 0; i < indent; i++) flu_sbprintf(b, "  ");
+  for (size_t i = 0; i < indent; i++) flu_sbprintf(b, "  ");
 
   if (t == NULL)
   {
@@ -135,6 +135,13 @@ static void abr_t_to_s(
   //
   if (t->name) free(name);
   if (t->note) free(note);
+
+  if (children != 1 && (input == NULL || t->result != 1 || t->child))
+  {
+    size_t cc = 0; for (abr_tree *c = t->child; c; c = c->sibling) ++cc;
+    flu_sbprintf(b, "%zu ]", cc);
+    return;
+  }
 
   if (t->child == NULL)
   {
@@ -157,7 +164,7 @@ static void abr_t_to_s(
   {
     if (c != t->child) flu_sbputc(b, ',');
     flu_sbputc(b, '\n');
-    abr_t_to_s(c, input, b, indent + 1);
+    abr_t_to_s(c, input, b, indent + 1, children);
   }
 
   flu_sbputc(b, '\n');
@@ -168,14 +175,21 @@ static void abr_t_to_s(
 char *abr_tree_to_string(abr_tree *t)
 {
   flu_sbuffer *b = flu_sbuffer_malloc();
-  abr_t_to_s(t, NULL, b, 0);
+  abr_t_to_s(t, NULL, b, 0, 1);
   return flu_sbuffer_to_string(b);
 }
 
 char *abr_tree_to_string_with_leaves(const char *input, abr_tree *t)
 {
   flu_sbuffer *b = flu_sbuffer_malloc();
-  abr_t_to_s(t, input, b, 0);
+  abr_t_to_s(t, input, b, 0, 1);
+  return flu_sbuffer_to_string(b);
+}
+
+char *abr_tree_to_str(const char *input, abr_tree *t)
+{
+  flu_sbuffer *b = flu_sbuffer_malloc();
+  abr_t_to_s(t, input, b, 0, 0);
   return flu_sbuffer_to_string(b);
 }
 

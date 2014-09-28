@@ -79,6 +79,12 @@ char *abr_tree_to_string(abr_tree *t);
  */
 char *abr_tree_to_string_with_leaves(const char *input, abr_tree *t);
 
+/* Returns a string representation (JSON) of the abr_tree.
+ * Children count is displayed instead of the children themselves, no
+ * tree diving.
+ */
+char *abr_tree_to_str(const char *input, abr_tree *t);
+
 /* Returns a copy of the string behind the abr_tree.
  * Returns an empty string if the tree is not a successful one.
  */

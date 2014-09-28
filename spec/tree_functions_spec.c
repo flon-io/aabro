@@ -298,6 +298,38 @@ context "tree functions"
     }
   }
 
+  describe "abr_tree_to_str()"
+  {
+    it "returns a string representation of an abr_tree (without children)"
+    {
+      char *in = "-1";
+      t = abr_parse_all(in, 0, p);
+      char *s = abr_tree_to_str(in, t);
+
+      //puts(s);
+      ensure(s ===f "[ \"value\", 1, 0, 2, null, \"alt-0\", 1 ]");
+    }
+
+    it "says 0 if the input is not given and the tree has no children"
+    {
+      t = abr_parse_all("-1", 0, p);
+      abr_tree *tt = t->child;
+
+      char *s = abr_tree_to_str(NULL, tt);
+      ensure(s ===f "[ \"number\", 1, 0, 2, null, \"rex-00\", 0 ]");
+    }
+
+    it "displays the text if the input is given and the tree is a leaf"
+    {
+      char *in = "-1";
+      t = abr_parse_all(in, 0, p);
+      abr_tree *tt = t->child;
+
+      char *s = abr_tree_to_str(in, tt);
+      ensure(s ===f "[ \"number\", 1, 0, 2, null, \"rex-00\", \"-1\" ]");
+    }
+  }
+
   describe "abr_tree_lookup()"
   {
     it "returns NULL if it finds nothing"
