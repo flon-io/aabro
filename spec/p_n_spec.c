@@ -65,7 +65,7 @@ context "name"
     {
       p = abr_n("z");
       t = abr_parse("x", 0, p);
-      char *s = abr_tree_to_string(t);
+      char *s = abr_tree_to_string(t, NULL);
 
       ensure(s ===f ""
         "[ \"z\", -1, 0, 0, \"unlinked abr_n(\"z\")\", \"n-0\", [] ]");
@@ -91,7 +91,7 @@ context "name"
       p = exp;
 
       t = abr_parse("0", 0, p);
-      char *s = abr_tree_to_string(t);
+      char *s = abr_tree_to_string(t, NULL);
 
       ensure(s ===f ""
         "[ \"exp\", 1, 0, 1, null, \"alt-0\", [\n"

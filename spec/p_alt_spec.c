@@ -98,7 +98,7 @@ context "alternative"
     {
       p = abr_alt(abr_string("x"), abr_string("y"), NULL);
       t = abr_parse("x", 0, p);
-      char *s = abr_tree_to_string(t);
+      char *s = abr_tree_to_string(t, NULL);
 
       ensure(s ===f ""
         "[ null, 1, 0, 1, null, \"alt-0\", [\n"
@@ -110,7 +110,7 @@ context "alternative"
     {
       p = abr_n_alt("xory", abr_string("x"), abr_string("y"), NULL);
       t = abr_parse("x", 0, p);
-      char *s = abr_tree_to_string(t);
+      char *s = abr_tree_to_string(t, NULL);
 
       ensure(s ===f ""
         "[ \"xory\", 1, 0, 1, null, \"alt-0\", [\n"
@@ -122,7 +122,7 @@ context "alternative"
     {
       p = abr_alt(abr_string("x"), abr_string("y"), NULL);
       t = abr_parse("y", 0, p);
-      char *s = abr_tree_to_string(t);
+      char *s = abr_tree_to_string(t, NULL);
 
       ensure(s ===f ""
         "[ null, 1, 0, 1, null, \"alt-0\", [\n"
@@ -134,7 +134,7 @@ context "alternative"
     {
       p = abr_alt(abr_string("x"), abr_string("y"), NULL);
       t = abr_parse("z", 0, p);
-      char *s = abr_tree_to_string(t);
+      char *s = abr_tree_to_string(t, NULL);
 
       ensure(s ===f ""
         "[ null, 0, 0, 0, null, \"alt-0\", [] ]");
@@ -144,7 +144,7 @@ context "alternative"
     {
       p = abr_n_alt("xory", abr_string("x"), abr_string("y"), NULL);
       t = abr_parse("z", 0, p);
-      char *s = abr_tree_to_string(t);
+      char *s = abr_tree_to_string(t, NULL);
 
       ensure(s ===f ""
         "[ \"xory\", 0, 0, 0, null, \"alt-0\", [] ]");
@@ -154,7 +154,7 @@ context "alternative"
     {
       p = abr_alt(abr_string("x"), abr_string("y"), NULL);
       t = abr_parse_f("y", 0, p, ABR_F_ALL);
-      char *s = abr_tree_to_string(t);
+      char *s = abr_tree_to_string(t, NULL);
 
       ensure(s ===f ""
         "[ null, 1, 0, 1, null, \"alt-0\", [\n"
@@ -167,7 +167,7 @@ context "alternative"
     {
       p = abr_alt(abr_string("x"), abr_n("y"), NULL);
       t = abr_parse("z", 0, p);
-      char *s = abr_tree_to_string(t);
+      char *s = abr_tree_to_string(t, NULL);
 
       ensure(s ===f ""
         "[ null, -1, 0, 0, null, \"alt-0\", [\n"

@@ -39,7 +39,7 @@ context "abr_range"
         p = abr_range("abc");
         t = abr_parse("aaa", 0, p);
 
-        ensure(abr_tree_to_string(t) ===f ""
+        ensure(abr_tree_to_string(t, NULL) ===f ""
           "[ null, 1, 0, 1, null, \"range-0\", [] ]");
       }
 
@@ -48,7 +48,7 @@ context "abr_range"
         p = abr_range("abc");
         t = abr_parse("daa", 0, p);
 
-        ensure(abr_tree_to_string(t) ===f ""
+        ensure(abr_tree_to_string(t, NULL) ===f ""
           "[ null, 0, 0, 0, null, \"range-0\", [] ]");
       }
 

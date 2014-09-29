@@ -83,7 +83,7 @@ context "tree functions"
     {
       char *s = "[1,2,3]";
       t = abr_parse_all(s, 0, p);
-      //char *st = abr_tree_to_string(t); puts(st); free(st);
+      //char *st = abr_tree_to_string(t, NULL); puts(st); free(st);
 
       flu_list *l = abr_tree_list(abr_t_child(t, 0), is_value);
 
@@ -100,7 +100,7 @@ context "tree functions"
       ensure(t2->name === "value");
       ensure(abr_tree_string(s, t2) ===f "3");
 
-      ensure(abr_tree_to_string(t0) ===f ""
+      ensure(abr_tree_to_string(t0, NULL) ===f ""
         "[ \"value\", 1, 1, 1, null, \"alt-0\", [\n"
         "  [ \"number\", 1, 1, 1, null, \"rex-00\", [] ]\n"
         "] ]"
@@ -118,7 +118,7 @@ context "tree functions"
     {
       char *s = "[1,2,3]";
       t = abr_parse_all(s, 0, p);
-      //char *st = abr_tree_to_string(t); puts(st); free(st);
+      //char *st = abr_tree_to_string(t, NULL); puts(st); free(st);
 
       flu_list *l = abr_tree_list_named(abr_t_child(t, 0), "value");
 
@@ -147,7 +147,7 @@ context "tree functions"
     {
       char *s = "[1,2,3]";
       t = abr_parse_all(s, 0, p);
-      //char *st = abr_tree_to_string(t); puts(st); free(st);
+      //char *st = abr_tree_to_string(t, NULL); puts(st); free(st);
 
       abr_tree **ts = abr_tree_collect(t->child, is_value);
 
@@ -163,7 +163,7 @@ context "tree functions"
       ensure(ts[2]->name === "value");
       ensure(abr_tree_string(s, ts[2]) ===f "3");
 
-      ensure(abr_tree_to_string(ts[0]) ===f ""
+      ensure(abr_tree_to_string(ts[0], NULL) ===f ""
         "[ \"value\", 1, 1, 1, null, \"alt-0\", [\n"
         "  [ \"number\", 1, 1, 1, null, \"rex-00\", [] ]\n"
         "] ]"
@@ -231,12 +231,12 @@ context "tree functions"
     }
   }
 
-  describe "abr_tree_to_string()"
+  describe "abr_tree_to_string() input == NULL"
   {
     it "returns a string representation of an abr_tree"
     {
       t = abr_parse_all("-1", 0, p);
-      char *s = abr_tree_to_string(t);
+      char *s = abr_tree_to_string(t, NULL);
 
       //puts(s);
       ensure(s ===f ""
@@ -246,13 +246,13 @@ context "tree functions"
     }
   }
 
-  describe "abr_tree_to_string_with_leaves()"
+  describe "abr_tree_to_string() input != NULL"
   {
     it "returns a string representation of an abr_tree with string leaves"
     {
       char *in = "[-1,0,1]";
       t = abr_parse_all(in, 0, p);
-      char *s = abr_tree_to_string_with_leaves(in, t);
+      char *s = abr_tree_to_string(t, in);
 
       //puts(s);
       ensure(s ===f ""
@@ -289,7 +289,7 @@ context "tree functions"
     {
       char *in = "\"hello\nworld\"";
       t = abr_parse_all(in, 0, p);
-      char *s = abr_tree_to_string_with_leaves(in, t);
+      char *s = abr_tree_to_string(t, in);
 
       ensure(s ===f ""
         "[ \"value\", 1, 0, 13, null, \"alt-0\", [\n"
@@ -304,7 +304,7 @@ context "tree functions"
     {
       char *in = "-1";
       t = abr_parse_all(in, 0, p);
-      char *s = abr_tree_to_str(in, t);
+      char *s = abr_tree_to_str(t, in);
 
       //puts(s);
       ensure(s ===f "[ \"value\", 1, 0, 2, null, \"alt-0\", 1 ]");
@@ -315,7 +315,7 @@ context "tree functions"
       t = abr_parse_all("-1", 0, p);
       abr_tree *tt = t->child;
 
-      char *s = abr_tree_to_str(NULL, tt);
+      char *s = abr_tree_to_str(tt, NULL);
       ensure(s ===f "[ \"number\", 1, 0, 2, null, \"rex-00\", 0 ]");
     }
 
@@ -325,7 +325,7 @@ context "tree functions"
       t = abr_parse_all(in, 0, p);
       abr_tree *tt = t->child;
 
-      char *s = abr_tree_to_str(in, tt);
+      char *s = abr_tree_to_str(tt, in);
       ensure(s ===f "[ \"number\", 1, 0, 2, null, \"rex-00\", \"-1\" ]");
     }
   }
@@ -337,7 +337,7 @@ context "tree functions"
       char *s = "[1,2,3]";
       t = abr_parse_all(s, 0, p);
 
-      //puts(abr_tree_to_string_with_leaves(s, t));
+      //puts(abr_tree_to_string(t, s));
 
       abr_tree *r = abr_tree_lookup(t, "string");
 
@@ -349,7 +349,7 @@ context "tree functions"
       char *s = "[1,\"deux\",3]";
       t = abr_parse_all(s, 0, p);
 
-      //puts(abr_tree_to_string_with_leaves(s, t));
+      //puts(abr_tree_to_string(t, s);
 
       abr_tree *r = abr_tree_lookup(t, "string");
 

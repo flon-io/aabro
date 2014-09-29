@@ -69,21 +69,18 @@ typedef struct abr_tree {
 
 void abr_tree_free(abr_tree *t);
 
-/* Returns a string representation (JSON) of the abr_tree.
+/* Returns a string representation (JSON) of the abr_tree, from t to its
+ * leaves. If the input is given, the parsed strings are displayed at
+ * the leaves.
  */
-char *abr_tree_to_string(abr_tree *t);
-
-/* Same as abr_tree_to_string(), but successful leaves have their text
- * printed, instead of the "[]" standing for "no children".
- * Useful when debugging a parser.
- */
-char *abr_tree_to_string_with_leaves(const char *input, abr_tree *t);
+char *abr_tree_to_string(abr_tree *t, const char *input);
 
 /* Returns a string representation (JSON) of the abr_tree.
- * Children count is displayed instead of the children themselves, no
- * tree diving.
+ * The children are not displayed. If the tree is a leaf and the input
+ * is not NULL, the parsed string is displayed, else the children count
+ * is displayed.
  */
-char *abr_tree_to_str(const char *input, abr_tree *t);
+char *abr_tree_to_str(abr_tree *t, const char *input);
 
 /* Returns a copy of the string behind the abr_tree.
  * Returns an empty string if the tree is not a successful one.

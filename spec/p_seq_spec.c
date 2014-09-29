@@ -82,7 +82,7 @@ context "sequence"
     {
       p = abr_seq(abr_string("x"), abr_string("y"), NULL);
       t = abr_parse("xy", 0, p);
-      char *s = abr_tree_to_string(t);
+      char *s = abr_tree_to_string(t, NULL);
 
       ensure(s ===f ""
         "[ null, 1, 0, 2, null, \"seq-0\", [\n"
@@ -95,7 +95,7 @@ context "sequence"
     {
       p = abr_n_seq("xtheny", abr_string("x"), abr_string("y"), NULL);
       t = abr_parse("xy", 0, p);
-      char *s = abr_tree_to_string(t);
+      char *s = abr_tree_to_string(t, NULL);
 
       ensure(s ===f ""
         "[ \"xtheny\", 1, 0, 2, null, \"seq-0\", [\n"
@@ -108,7 +108,7 @@ context "sequence"
     {
       p = abr_seq(abr_string("x"), abr_string("y"), NULL);
       t = abr_parse("z", 0, p);
-      char *s = abr_tree_to_string(t);
+      char *s = abr_tree_to_string(t, NULL);
 
       ensure(s ===f ""
         "[ null, 0, 0, 0, null, \"seq-0\", [] ]");
@@ -118,7 +118,7 @@ context "sequence"
     {
       p = abr_seq(abr_string("x"), abr_string("y"), NULL);
       t = abr_parse("xz", 0, p);
-      char *s = abr_tree_to_string(t);
+      char *s = abr_tree_to_string(t, NULL);
 
       ensure(s ===f ""
         "[ null, 0, 0, 0, null, \"seq-0\", [] ]");
@@ -128,7 +128,7 @@ context "sequence"
     {
       p = abr_seq(abr_string("x"), abr_string("y"), NULL);
       t = abr_parse_f("xz", 0, p, ABR_F_ALL);
-      char *s = abr_tree_to_string(t);
+      char *s = abr_tree_to_string(t, NULL);
 
       ensure(s ===f ""
         "[ null, 0, 0, 0, null, \"seq-0\", [\n"
@@ -141,7 +141,7 @@ context "sequence"
     {
       p = abr_seq(abr_string("x"), abr_n("y"), NULL);
       t = abr_parse("xz", 0, p);
-      char *s = abr_tree_to_string(t);
+      char *s = abr_tree_to_string(t, NULL);
 
       ensure(s ===f ""
         "[ null, -1, 0, 0, null, \"seq-0\", [\n"

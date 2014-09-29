@@ -172,21 +172,14 @@ static void abr_t_to_s(
   flu_sbprintf(b, "] ]");
 }
 
-char *abr_tree_to_string(abr_tree *t)
-{
-  flu_sbuffer *b = flu_sbuffer_malloc();
-  abr_t_to_s(t, NULL, b, 0, 1);
-  return flu_sbuffer_to_string(b);
-}
-
-char *abr_tree_to_string_with_leaves(const char *input, abr_tree *t)
+char *abr_tree_to_string(abr_tree *t, const char *input)
 {
   flu_sbuffer *b = flu_sbuffer_malloc();
   abr_t_to_s(t, input, b, 0, 1);
   return flu_sbuffer_to_string(b);
 }
 
-char *abr_tree_to_str(const char *input, abr_tree *t)
+char *abr_tree_to_str(abr_tree *t, const char *input)
 {
   flu_sbuffer *b = flu_sbuffer_malloc();
   abr_t_to_s(t, input, b, 0, 0);

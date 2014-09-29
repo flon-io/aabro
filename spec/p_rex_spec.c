@@ -357,7 +357,7 @@ context "abr_rex"
       char *in = "abdef";
 
       t = abr_parse(in, 0, p);
-      char *s = abr_tree_to_string_with_leaves(in, t);
+      char *s = abr_tree_to_string(t, in);
 
       ensure(s ===f ""
         "[ null, 1, 0, 5, null, \"rex-0\", \"abdef\" ]");
@@ -370,7 +370,7 @@ context "abr_rex"
       char *in = "abdef";
 
       t = abr_parse_f(in, 0, p, ABR_F_ALL);
-      char *s = abr_tree_to_string_with_leaves(in, t);
+      char *s = abr_tree_to_string(t, in);
 
       ensure(s ===f ""
         "[ null, 1, 0, 5, null, \"rex-0\", [\n"
@@ -393,49 +393,49 @@ context "abr_rex"
       //abr_tree_free(t);
       in = "1";
       t = abr_parse(in, 0, p);
-      //puts(abr_tree_to_string_with_leaves(in, t));
+      //puts(abr_tree_to_string(t, in));
       ensure(t->result == 1);
       ensure(abr_tree_string(in, t) ===f in);
 
       abr_tree_free(t);
       in = "-1";
       t = abr_parse(in, 0, p);
-      //puts(abr_tree_to_string_with_leaves(in, t));
+      //puts(abr_tree_to_string(t, in));
       ensure(t->result == 1);
       ensure(abr_tree_string(in, t) ===f in);
 
       abr_tree_free(t);
       in = "1.1";
       t = abr_parse(in, 0, p);
-      //puts(abr_tree_to_string_with_leaves(in, t));
+      //puts(abr_tree_to_string(t, in));
       ensure(t->result == 1);
       ensure(abr_tree_string(in, t) ===f in);
 
       abr_tree_free(t);
       in = "-1.1";
       t = abr_parse(in, 0, p);
-      //puts(abr_tree_to_string_with_leaves(in, t));
+      //puts(abr_tree_to_string(t, in));
       ensure(t->result == 1);
       ensure(abr_tree_string(in, t) ===f in);
 
       abr_tree_free(t);
       in = "-1.1e1234";
       t = abr_parse(in, 0, p);
-      //puts(abr_tree_to_string_with_leaves(in, t));
+      //puts(abr_tree_to_string(t, in));
       ensure(t->result == 1);
       ensure(abr_tree_string(in, t) ===f in);
 
       abr_tree_free(t);
       in = "-1.1e-1234";
       t = abr_parse(in, 0, p);
-      //puts(abr_tree_to_string_with_leaves(in, t));
+      //puts(abr_tree_to_string(t, in));
       ensure(t->result == 1);
       ensure(abr_tree_string(in, t) ===f in);
 
       abr_tree_free(t);
       in = "-1.1e1234X";
       t = abr_parse(in, 0, p);
-      //puts(abr_tree_to_string_with_leaves(in, t));
+      //puts(abr_tree_to_string(t, in));
       ensure(t->result == 1);
       ensure(abr_tree_string(in, t) ===f "-1.1e1234");
     }
@@ -449,14 +449,14 @@ context "abr_rex"
       //abr_tree_free(t);
       in = "archibald";
       t = abr_parse(in, 0, p);
-      //puts(abr_tree_to_string_with_leaves(in, t));
+      //puts(abr_tree_to_string(t, in));
       ensure(t->result == 1);
       ensure(abr_tree_string(in, t) ===f in);
 
       abr_tree_free(t);
       in = "archived";
       t = abr_parse(in, 0, p);
-      //puts(abr_tree_to_string_with_leaves(in, t));
+      //puts(abr_tree_to_string(t, in));
       ensure(t->result == 1);
       ensure(abr_tree_string(in, t) ===f in);
     }
