@@ -23,6 +23,8 @@
 // Made in Japan.
 //
 
+// https://github.com/flon-io/aabro
+
 #ifndef AABRO_H
 #define AABRO_H
 
