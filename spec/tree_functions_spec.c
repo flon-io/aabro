@@ -12,10 +12,10 @@ context "tree functions"
 {
   before each
   {
-    abr_tree *t = NULL;
+    fabr_tree *t = NULL;
 
-    abr_parser *string =
-      abr_n_rex(
+    fabr_parser *string =
+      fabr_n_rex(
         "string",
         "\"("
           //"\\\\." "|"
@@ -23,8 +23,8 @@ context "tree functions"
           "\\\\u[0-9a-fA-F]{4}" "|"
           "[^\"\\\\]"
         ")*\"");
-    //abr_parser *string =
-    //  abr_n_regex(
+    //fabr_parser *string =
+    //  fabr_n_regex(
     //    "string",
     //    "^\"("
     //      //"\\\\." "|"
@@ -33,26 +33,26 @@ context "tree functions"
     //      "[^\"\\]"
     //    ")*\"");
 
-    abr_parser *values =
-      abr_n_rep(
+    fabr_parser *values =
+      fabr_n_rep(
         "values",
-        abr_seq(
-          abr_n("value"),
-          abr_rep(
-            abr_seq(abr_string(","), abr_n("value"), NULL),
+        fabr_seq(
+          fabr_n("value"),
+          fabr_rep(
+            fabr_seq(fabr_string(","), fabr_n("value"), NULL),
             0, -1),
           NULL
         ),
         0, 1);
 
-    abr_parser *array =
-      abr_n_seq("array", abr_string("["), values, abr_string("]"), NULL);
+    fabr_parser *array =
+      fabr_n_seq("array", fabr_string("["), values, fabr_string("]"), NULL);
 
-    abr_parser *number =
-      abr_n_rex("number", "-?[0-9]+(\\.[0-9]+)?");
+    fabr_parser *number =
+      fabr_n_rex("number", "-?[0-9]+(\\.[0-9]+)?");
 
-    abr_parser *p=
-      abr_n_alt(
+    fabr_parser *p=
+      fabr_n_alt(
         "value",
         number,
         array,
@@ -61,13 +61,13 @@ context "tree functions"
   }
   after each
   {
-    if (t != NULL) abr_tree_free(t);
-    if (p != NULL) abr_parser_free(p);
+    if (t != NULL) fabr_tree_free(t);
+    if (p != NULL) fabr_parser_free(p);
   }
 
-  //typedef int abr_tree_func(abr_tree *);
+  //typedef int fabr_tree_func(fabr_tree *);
   //
-  short is_value(const abr_tree *t)
+  short is_value(const fabr_tree *t)
   {
     // -1: fail, do not continue
     //  0: fail, please check my children
@@ -77,30 +77,30 @@ context "tree functions"
     return t->name && strcmp(t->name, "value") == 0;
   }
 
-  describe "abr_tree_list()"
+  describe "fabr_tree_list()"
   {
     it "collects the trees that match the given function"
     {
       char *s = "[1,2,3]";
-      t = abr_parse_all(s, 0, p);
-      //char *st = abr_tree_to_string(t, NULL); puts(st); free(st);
+      t = fabr_parse_all(s, 0, p);
+      //char *st = fabr_tree_to_string(t, NULL); puts(st); free(st);
 
-      flu_list *l = abr_tree_list(abr_t_child(t, 0), is_value);
+      flu_list *l = fabr_tree_list(fabr_t_child(t, 0), is_value);
 
       ensure(l->size == 3);
 
-      abr_tree *t0 = (abr_tree *)flu_list_at(l, 0);
-      abr_tree *t1 = (abr_tree *)flu_list_at(l, 1);
-      abr_tree *t2 = (abr_tree *)flu_list_at(l, 2);
+      fabr_tree *t0 = (fabr_tree *)flu_list_at(l, 0);
+      fabr_tree *t1 = (fabr_tree *)flu_list_at(l, 1);
+      fabr_tree *t2 = (fabr_tree *)flu_list_at(l, 2);
 
       ensure(t0->name === "value");
-      ensure(abr_tree_string(s, t0) ===f "1");
+      ensure(fabr_tree_string(s, t0) ===f "1");
       ensure(t1->name === "value");
-      ensure(abr_tree_string(s, t1) ===f "2");
+      ensure(fabr_tree_string(s, t1) ===f "2");
       ensure(t2->name === "value");
-      ensure(abr_tree_string(s, t2) ===f "3");
+      ensure(fabr_tree_string(s, t2) ===f "3");
 
-      ensure(abr_tree_to_string(t0, NULL) ===f ""
+      ensure(fabr_tree_to_string(t0, NULL) ===f ""
         "[ \"value\", 1, 1, 1, null, \"alt-0\", [\n"
         "  [ \"number\", 1, 1, 1, null, \"rex-00\", [] ]\n"
         "] ]"
@@ -112,28 +112,28 @@ context "tree functions"
     }
   }
 
-  describe "abr_tree_list_named()"
+  describe "fabr_tree_list_named()"
   {
     it "collects the trees that match the given name"
     {
       char *s = "[1,2,3]";
-      t = abr_parse_all(s, 0, p);
-      //char *st = abr_tree_to_string(t, NULL); puts(st); free(st);
+      t = fabr_parse_all(s, 0, p);
+      //char *st = fabr_tree_to_string(t, NULL); puts(st); free(st);
 
-      flu_list *l = abr_tree_list_named(abr_t_child(t, 0), "value");
+      flu_list *l = fabr_tree_list_named(fabr_t_child(t, 0), "value");
 
       ensure(l->size == 3);
 
-      abr_tree *t0 = (abr_tree *)flu_list_at(l, 0);
-      abr_tree *t1 = (abr_tree *)flu_list_at(l, 1);
-      abr_tree *t2 = (abr_tree *)flu_list_at(l, 2);
+      fabr_tree *t0 = (fabr_tree *)flu_list_at(l, 0);
+      fabr_tree *t1 = (fabr_tree *)flu_list_at(l, 1);
+      fabr_tree *t2 = (fabr_tree *)flu_list_at(l, 2);
 
       ensure(t0->name === "value");
-      ensure(abr_tree_string(s, t0) ===f "1");
+      ensure(fabr_tree_string(s, t0) ===f "1");
       ensure(t1->name === "value");
-      ensure(abr_tree_string(s, t1) ===f "2");
+      ensure(fabr_tree_string(s, t1) ===f "2");
       ensure(t2->name === "value");
-      ensure(abr_tree_string(s, t2) ===f "3");
+      ensure(fabr_tree_string(s, t2) ===f "3");
 
       flu_list_free(l);
         // NB: only freeing this list of pointers,
@@ -141,15 +141,15 @@ context "tree functions"
     }
   }
 
-  describe "abr_tree_collect()"
+  describe "fabr_tree_collect()"
   {
     it "collects the trees that match the given function"
     {
       char *s = "[1,2,3]";
-      t = abr_parse_all(s, 0, p);
-      //char *st = abr_tree_to_string(t, NULL); puts(st); free(st);
+      t = fabr_parse_all(s, 0, p);
+      //char *st = fabr_tree_to_string(t, NULL); puts(st); free(st);
 
-      abr_tree **ts = abr_tree_collect(t->child, is_value);
+      fabr_tree **ts = fabr_tree_collect(t->child, is_value);
 
       ensure(ts[0] != NULL);
       ensure(ts[1] != NULL);
@@ -157,13 +157,13 @@ context "tree functions"
       ensure(ts[3] == NULL);
 
       ensure(ts[0]->name === "value");
-      ensure(abr_tree_string(s, ts[0]) ===f "1");
+      ensure(fabr_tree_string(s, ts[0]) ===f "1");
       ensure(ts[1]->name === "value");
-      ensure(abr_tree_string(s, ts[1]) ===f "2");
+      ensure(fabr_tree_string(s, ts[1]) ===f "2");
       ensure(ts[2]->name === "value");
-      ensure(abr_tree_string(s, ts[2]) ===f "3");
+      ensure(fabr_tree_string(s, ts[2]) ===f "3");
 
-      ensure(abr_tree_to_string(ts[0], NULL) ===f ""
+      ensure(fabr_tree_to_string(ts[0], NULL) ===f ""
         "[ \"value\", 1, 1, 1, null, \"alt-0\", [\n"
         "  [ \"number\", 1, 1, 1, null, \"rex-00\", [] ]\n"
         "] ]"
@@ -175,15 +175,15 @@ context "tree functions"
     }
   }
 
-  describe "abr_tree_string()"
+  describe "fabr_tree_string()"
   {
     it "returns a string containing the parsed input for the tree"
     {
       char *in = "[-1,0,1]";
-      t = abr_parse_all(in, 0, p);
-      abr_tree *tt = abr_tree_lookup(t, "number");
+      t = fabr_parse_all(in, 0, p);
+      fabr_tree *tt = fabr_tree_lookup(t, "number");
 
-      char *s = abr_tree_string(in, tt);
+      char *s = fabr_tree_string(in, tt);
 
       ensure(s === "-1");
       ensure(s != in + tt->offset);
@@ -194,9 +194,9 @@ context "tree functions"
     it "returns an empty string when the tree is not a successful one"
     {
       char *in = "[nada]";
-      t = abr_parse_all(in, 0, p);
+      t = fabr_parse_all(in, 0, p);
 
-      char *s = abr_tree_string(in, t);
+      char *s = fabr_tree_string(in, t);
 
       ensure(s === "");
       ensure(s != in + t->offset);
@@ -205,15 +205,15 @@ context "tree functions"
     }
   }
 
-  describe "abr_tree_str()"
+  describe "fabr_tree_str()"
   {
     it "returns a pointer to the beginning of the tree in the input"
     {
       char *in = "[-1,0,1]";
-      t = abr_parse_all(in, 0, p);
-      abr_tree *tt = abr_tree_lookup(t, "number");
+      t = fabr_parse_all(in, 0, p);
+      fabr_tree *tt = fabr_tree_lookup(t, "number");
 
-      char *s = abr_tree_str(in, tt);
+      char *s = fabr_tree_str(in, tt);
 
       ensure(s === "-1,0,1]");
       ensure(s == in + 1);
@@ -222,21 +222,21 @@ context "tree functions"
     it "returns the pointer anyway if the tree is not a successful one"
     {
       char *in = "[nada]";
-      t = abr_parse_all(in, 0, p);
+      t = fabr_parse_all(in, 0, p);
 
-      char *s = abr_tree_str(in, t);
+      char *s = fabr_tree_str(in, t);
 
       ensure(s === "[nada]");
       ensure(s == in);
     }
   }
 
-  describe "abr_tree_to_string() input == NULL"
+  describe "fabr_tree_to_string() input == NULL"
   {
-    it "returns a string representation of an abr_tree"
+    it "returns a string representation of a fabr_tree"
     {
-      t = abr_parse_all("-1", 0, p);
-      char *s = abr_tree_to_string(t, NULL);
+      t = fabr_parse_all("-1", 0, p);
+      char *s = fabr_tree_to_string(t, NULL);
 
       //puts(s);
       ensure(s ===f ""
@@ -246,13 +246,13 @@ context "tree functions"
     }
   }
 
-  describe "abr_tree_to_string() input != NULL"
+  describe "fabr_tree_to_string() input != NULL"
   {
-    it "returns a string representation of an abr_tree with string leaves"
+    it "returns a string representation of a fabr_tree with string leaves"
     {
       char *in = "[-1,0,1]";
-      t = abr_parse_all(in, 0, p);
-      char *s = abr_tree_to_string(t, in);
+      t = fabr_parse_all(in, 0, p);
+      char *s = fabr_tree_to_string(t, in);
 
       //puts(s);
       ensure(s ===f ""
@@ -288,8 +288,8 @@ context "tree functions"
     it "escapes the leave string"
     {
       char *in = "\"hello\nworld\"";
-      t = abr_parse_all(in, 0, p);
-      char *s = abr_tree_to_string(t, in);
+      t = fabr_parse_all(in, 0, p);
+      char *s = fabr_tree_to_string(t, in);
 
       ensure(s ===f ""
         "[ \"value\", 1, 0, 13, null, \"alt-0\", [\n"
@@ -298,13 +298,13 @@ context "tree functions"
     }
   }
 
-  describe "abr_tree_to_str()"
+  describe "fabr_tree_to_str()"
   {
-    it "returns a string representation of an abr_tree (without children)"
+    it "returns a string representation of a fabr_tree (without children)"
     {
       char *in = "-1";
-      t = abr_parse_all(in, 0, p);
-      char *s = abr_tree_to_str(t, in);
+      t = fabr_parse_all(in, 0, p);
+      char *s = fabr_tree_to_str(t, in);
 
       //puts(s);
       ensure(s ===f "[ \"value\", 1, 0, 2, null, \"alt-0\", 1 ]");
@@ -312,34 +312,34 @@ context "tree functions"
 
     it "says 0 if the input is not given and the tree has no children"
     {
-      t = abr_parse_all("-1", 0, p);
-      abr_tree *tt = t->child;
+      t = fabr_parse_all("-1", 0, p);
+      fabr_tree *tt = t->child;
 
-      char *s = abr_tree_to_str(tt, NULL);
+      char *s = fabr_tree_to_str(tt, NULL);
       ensure(s ===f "[ \"number\", 1, 0, 2, null, \"rex-00\", 0 ]");
     }
 
     it "displays the text if the input is given and the tree is a leaf"
     {
       char *in = "-1";
-      t = abr_parse_all(in, 0, p);
-      abr_tree *tt = t->child;
+      t = fabr_parse_all(in, 0, p);
+      fabr_tree *tt = t->child;
 
-      char *s = abr_tree_to_str(tt, in);
+      char *s = fabr_tree_to_str(tt, in);
       ensure(s ===f "[ \"number\", 1, 0, 2, null, \"rex-00\", \"-1\" ]");
     }
   }
 
-  describe "abr_tree_lookup()"
+  describe "fabr_tree_lookup()"
   {
     it "returns NULL if it finds nothing"
     {
       char *s = "[1,2,3]";
-      t = abr_parse_all(s, 0, p);
+      t = fabr_parse_all(s, 0, p);
 
-      //puts(abr_tree_to_string(t, s));
+      //puts(fabr_tree_to_string(t, s));
 
-      abr_tree *r = abr_tree_lookup(t, "string");
+      fabr_tree *r = fabr_tree_lookup(t, "string");
 
       ensure(r == NULL);
     }
@@ -347,11 +347,11 @@ context "tree functions"
     it "returns the first sub-tree with the given name"
     {
       char *s = "[1,\"deux\",3]";
-      t = abr_parse_all(s, 0, p);
+      t = fabr_parse_all(s, 0, p);
 
-      //puts(abr_tree_to_string(t, s);
+      //puts(fabr_tree_to_string(t, s);
 
-      abr_tree *r = abr_tree_lookup(t, "string");
+      fabr_tree *r = fabr_tree_lookup(t, "string");
 
       ensure(r != NULL);
       ensure(r->name === "string");

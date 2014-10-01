@@ -12,22 +12,22 @@ context "parser"
 {
   before each
   {
-    abr_tree *t = NULL;
-    abr_parser *p = NULL;
+    fabr_tree *t = NULL;
+    fabr_parser *p = NULL;
   }
   after each
   {
-    if (t != NULL) abr_tree_free(t);
-    if (p != NULL) abr_parser_free(p);
+    if (t != NULL) fabr_tree_free(t);
+    if (p != NULL) fabr_parser_free(p);
   }
 
-  describe "abr_parse(input, offset, parser)"
+  describe "fabr_parse(input, offset, parser)"
   {
     it "parses as much as it can"
     {
-      p = abr_rep(abr_string("x"), 1, 4);
-      t = abr_parse("x", 0, p);
-      char *s = abr_tree_to_string(t, NULL);
+      p = fabr_rep(fabr_string("x"), 1, 4);
+      t = fabr_parse("x", 0, p);
+      char *s = fabr_tree_to_string(t, NULL);
 
       ensure(s ===f ""
         "[ null, 1, 0, 1, null, \"rep-0\", [\n"
@@ -37,9 +37,9 @@ context "parser"
 
     it "is successful even if it didn't parse all the input"
     {
-      p = abr_rep(abr_string("x"), 1, 2);
-      t = abr_parse("xxy", 0, p);
-      char *s = abr_tree_to_string(t, NULL);
+      p = fabr_rep(fabr_string("x"), 1, 2);
+      t = fabr_parse("xxy", 0, p);
+      char *s = fabr_tree_to_string(t, NULL);
 
       ensure(s ===f ""
         "[ null, 1, 0, 2, null, \"rep-0\", [\n"
@@ -50,35 +50,35 @@ context "parser"
 
     it "returns an error when recursion goes too far"
     {
-      abr_parser *op =
-        abr_n_seq(
+      fabr_parser *op =
+        fabr_n_seq(
           "op",
-          abr_n("exp"),
-          abr_rex("[\+\-\*\/]"),
-          abr_n("exp"),
+          fabr_n("exp"),
+          fabr_rex("[\+\-\*\/]"),
+          fabr_n("exp"),
           NULL);
-      abr_parser *exp =
-        //abr_n_alt("exp", op, val, NULL);
-        abr_n_alt("exp", op, NULL);
+      fabr_parser *exp =
+        //fabr_n_alt("exp", op, val, NULL);
+        fabr_n_alt("exp", op, NULL);
       p = exp;
 
-      t = abr_parse("0", 0, p);
+      t = fabr_parse("0", 0, p);
 
       ensure(t->result == -1);
       ensure(t->note === NULL);
 
-      ensure(abr_error_message(t) === "too much recursion, parser loop?");
+      ensure(fabr_error_message(t) === "too much recursion, parser loop?");
     }
   }
 
-  describe "abr_parse_all(input, offset, parser)"
+  describe "fabr_parse_all(input, offset, parser)"
   {
 
     it "is successful when all the input is reached"
     {
-      p = abr_rep(abr_string("x"), 1, 4);
-      t = abr_parse_all("x", 0, p);
-      char *s = abr_tree_to_string(t, NULL);
+      p = fabr_rep(fabr_string("x"), 1, 4);
+      t = fabr_parse_all("x", 0, p);
+      char *s = fabr_tree_to_string(t, NULL);
 
       ensure(s ===f ""
         "[ null, 1, 0, 1, null, \"rep-0\", [\n"
@@ -88,9 +88,9 @@ context "parser"
 
     it "fails when only part of the input is reached"
     {
-      p = abr_rep(abr_string("x"), 1, 2);
-      t = abr_parse_all("xxy", 0, p);
-      char *s = abr_tree_to_string(t, NULL);
+      p = fabr_rep(fabr_string("x"), 1, 2);
+      t = fabr_parse_all("xxy", 0, p);
+      char *s = fabr_tree_to_string(t, NULL);
 
       ensure(s ===f ""
         "[ null, 0, 0, 2, \"not all the input could be parsed\", \"rep-0\", [\n"
@@ -100,13 +100,13 @@ context "parser"
     }
   }
 
-  describe "abr_parse_c(input, offset, parser, flags)"
+  describe "fabr_parse_c(input, offset, parser, flags)"
   {
     it "lets parsing proceed if not ABR_F_PRUNE"
     {
-      p = abr_rep(abr_string("x"), 1, 4);
-      t = abr_parse_f("x", 0, p, ABR_F_ALL);
-      char *s = abr_tree_to_string(t, NULL);
+      p = fabr_rep(fabr_string("x"), 1, 4);
+      t = fabr_parse_f("x", 0, p, ABR_F_ALL);
+      char *s = fabr_tree_to_string(t, NULL);
 
       ensure(s ===f ""
         "[ null, 1, 0, 1, null, \"rep-0\", [\n"
@@ -118,39 +118,39 @@ context "parser"
 
   describe "errors"
   {
-    they "propagate down the abr_tree"
+    they "propagate down the fabr_tree"
     {
-      p = abr_seq(abr_n("p0"), abr_n("p1"), NULL);
-      t = abr_parse_all("x", 0, p);
-      char *s = abr_tree_to_string(t, NULL);
+      p = fabr_seq(fabr_n("p0"), fabr_n("p1"), NULL);
+      t = fabr_parse_all("x", 0, p);
+      char *s = fabr_tree_to_string(t, NULL);
 
       ensure(s ===f ""
         "[ null, -1, 0, 0, null, \"seq-0\", [\n"
-        "  [ \"p0\", -1, 0, 0, \"unlinked abr_n(\"p0\")\", \"n-00\", [] ]\n"
+        "  [ \"p0\", -1, 0, 0, \"unlinked fabr_n(\"p0\")\", \"n-00\", [] ]\n"
         "] ]");
     }
   }
 
-  describe "abr_error_message()"
+  describe "fabr_error_message()"
   {
     it "returns the error message"
     {
-      p = abr_seq(abr_n("p0"), abr_n("p1"), NULL);
-      t = abr_parse_all("x", 0, p);
+      p = fabr_seq(fabr_n("p0"), fabr_n("p1"), NULL);
+      t = fabr_parse_all("x", 0, p);
 
-      char *s = abr_error_message(t);
+      char *s = fabr_error_message(t);
 
       // for now, the returned string belongs to the tree
 
-      ensure(s === "unlinked abr_n(\"p0\")");
+      ensure(s === "unlinked fabr_n(\"p0\")");
     }
 
     it "returns NULL if there are no errors"
     {
-      p = abr_rep(abr_string("x"), 1, 4);
-      t = abr_parse_all("x", 0, p);
+      p = fabr_rep(fabr_string("x"), 1, 4);
+      t = fabr_parse_all("x", 0, p);
 
-      char *s = abr_error_message(t);
+      char *s = fabr_error_message(t);
 
       ensure(s == NULL);
     }

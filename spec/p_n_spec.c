@@ -12,20 +12,20 @@ context "name"
 {
   before each
   {
-    abr_tree *t = NULL;
-    abr_parser *p = NULL;
+    fabr_tree *t = NULL;
+    fabr_parser *p = NULL;
   }
   after each
   {
-    if (t != NULL) abr_tree_free(t);
-    if (p != NULL) abr_parser_free(p);
+    if (t != NULL) fabr_tree_free(t);
+    if (p != NULL) fabr_parser_free(p);
   }
 
-  describe "abr_n(s)"
+  describe "fabr_n(s)"
   {
     it "creates a placeholder parser struct"
     {
-      p = abr_n("x");
+      p = fabr_n("x");
 
       ensure(p != NULL);
       ensure(p->name === "x");
@@ -33,25 +33,25 @@ context "name"
     }
   }
 
-  describe "abr_parser_to_string(p)"
+  describe "fabr_parser_to_string(p)"
   {
     it "returns a string representation of the parser struct (not linked)"
     {
-      p = abr_n("y");
-      char *s = abr_parser_to_string(p);
+      p = fabr_n("y");
+      char *s = fabr_parser_to_string(p);
 
-      ensure(s ===f "abr_n(\"y\") /* 0 */ /* not linked */");
+      ensure(s ===f "fabr_n(\"y\") /* 0 */ /* not linked */");
     }
     it "returns a string representation of the parser struct (linked)"
     {
-      p = abr_n_alt("p", abr_string("p"), abr_n("p"), NULL); // snake
-      char *s = abr_parser_to_string(p);
+      p = fabr_n_alt("p", fabr_string("p"), fabr_n("p"), NULL); // snake
+      char *s = fabr_parser_to_string(p);
 
       ensure(s ===f ""
-        "abr_n_alt( /* 0 */\n"
+        "fabr_n_alt( /* 0 */\n"
         "  \"p\",\n"
-        "  abr_string(\"p\") /* 00 */,\n"
-        "  abr_n(\"p\") /* 01 */,\n"
+        "  fabr_string(\"p\") /* 00 */,\n"
+        "  fabr_n(\"p\") /* 01 */,\n"
         "  NULL)");
     }
   }
@@ -63,35 +63,35 @@ context "name"
 
     it "returns -1 (error) (not linked)"
     {
-      p = abr_n("z");
-      t = abr_parse("x", 0, p);
-      char *s = abr_tree_to_string(t, NULL);
+      p = fabr_n("z");
+      t = fabr_parse("x", 0, p);
+      char *s = fabr_tree_to_string(t, NULL);
 
       ensure(s ===f ""
-        "[ \"z\", -1, 0, 0, \"unlinked abr_n(\"z\")\", \"n-0\", [] ]");
+        "[ \"z\", -1, 0, 0, \"unlinked fabr_n(\"z\")\", \"n-0\", [] ]");
     }
 
     it "parses (linked)"
     {
-      abr_parser *val =
-        abr_n_alt(
+      fabr_parser *val =
+        fabr_n_alt(
           "val",
-          abr_rex("-?[0-9]+"),
-          abr_seq(abr_string("("), abr_n("exp"), abr_string(")"), NULL),
+          fabr_rex("-?[0-9]+"),
+          fabr_seq(fabr_string("("), fabr_n("exp"), fabr_string(")"), NULL),
           NULL);
-      abr_parser *op =
-        abr_n_seq(
+      fabr_parser *op =
+        fabr_n_seq(
           "op",
-          abr_n("exp"),
-          abr_rex("[\+\-\*\/]"),
-          abr_n("exp"),
+          fabr_n("exp"),
+          fabr_rex("[\+\-\*\/]"),
+          fabr_n("exp"),
           NULL);
-      abr_parser *exp =
-        abr_n_alt("exp", val, op, NULL);
+      fabr_parser *exp =
+        fabr_n_alt("exp", val, op, NULL);
       p = exp;
 
-      t = abr_parse("0", 0, p);
-      char *s = abr_tree_to_string(t, NULL);
+      t = fabr_parse("0", 0, p);
+      char *s = fabr_tree_to_string(t, NULL);
 
       ensure(s ===f ""
         "[ \"exp\", 1, 0, 1, null, \"alt-0\", [\n"
@@ -104,42 +104,42 @@ context "name"
 
   context "linking"
   {
-    it "resolves abr_n() when the name is defined"
+    it "resolves fabr_n() when the name is defined"
     {
-      p = abr_n_alt("p", abr_string("p"), abr_n("p"), NULL);
+      p = fabr_n_alt("p", fabr_string("p"), fabr_n("p"), NULL);
         // yes, I know, it's a joke
 
-      abr_parser *c = abr_p_child(p, 1);
-      ensure(abr_p_child(c, 0) == p);
+      fabr_parser *c = fabr_p_child(p, 1);
+      ensure(fabr_p_child(c, 0) == p);
     }
   }
 }
 
-context "abr_n_xxx"
+context "fabr_n_xxx"
 {
   before each
   {
-    abr_parser *p = NULL;
+    fabr_parser *p = NULL;
   }
   after each
   {
-    if (p != NULL) abr_parser_free(p);
+    if (p != NULL) fabr_parser_free(p);
   }
 
   it "doesn't fall in an infinite loop when resolving names"
   {
-    abr_parser *entry =
-      abr_n_seq(
+    fabr_parser *entry =
+      fabr_n_seq(
         "entry",
-        abr_n("value"),
+        fabr_n("value"),
         NULL);
 
-    abr_parser *entries =
-      abr_n_rep(
+    fabr_parser *entries =
+      fabr_n_rep(
         "entries",
-        abr_seq(
+        fabr_seq(
           entry,
-          abr_rep(
+          fabr_rep(
             entry,
             0, -1),
           NULL
@@ -147,30 +147,30 @@ context "abr_n_xxx"
         0, 1);
 
     p =
-      abr_n_alt(
+      fabr_n_alt(
         "value",
-        abr_n_rex("number", "-?[0-9]+(\\.[0-9]+)?([eE][+-]?[0-9]+)?"),
-        abr_n_seq("object", abr_string("{"), entries, abr_string("}"), NULL),
+        fabr_n_rex("number", "-?[0-9]+(\\.[0-9]+)?([eE][+-]?[0-9]+)?"),
+        fabr_n_seq("object", fabr_string("{"), entries, fabr_string("}"), NULL),
         NULL);
 
-    ensure(abr_parser_to_string(p) ===f ""
-      "abr_n_alt( /* 0 */\n"
+    ensure(fabr_parser_to_string(p) ===f ""
+      "fabr_n_alt( /* 0 */\n"
       "  \"value\",\n"
-      "  abr_n_rex(\"number\", \"-?[0-9]+(\\.[0-9]+)?([eE][+-]?[0-9]+)?\") /* 00 */,\n"
-      "  abr_n_seq( /* 01 */\n"
+      "  fabr_n_rex(\"number\", \"-?[0-9]+(\\.[0-9]+)?([eE][+-]?[0-9]+)?\") /* 00 */,\n"
+      "  fabr_n_seq( /* 01 */\n"
       "    \"object\",\n"
-      "    abr_string(\"{\") /* 010 */,\n"
-      "    abr_n_rep( /* 011 */\n"
+      "    fabr_string(\"{\") /* 010 */,\n"
+      "    fabr_n_rep( /* 011 */\n"
       "      \"entries\",\n"
-      "      abr_seq( /* 0110 */\n"
-      "        abr_n_seq( /* 01100 */\n"
+      "      fabr_seq( /* 0110 */\n"
+      "        fabr_n_seq( /* 01100 */\n"
       "          \"entry\",\n"
-      "          abr_n(\"value\") /* 011000 */,\n"
+      "          fabr_n(\"value\") /* 011000 */,\n"
       "          NULL),\n"
-      "        abr_rep( /* 01101 */\n"
-      "          abr_n(\"entry\") /* 01100 */, 0, -1),\n"
+      "        fabr_rep( /* 01101 */\n"
+      "          fabr_n(\"entry\") /* 01100 */, 0, -1),\n"
       "        NULL), 0, 1),\n"
-      "    abr_string(\"}\") /* 012 */,\n"
+      "    fabr_string(\"}\") /* 012 */,\n"
       "    NULL),\n"
       "  NULL)");
   }

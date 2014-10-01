@@ -8,24 +8,24 @@
 #include "aabro.h"
 
 
-describe "abr_q()"
+describe "fabr_q()"
 {
   before each
   {
-    abr_tree *t = NULL;
-    abr_parser *p = NULL;
+    fabr_tree *t = NULL;
+    fabr_parser *p = NULL;
   }
   after each
   {
-    if (t != NULL) abr_tree_free(t);
-    if (p != NULL) abr_parser_free(p);
+    if (t != NULL) fabr_tree_free(t);
+    if (p != NULL) fabr_parser_free(p);
   }
 
-  describe "abr_q()"
+  describe "fabr_q()"
   {
     it "returns a 'marker' parser"
     {
-      p = abr_q("{4,5}");
+      p = fabr_q("{4,5}");
 
       ensure(p->type == 10);
       ensure(p->string === "{4,5}");
@@ -33,65 +33,65 @@ describe "abr_q()"
 
     it "wraps the preceding parser"
     {
-      p = abr_seq(abr_string("x"), abr_q("+"), NULL);
-      char *s = abr_parser_to_string(p);
+      p = fabr_seq(fabr_string("x"), fabr_q("+"), NULL);
+      char *s = fabr_parser_to_string(p);
 
       ensure(s ===f ""
-        "abr_seq( /* 0 */\n"
-        "  abr_rep( /* 00 */\n"
-        "    abr_string(\"x\") /* 000 */, 1, -1),\n"
+        "fabr_seq( /* 0 */\n"
+        "  fabr_rep( /* 00 */\n"
+        "    fabr_string(\"x\") /* 000 */, 1, -1),\n"
         "  NULL)");
     }
 
     it "returns an error marker if there are not preceding parser to wrap"
     {
-      p = abr_seq(abr_q("+"), NULL);
-      char *s = abr_parser_to_string(p);
+      p = fabr_seq(fabr_q("+"), NULL);
+      char *s = fabr_parser_to_string(p);
 
       ensure(s ===f ""
-        "abr_seq( /* 0 */\n"
-        "  abr_error(\"'+': no preceding parser to wrap\") /* 00 */,\n"
+        "fabr_seq( /* 0 */\n"
+        "  fabr_error(\"'+': no preceding parser to wrap\") /* 00 */,\n"
         "  NULL)");
     }
 
     it "does not steal the name of the wrapped parser"
     {
-      p = abr_seq(abr_n_string("sn", "x"), abr_q("+"), NULL);
-      char *s = abr_parser_to_string(p);
+      p = fabr_seq(fabr_n_string("sn", "x"), fabr_q("+"), NULL);
+      char *s = fabr_parser_to_string(p);
 
       ensure(s ===f ""
-        "abr_seq( /* 0 */\n"
-        "  abr_rep( /* 00 */\n"
-        "    abr_n_string(\"sn\", \"x\") /* 000 */, 1, -1),\n"
+        "fabr_seq( /* 0 */\n"
+        "  fabr_rep( /* 00 */\n"
+        "    fabr_n_string(\"sn\", \"x\") /* 000 */, 1, -1),\n"
         "  NULL)");
     }
   }
 
-  describe "abr_n_q()"
+  describe "fabr_n_q()"
   {
     it "keeps its own name"
     {
-      p = abr_seq(abr_n_string("sn", "x"), abr_n_q("qn", "+"), NULL);
-      char *s = abr_parser_to_string(p);
+      p = fabr_seq(fabr_n_string("sn", "x"), fabr_n_q("qn", "+"), NULL);
+      char *s = fabr_parser_to_string(p);
 
       ensure(s ===f ""
-        "abr_seq( /* 0 */\n"
-        "  abr_n_rep( /* 00 */\n"
+        "fabr_seq( /* 0 */\n"
+        "  fabr_n_rep( /* 00 */\n"
         "    \"qn\",\n"
-        "    abr_n_string(\"sn\", \"x\") /* 000 */, 1, -1),\n"
+        "    fabr_n_string(\"sn\", \"x\") /* 000 */, 1, -1),\n"
         "  NULL)");
     }
 
     it "keeps its own name (2)"
     {
-      p = abr_seq(abr_n_string("sn", "x"), abr_n_q("", "+"), NULL);
-      char *s = abr_parser_to_string(p);
+      p = fabr_seq(fabr_n_string("sn", "x"), fabr_n_q("", "+"), NULL);
+      char *s = fabr_parser_to_string(p);
 
       ensure(s ===f ""
-        "abr_seq( /* 0 */\n"
-        "  abr_n_rep( /* 00 */\n"
+        "fabr_seq( /* 0 */\n"
+        "  fabr_n_rep( /* 00 */\n"
         "    \"\",\n"
-        "    abr_n_string(\"sn\", \"x\") /* 000 */, 1, -1),\n"
+        "    fabr_n_string(\"sn\", \"x\") /* 000 */, 1, -1),\n"
         "  NULL)");
     }
   }
