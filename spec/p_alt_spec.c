@@ -150,10 +150,10 @@ context "alternative"
         "[ \"xory\", 0, 0, 0, null, \"alt-0\", [] ]");
     }
 
-    it "reports the failed attempt if not ABR_F_PRUNE"
+    it "reports the failed attempt if not FABR_F_PRUNE"
     {
       p = fabr_alt(fabr_string("x"), fabr_string("y"), NULL);
-      t = fabr_parse_f("y", 0, p, ABR_F_ALL);
+      t = fabr_parse_f("y", 0, p, FABR_F_ALL);
       char *s = fabr_tree_to_string(t, NULL);
 
       ensure(s ===f ""

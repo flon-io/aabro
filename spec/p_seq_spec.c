@@ -124,10 +124,10 @@ context "sequence"
         "[ null, 0, 0, 0, null, \"seq-0\", [] ]");
     }
 
-    it "reports the failed tries if not ABR_F_PRUNE"
+    it "reports the failed tries if not FABR_F_PRUNE"
     {
       p = fabr_seq(fabr_string("x"), fabr_string("y"), NULL);
-      t = fabr_parse_f("xz", 0, p, ABR_F_ALL);
+      t = fabr_parse_f("xz", 0, p, FABR_F_ALL);
       char *s = fabr_tree_to_string(t, NULL);
 
       ensure(s ===f ""

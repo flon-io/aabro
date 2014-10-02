@@ -153,10 +153,10 @@ context "repetition"
         "[ null, 0, 0, 2, null, \"rep-0\", [] ]");
     }
 
-    it "relates all the tries when not ABR_F_PRUNE"
+    it "relates all the tries when not FABR_F_PRUNE"
     {
       p = fabr_rep(fabr_string("xy"), 2, 3);
-      t = fabr_parse_f("xy", 0, p, ABR_F_ALL);
+      t = fabr_parse_f("xy", 0, p, FABR_F_ALL);
       char *s = fabr_tree_to_string(t, NULL);
 
       ensure(s ===f ""

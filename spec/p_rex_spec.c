@@ -369,7 +369,7 @@ context "fabr_rex"
 
       char *in = "abdef";
 
-      t = fabr_parse_f(in, 0, p, ABR_F_ALL);
+      t = fabr_parse_f(in, 0, p, FABR_F_ALL);
       char *s = fabr_tree_to_string(t, in);
 
       ensure(s ===f ""

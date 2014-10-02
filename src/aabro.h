@@ -150,8 +150,8 @@ fabr_tree *fabr_parse(
 
 enum // flags for fabr_parse_f
 {
-  ABR_F_PRUNE  = 1 << 0, // don't prune failed trees, defaults to true
-  ABR_F_ALL    = 1 << 1 // parse all, defaults to false
+  FABR_F_PRUNE  = 1 << 0, // don't prune failed trees, defaults to true
+  FABR_F_ALL    = 1 << 1 // parse all, defaults to false
 };
 
 /* Parses with a given input, offset and a configuration struct.
