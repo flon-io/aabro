@@ -926,7 +926,7 @@ fabr_tree *fabr_p_rex(
 
   fabr_tree *r = fabr_tree_malloc(t->result, offset, t->length, NULL, p, NULL);
 
-  if (flags & FABR_F_PRUNE && t->result == 1)
+  if ((flags & FABR_F_PRUNE) && t->result == 1)
     fabr_tree_free(t);
   else
     r->child = t;
