@@ -155,5 +155,22 @@ context "parser"
       ensure(s == NULL);
     }
   }
+
+  describe "fabr_match()"
+  {
+    it "returns 0 when the input doesn't match the parser"
+    {
+      p = fabr_rex("[a-zA-Z][a-zA-Z0-9]*");
+
+      expect(fabr_match("1abc", p) == 0);
+    }
+
+    it "returns 1 when the input matches the parser"
+    {
+      p = fabr_rex("[a-zA-Z][a-zA-Z0-9]*");
+
+      expect(fabr_match("abc1", p) == 1);
+    }
+  }
 }
 

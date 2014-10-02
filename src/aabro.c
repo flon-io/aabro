@@ -1056,6 +1056,19 @@ fabr_tree *fabr_parse_f(
   return t;
 }
 
+int fabr_match(const char *input, fabr_parser *p)
+{
+  fabr_tree *t = fabr_parse_all(input, 0, p);
+  //fabr_tree *t = fabr_parse_f(input, 0, p, ABR_F_ALL);
+  //puts(fabr_tree_to_string(t, input));
+
+  int r = t->result;
+
+  fabr_tree_free(t);
+
+  return r;
+}
+
 
 //
 // helper functions

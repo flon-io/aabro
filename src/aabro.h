@@ -159,6 +159,11 @@ enum // flags for fabr_parse_f
 fabr_tree *fabr_parse_f(
   const char *input, size_t offset, fabr_parser *p, int flags);
 
+/* Simply responds 1: yes, the input was parsed successfully, 0: no, the
+ * input was not parsed successfully.
+ */
+int fabr_match(const char *input, fabr_parser *p);
+
 //
 // helper functions
 
