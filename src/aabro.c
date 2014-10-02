@@ -990,7 +990,11 @@ static fabr_tree *fabr_do_parse(
 
   fabr_tree *t = fabr_p_funcs[p->type](input, offset, depth, p, flags);
 
-  if ((flags & FABR_F_PRUNE) == 0 || t->child == NULL) return t;
+  int match = flags & FABR_F_MATCH;
+
+  if (
+    match == 0 && ((flags & FABR_F_PRUNE) == 0 || t->child == NULL)
+  ) return t;
 
   fabr_tree *first = t->child;
   t->child = NULL;
@@ -998,17 +1002,15 @@ static fabr_tree *fabr_do_parse(
   fabr_tree *next = NULL;
   for (fabr_tree *c = first; c != NULL; c = next)
   {
-    next = c->sibling;
-    c->sibling = NULL;
+    next = c->sibling; c->sibling = NULL;
 
-    if (t->result == 0 || c->result == 0)
+    if (match || t->result == 0 || c->result == 0)
     {
       fabr_tree_free(c);
     }
     else
     {
-      *sibling = c;
-      sibling = &c->sibling;
+      *sibling = c; sibling = &c->sibling;
     }
   }
 
@@ -1058,8 +1060,10 @@ fabr_tree *fabr_parse_f(
 
 int fabr_match(const char *input, fabr_parser *p)
 {
-  fabr_tree *t = fabr_parse_all(input, 0, p);
-  //fabr_tree *t = fabr_parse_f(input, 0, p, FABR_F_ALL);
+  fabr_tree *t = fabr_parse_f(
+    input, 0, p, FABR_F_ALL | FABR_F_PRUNE | FABR_F_MATCH);
+  //fabr_tree *t = fabr_parse_f(
+  //  input, 0, p, FABR_F_ALL | FABR_F_PRUNE);
   //puts(fabr_tree_to_string(t, input));
 
   int r = t->result;

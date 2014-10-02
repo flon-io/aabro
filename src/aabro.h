@@ -132,6 +132,8 @@ fabr_parser *fabr_n_q(const char *name, const char *code);
 //fabr_parser *fabr_presence(fabr_parser *p);
 //fabr_parser *fabr_absence(fabr_parser *p);
 
+#define fabr_str(s) fabr_string(s)
+
 //
 // entry point
 
@@ -151,7 +153,8 @@ fabr_tree *fabr_parse(
 enum // flags for fabr_parse_f
 {
   FABR_F_PRUNE  = 1 << 0, // don't prune failed trees, defaults to true
-  FABR_F_ALL    = 1 << 1 // parse all, defaults to false
+  FABR_F_ALL    = 1 << 1, // parse all, defaults to false
+  FABR_F_MATCH  = 1 << 2  // prune everything, leave only root and result
 };
 
 /* Parses with a given input, offset and a configuration struct.

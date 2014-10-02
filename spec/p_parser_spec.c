@@ -160,16 +160,18 @@ context "parser"
   {
     it "returns 0 when the input doesn't match the parser"
     {
-      p = fabr_rex("[a-zA-Z][a-zA-Z0-9]*");
+      fabr_parser *symbol = fabr_n_rex("symbol", "[a-zA-Z][a-zA-Z0-9]*");
+      p = fabr_seq(symbol, fabr_seq(fabr_str("-"), symbol, fabr_r("*")), NULL);
 
-      expect(fabr_match("1abc", p) == 0);
+      expect(fabr_match("1abc-def3", p) == 0);
     }
 
     it "returns 1 when the input matches the parser"
     {
-      p = fabr_rex("[a-zA-Z][a-zA-Z0-9]*");
+      fabr_parser *symbol = fabr_n_rex("symbol", "[a-zA-Z][a-zA-Z0-9]*");
+      p = fabr_seq(symbol, fabr_seq(fabr_str("-"), symbol, fabr_r("*")), NULL);
 
-      expect(fabr_match("abc1", p) == 1);
+      expect(fabr_match("abc1-def3", p) == 1);
     }
   }
 }
