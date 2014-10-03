@@ -139,6 +139,19 @@ context "tree functions"
         // NB: only freeing this list of pointers,
         //     the trees themselves are freed in the "after each"
     }
+
+    it "returns an empty list when it finds nothing"
+    {
+      char *s = "[1,2,3]";
+      t = fabr_parse_all(s, 0, p);
+      //char *st = fabr_tree_to_string(t, NULL); puts(st); free(st);
+
+      flu_list *l = fabr_tree_list_named(fabr_t_child(t, 0), "nada");
+
+      ensure(l->size == 0);
+
+      flu_list_free(l);
+    }
   }
 
   describe "fabr_tree_collect()"
