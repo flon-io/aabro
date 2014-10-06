@@ -149,6 +149,12 @@ char *flu_readall(const char *path, ...);
  */
 char *flu_freadall(FILE *in);
 
+/* Writes a file to disk.
+ * Returns 1 when successful.
+ * Useful when setting up test files
+ */
+int flu_writeall(const char *path, ...);
+
 
 //
 // flu_list
