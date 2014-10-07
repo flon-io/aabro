@@ -144,6 +144,8 @@ char *flu_sprintf(const char *format, ...);
  */
 char *flu_readall(const char *path, ...);
 
+char *flu_vreadall(const char *path, va_list ap);
+
 /* Given a file, reads all its content to a new string.
  * Returns NULL if reading failed for any reason.
  */
