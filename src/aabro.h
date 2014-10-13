@@ -25,8 +25,8 @@
 
 // https://github.com/flon-io/aabro
 
-#ifndef AABRO_H
-#define AABRO_H
+#ifndef FLON_AABRO_H
+#define FLON_AABRO_H
 
 #include "flutil.h"
 
@@ -210,5 +210,5 @@ fabr_parser *fabr_p_child(fabr_parser *p, size_t index);
  */
 fabr_tree *fabr_t_child(fabr_tree *t, size_t index);
 
-#endif // AABRO_H
+#endif // FLON_AABRO_H
 
