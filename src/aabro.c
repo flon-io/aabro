@@ -1136,15 +1136,31 @@ char *fabr_error_message(fabr_tree *t)
 fabr_tree *fabr_tree_lookup(fabr_tree *t, const char *name)
 {
   if (name == NULL && t->name != NULL) return t;
-  if (name && t->name != NULL && strcmp(t->name, name) == 0) return t;
+  if (name && t->name && strcmp(t->name, name) == 0) return t;
 
   for (fabr_tree *c = t->child; c != NULL; c = c->sibling)
   {
     fabr_tree *r = fabr_tree_lookup(c, name);
-    if (r != NULL) return r;
+    if (r) return r;
   }
 
   return NULL;
+}
+
+fabr_tree *fabr_subtree_lookup(fabr_tree *t, const char *name)
+{
+  for (fabr_tree *c = t->child; c != NULL; c = c->sibling)
+  {
+    if (name == NULL && c->name != NULL) return c;
+    if (name && c->name && strcmp(c->name, name) == 0) return c;
+
+    fabr_tree *r = fabr_subtree_lookup(c, name);
+    if (r) return r;
+  }
+
+  return NULL;
+
+  // TODO: base tree_lookup on subtree_lookup
 }
 
 static void fabr_t_list(flu_list *l, fabr_tree *t, fabr_tree_func *f)

@@ -178,10 +178,16 @@ int fabr_match(const char *input, fabr_parser *p);
 char *fabr_error_message(fabr_tree *t);
 
 /* Starting from tree t, returns the first sub-tree that bears the
- * given name.
+ * given name. Depth first.
  * If the name is NULL, will yield the first sub-tree that bears a name.
  */
 fabr_tree *fabr_tree_lookup(fabr_tree *t, const char *name);
+
+/* Starting from tree t's children, returns the first sub-tree that bears
+ * the given name. Depth first.
+ * If the name is NULL, will yield the first sub-tree that bears a name.
+ */
+fabr_tree *fabr_subtree_lookup(fabr_tree *t, const char *name);
 
 /* The model for a function that, given a tree, returns an integer.
  *

@@ -358,7 +358,7 @@ context "tree functions"
       ensure(r == NULL);
     }
 
-    it "returns the first sub-tree with the given name"
+    it "returns the first tree with the given name"
     {
       char *s = "[1,\"deux\",3]";
       t = fabr_parse_all(s, 0, p);
@@ -388,7 +388,7 @@ context "tree functions"
       fabr_parser_free(pa);
     }
 
-    it "returns the first sub-tree with a [non-NULL] name"
+    it "returns the first tree with a [non-NULL] name"
     {
       char *s = "[1,\"deux\",3]";
       t = fabr_parse_all(s, 0, p);
@@ -405,6 +405,51 @@ context "tree functions"
 
       expect(fabr_tree_to_str(tt, s, 0) ===f ""
         "[ \"array\", 1, 0, 12, null, \"seq-01\", 3 ]");
+    }
+  }
+
+  describe "fabr_subtree_lookup()"
+  {
+    it "returns NULL if it finds nothing"
+    {
+      char *s = "[1,2,3]";
+      t = fabr_parse_all(s, 0, p);
+
+      //puts(fabr_tree_to_string(t, s, 1));
+
+      fabr_tree *r = fabr_subtree_lookup(t, "string");
+
+      expect(r == NULL);
+    }
+
+    it "returns the first sub-tree with the given name"
+    {
+      char *s = "[1,2,3]";
+      t = fabr_parse_all(s, 0, p);
+
+      //puts(fabr_tree_to_string(t, s, 1));
+
+      fabr_tree *tt = fabr_subtree_lookup(t, "value");
+
+      expect(tt != NULL);
+
+      expect(fabr_tree_to_str(tt, s, 0) ===f ""
+        "[ \"value\", 1, 1, 1, null, \"alt-0\", 1 ]");
+    }
+
+    it "returns the first sub-tree with a[ny] name when name=NULL"
+    {
+      char *s = "[1,2,3]";
+      t = fabr_parse_all(s, 0, p);
+
+      //puts(fabr_tree_to_string(t, s, 1));
+
+      fabr_tree *tt = fabr_subtree_lookup(t, NULL);
+
+      expect(tt != NULL);
+
+      expect(fabr_tree_to_str(tt, s, 0) ===f ""
+        "[ \"array\", 1, 0, 7, null, \"seq-01\", 3 ]");
     }
   }
 }
