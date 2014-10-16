@@ -373,5 +373,39 @@ context "tree functions"
       ensure(r->length == 6);
     }
   }
+
+  describe "fabr_tree_lookup(t, NULL)"
+  {
+    it "returns NULL if it finds nothing"
+    {
+      fabr_parser *pa = fabr_str("xxx");
+      t = fabr_parse_all("yyy", 0, pa);
+
+      //puts(fabr_tree_to_string(t, s, 1));
+
+      expect(fabr_tree_lookup(t, NULL) == NULL);
+
+      fabr_parser_free(pa);
+    }
+
+    it "returns the first sub-tree with a [non-NULL] name"
+    {
+      char *s = "[1,\"deux\",3]";
+      t = fabr_parse_all(s, 0, p);
+
+      //puts(fabr_tree_to_string(t, s, 1));
+      //puts(fabr_tree_to_str(t, s, 1));
+
+      fabr_tree *tt = fabr_tree_lookup(t, NULL);
+
+      expect(fabr_tree_to_str(tt, s, 0) ===f ""
+        "[ \"value\", 1, 0, 12, null, \"alt-0\", 1 ]");
+
+      tt = fabr_tree_lookup(t->child, NULL);
+
+      expect(fabr_tree_to_str(tt, s, 0) ===f ""
+        "[ \"array\", 1, 0, 12, null, \"seq-01\", 3 ]");
+    }
+  }
 }
 

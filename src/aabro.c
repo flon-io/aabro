@@ -1136,7 +1136,8 @@ char *fabr_error_message(fabr_tree *t)
 
 fabr_tree *fabr_tree_lookup(fabr_tree *t, const char *name)
 {
-  if (t->name != NULL && strcmp(t->name, name) == 0) return t;
+  if (name == NULL && t->name != NULL) return t;
+  if (name && t->name != NULL && strcmp(t->name, name) == 0) return t;
 
   for (fabr_tree *c = t->child; c != NULL; c = c->sibling)
   {
