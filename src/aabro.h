@@ -109,9 +109,11 @@ fabr_parser *fabr_rex(const char *s);
 
 fabr_parser *fabr_rep(fabr_parser *p, ssize_t min, ssize_t max);
 fabr_parser *fabr_alt(fabr_parser *p, ...);
+fabr_parser *fabr_altg(fabr_parser *p, ...);
 fabr_parser *fabr_seq(fabr_parser *p, ...);
 
 fabr_parser *fabr_n_alt(const char *name, fabr_parser *p, ...);
+fabr_parser *fabr_n_altg(const char *name, fabr_parser *p, ...);
 fabr_parser *fabr_n_range(const char *name, const char *range);
 fabr_parser *fabr_n_rex(const char *name, const char *s);
 

@@ -108,7 +108,7 @@ context "parser"
       t = fabr_parse_f("x", 0, p, FABR_F_ALL);
       char *s = fabr_tree_to_string(t, NULL, 0);
 
-      puts(fabr_tree_to_string(t, "x", 1));
+      //puts(fabr_tree_to_string(t, "x", 1));
 
       ensure(s ===f ""
         "[ null, 1, 0, 1, null, \"rep-0\", [\n"

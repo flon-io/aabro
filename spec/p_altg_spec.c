@@ -2,13 +2,13 @@
 //
 // specifying aabro
 //
-// Thu Apr 10 05:47:54 JST 2014
+// Thu Oct 16 10:04:54 JST 2014
 //
 
 #include "aabro.h"
 
 
-context "alternative"
+context "greedy alternative"
 {
   before each
   {
@@ -21,11 +21,11 @@ context "alternative"
     if (p != NULL) fabr_parser_free(p);
   }
 
-  describe "fabr_alt(p0, p1, ...)"
+  describe "fabr_altg(p0, p1, ...)"
   {
-    it "creates an alternative parser struct"
+    it "creates an altg parser struct"
     {
-      p = fabr_alt(fabr_string("x"), fabr_string("y"), NULL);
+      p = fabr_altg(fabr_string("x"), fabr_string("y"), NULL);
 
       ensure(p != NULL);
       ensure(fabr_p_child(p, 0) != NULL);
@@ -33,11 +33,11 @@ context "alternative"
       ensure(fabr_p_child(p, 2) == NULL);
     }
   }
-  describe "fabr_n_alt(s, p0, p1, ...)"
+  describe "fabr_n_altg(s, p0, p1, ...)"
   {
-    it "creates a named alternative parser struct"
+    it "creates a named greedy alternative parser struct"
     {
-      p = fabr_n_alt("letter", fabr_string("x"), fabr_string("y"), NULL);
+      p = fabr_n_altg("letter", fabr_string("x"), fabr_string("y"), NULL);
 
       ensure(p != NULL);
       ensure(p->name === "letter");
@@ -51,22 +51,23 @@ context "alternative"
   {
     it "returns a string representation of the parser struct"
     {
-      p = fabr_alt(fabr_string("x"), fabr_string("y"), NULL);
+      p = fabr_altg(fabr_string("x"), fabr_string("y"), NULL);
       char *s = fabr_parser_to_string(p);
 
       ensure(s ===f ""
-        "fabr_alt( /* 0 */\n"
+        "fabr_altg( /* 0 */\n"
         "  fabr_string(\"x\") /* 00 */,\n"
         "  fabr_string(\"y\") /* 01 */,\n"
         "  NULL)");
     }
+
     it "returns a string representation of the named parser struct"
     {
-      p = fabr_n_alt("xory", fabr_string("x"), fabr_string("y"), NULL);
+      p = fabr_n_altg("xory", fabr_string("x"), fabr_string("y"), NULL);
       char *s = fabr_parser_to_string(p);
 
       ensure(s ===f ""
-        "fabr_n_alt( /* 0 */\n"
+        "fabr_n_altg( /* 0 */\n"
         "  \"xory\",\n"
         "  fabr_string(\"x\") /* 00 */,\n"
         "  fabr_string(\"y\") /* 01 */,\n"
@@ -78,17 +79,18 @@ context "alternative"
   {
     it "returns a string representation of the parser"
     {
-      p = fabr_alt(fabr_string("x"), fabr_string("y"), NULL);
+      p = fabr_altg(fabr_string("x"), fabr_string("y"), NULL);
       char *s = fabr_parser_to_s(p);
 
-      ensure(s ===f "alt t2 c2");
+      expect(s ===f "altg t3 c2");
     }
+
     it "returns a string representation of the named parser"
     {
-      p = fabr_n_alt("xory", fabr_string("x"), fabr_string("y"), NULL);
+      p = fabr_n_altg("xory", fabr_string("x"), fabr_string("y"), NULL);
       char *s = fabr_parser_to_s(p);
 
-      ensure(s ===f "alt t2 'xory' c2");
+      ensure(s ===f "altg t3 'xory' c2");
     }
   }
 
@@ -96,68 +98,68 @@ context "alternative"
   {
     it "succeeds"
     {
-      p = fabr_alt(fabr_string("x"), fabr_string("y"), NULL);
+      p = fabr_altg(fabr_string("x"), fabr_string("y"), NULL);
       t = fabr_parse("x", 0, p);
       char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
-        "[ null, 1, 0, 1, null, \"alt-0\", [\n"
+        "[ null, 1, 0, 1, null, \"altg-0\", [\n"
         "  [ null, 1, 0, 1, null, \"string-00\", [] ]\n"
         "] ]");
     }
 
     it "succeeds (named parser)"
     {
-      p = fabr_n_alt("xory", fabr_string("x"), fabr_string("y"), NULL);
+      p = fabr_n_altg("xory", fabr_string("x"), fabr_string("y"), NULL);
       t = fabr_parse("x", 0, p);
       char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
-        "[ \"xory\", 1, 0, 1, null, \"alt-0\", [\n"
+        "[ \"xory\", 1, 0, 1, null, \"altg-0\", [\n"
         "  [ null, 1, 0, 1, null, \"string-00\", [] ]\n"
         "] ]");
     }
 
     it "succeeds (2nd alt)"
     {
-      p = fabr_alt(fabr_string("x"), fabr_string("y"), NULL);
+      p = fabr_altg(fabr_string("x"), fabr_string("y"), NULL);
       t = fabr_parse("y", 0, p);
       char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
-        "[ null, 1, 0, 1, null, \"alt-0\", [\n"
+        "[ null, 1, 0, 1, null, \"altg-0\", [\n"
         "  [ null, 1, 0, 1, null, \"string-01\", [] ]\n"
         "] ]");
     }
 
     it "fails"
     {
-      p = fabr_alt(fabr_string("x"), fabr_string("y"), NULL);
+      p = fabr_altg(fabr_string("x"), fabr_string("y"), NULL);
       t = fabr_parse("z", 0, p);
       char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
-        "[ null, 0, 0, 0, null, \"alt-0\", [] ]");
+        "[ null, 0, 0, 0, null, \"altg-0\", [] ]");
     }
 
     it "fails (named parser)"
     {
-      p = fabr_n_alt("xory", fabr_string("x"), fabr_string("y"), NULL);
+      p = fabr_n_altg("xory", fabr_string("x"), fabr_string("y"), NULL);
       t = fabr_parse("z", 0, p);
       char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
-        "[ \"xory\", 0, 0, 0, null, \"alt-0\", [] ]");
+        "[ \"xory\", 0, 0, 0, null, \"altg-0\", [] ]");
     }
 
     it "reports the failed attempt if not FABR_F_PRUNE"
     {
-      p = fabr_alt(fabr_string("x"), fabr_string("y"), NULL);
+      p = fabr_altg(fabr_string("x"), fabr_string("y"), NULL);
       t = fabr_parse_f("y", 0, p, FABR_F_ALL);
       char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
-        "[ null, 1, 0, 1, null, \"alt-0\", [\n"
+        "[ null, 1, 0, 1, null, \"altg-0\", [\n"
         "  [ null, 0, 0, 0, null, \"string-00\", [] ],\n"
         "  [ null, 1, 0, 1, null, \"string-01\", [] ]\n"
         "] ]");
@@ -165,26 +167,49 @@ context "alternative"
 
     it "propagates errors"
     {
-      p = fabr_alt(fabr_string("x"), fabr_n("y"), NULL);
+      p = fabr_altg(fabr_string("x"), fabr_n("y"), NULL);
       t = fabr_parse("z", 0, p);
       char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
-        "[ null, -1, 0, 0, null, \"alt-0\", [\n"
+        "[ null, -1, 0, 0, null, \"altg-0\", [\n"
         "  [ \"y\", -1, 0, 0, \"unlinked fabr_n(\"y\")\", \"n-01\", [] ]\n"
         "] ]");
     }
 
-    it "favours the first successful result"
+    it "favours the longest successful result"
     {
       char *in = "xx";
-      p = fabr_alt(fabr_string("x"), fabr_string("xx"), NULL);
+      p = fabr_altg(fabr_string("x"), fabr_string("xx"), NULL);
       t = fabr_parse(in, 0, p);
 
       //puts(fabr_tree_to_string(t, in, 1));
-      expect(t->result == 1);
-      expect(t->offset == 0);
-      expect(t->length == 1);
+
+      char *s = fabr_tree_to_string(t, in, 0);
+
+      ensure(s ===f ""
+        "[ null, 1, 0, 2, null, \"altg-0\", [\n"
+        "  [ null, 1, 0, 2, null, \"string-01\", \"xx\" ]\n"
+        "] ]");
+    }
+
+    it "favours the longest successful result (2)"
+    {
+      char *in = "xxxx";
+
+      p = fabr_altg(
+        fabr_string("x"), fabr_string("xxx"), fabr_string("xx"), NULL);
+
+      t = fabr_parse(in, 0, p);
+
+      //puts(fabr_tree_to_string(t, in, 1));
+
+      char *s = fabr_tree_to_string(t, in, 0);
+
+      ensure(s ===f ""
+        "[ null, 1, 0, 3, null, \"altg-0\", [\n"
+        "  [ null, 1, 0, 3, null, \"string-01\", \"xxx\" ]\n"
+        "] ]");
     }
   }
 }
