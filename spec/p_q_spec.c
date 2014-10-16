@@ -27,7 +27,7 @@ describe "fabr_q()"
     {
       p = fabr_q("{4,5}");
 
-      ensure(p->type == 10);
+      ensure(p->type == 11);
       ensure(p->string === "{4,5}");
     }
 

@@ -27,7 +27,7 @@ context "fabr_range"
     {
       p = fabr_range("abc");
 
-      ensure(p->type == 11);
+      ensure(p->type == 12);
       ensure(p->string === "abc");
       ensure(fabr_parser_to_string(p) ===f "fabr_range(\"abc\") /* 0 */");
     }

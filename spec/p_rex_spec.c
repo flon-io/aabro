@@ -336,7 +336,7 @@ context "fabr_rex"
       p = fabr_rex("a[^b]*b");
       char *s = fabr_parser_to_s(p);
 
-      ensure(s ===f "rex t12 \"a[^b]*b\" c1");
+      ensure(s ===f "rex t13 \"a[^b]*b\" c1");
     }
 
     it "returns a string representation of the named parser struct"
@@ -344,7 +344,7 @@ context "fabr_rex"
       p = fabr_n_rex("oedipus", "a[^b]*b");
       char *s = fabr_parser_to_s(p);
 
-      ensure(s ===f "rex t12 'oedipus' \"a[^b]*b\" c1");
+      ensure(s ===f "rex t13 'oedipus' \"a[^b]*b\" c1");
     }
   }
 
