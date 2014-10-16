@@ -53,7 +53,7 @@ context "name"
     {
       p = fabr_name("y", fabr_string("x"));
       t = fabr_parse("x", 0, p);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
         "[ \"y\", 1, 0, 1, null, \"name-0\", [\n"
@@ -65,7 +65,7 @@ context "name"
     {
       p = fabr_name("y", fabr_string("x"));
       t = fabr_parse("z", 0, p);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
         "[ \"y\", 0, 0, 0, null, \"name-0\", [] ]");

@@ -39,7 +39,7 @@ context "fabr_range"
         p = fabr_range("abc");
         t = fabr_parse("aaa", 0, p);
 
-        ensure(fabr_tree_to_string(t, NULL) ===f ""
+        ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
           "[ null, 1, 0, 1, null, \"range-0\", [] ]");
       }
 
@@ -48,7 +48,7 @@ context "fabr_range"
         p = fabr_range("abc");
         t = fabr_parse("daa", 0, p);
 
-        ensure(fabr_tree_to_string(t, NULL) ===f ""
+        ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
           "[ null, 0, 0, 0, null, \"range-0\", [] ]");
       }
 

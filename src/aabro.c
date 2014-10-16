@@ -114,7 +114,8 @@ char *fabr_p_names[] = { // const ?
 };
 
 static void fabr_t_to_s(
-  fabr_tree *t, const char *input, flu_sbuffer *b, size_t indent, int children)
+  fabr_tree *t, const char *input,
+  flu_sbuffer *b, size_t indent, short children, short color)
 {
   for (size_t i = 0; i < indent; i++) flu_sbprintf(b, "  ");
 
@@ -124,15 +125,18 @@ static void fabr_t_to_s(
     return;
   }
 
+  char *stringc = color ? "[1;33m" : "";
+
   char *name = "null";
   char *note = "null";
+  char *resultc = ""; if (color) resultc = t->result ? "[0;32m" : "[0;0m";
   if (t->name) name = flu_sprintf("\"%s\"", t->name);
   if (t->note) note = flu_sprintf("\"%s\"", t->note);
   //
   flu_sbprintf(
     b,
-    "[ %s, %d, %d, %d, %s, \"%s-%s\", ",
-    name, t->result, t->offset, t->length,
+    "%s[ %s, %d, %d, %d, %s, \"%s-%s\", ",
+    resultc, name, t->result, t->offset, t->length,
     note, fabr_p_names[t->parser->type], t->parser->id);
   //
   if (t->name) free(name);
@@ -154,7 +158,7 @@ static void fabr_t_to_s(
     else
     {
       char *s = flu_n_escape(input + t->offset, t->length);
-      flu_sbprintf(b, "\"%s\" ]", s);
+      flu_sbprintf(b, "\"%s%s%s\" ]", stringc, s, resultc);
       free(s);
     }
     return;
@@ -166,25 +170,27 @@ static void fabr_t_to_s(
   {
     if (c != t->child) flu_sbputc(b, ',');
     flu_sbputc(b, '\n');
-    fabr_t_to_s(c, input, b, indent + 1, children);
+    fabr_t_to_s(c, input, b, indent + 1, children, color);
   }
 
   flu_sbputc(b, '\n');
   for (int i = 0; i < indent; i++) flu_sbprintf(b, "  ");
-  flu_sbprintf(b, "] ]");
+  flu_sbprintf(b, "%s] ]", resultc);
+
+  if (color) flu_sbprintf(b, "[0;0m"); // clear
 }
 
-char *fabr_tree_to_string(fabr_tree *t, const char *input)
+char *fabr_tree_to_string(fabr_tree *t, const char *input, short color)
 {
   flu_sbuffer *b = flu_sbuffer_malloc();
-  fabr_t_to_s(t, input, b, 0, 1);
+  fabr_t_to_s(t, input, b, 0, 1, color);
   return flu_sbuffer_to_string(b);
 }
 
-char *fabr_tree_to_str(fabr_tree *t, const char *input)
+char *fabr_tree_to_str(fabr_tree *t, const char *input, short color)
 {
   flu_sbuffer *b = flu_sbuffer_malloc();
-  fabr_t_to_s(t, input, b, 0, 0);
+  fabr_t_to_s(t, input, b, 0, 0, color);
   return flu_sbuffer_to_string(b);
 }
 

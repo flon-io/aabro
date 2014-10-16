@@ -27,7 +27,7 @@ context "parser"
     {
       p = fabr_rep(fabr_string("x"), 1, 4);
       t = fabr_parse("x", 0, p);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
         "[ null, 1, 0, 1, null, \"rep-0\", [\n"
@@ -39,7 +39,7 @@ context "parser"
     {
       p = fabr_rep(fabr_string("x"), 1, 2);
       t = fabr_parse("xxy", 0, p);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
         "[ null, 1, 0, 2, null, \"rep-0\", [\n"
@@ -78,7 +78,7 @@ context "parser"
     {
       p = fabr_rep(fabr_string("x"), 1, 4);
       t = fabr_parse_all("x", 0, p);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
         "[ null, 1, 0, 1, null, \"rep-0\", [\n"
@@ -90,7 +90,7 @@ context "parser"
     {
       p = fabr_rep(fabr_string("x"), 1, 2);
       t = fabr_parse_all("xxy", 0, p);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
         "[ null, 0, 0, 2, \"not all the input could be parsed\", \"rep-0\", [\n"
@@ -100,13 +100,15 @@ context "parser"
     }
   }
 
-  describe "fabr_parse_c(input, offset, parser, flags)"
+  describe "fabr_parse_f(input, offset, parser, flags)"
   {
     it "lets parsing proceed if not FABR_F_PRUNE"
     {
       p = fabr_rep(fabr_string("x"), 1, 4);
       t = fabr_parse_f("x", 0, p, FABR_F_ALL);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
+
+      puts(fabr_tree_to_string(t, "x", 1));
 
       ensure(s ===f ""
         "[ null, 1, 0, 1, null, \"rep-0\", [\n"
@@ -122,7 +124,7 @@ context "parser"
     {
       p = fabr_seq(fabr_n("p0"), fabr_n("p1"), NULL);
       t = fabr_parse_all("x", 0, p);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
         "[ null, -1, 0, 0, null, \"seq-0\", [\n"

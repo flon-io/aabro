@@ -88,7 +88,7 @@ context "strings"
     {
       p = fabr_string("xxx");
       t = fabr_parse("xxx", 0, p);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f "[ null, 1, 0, 3, null, \"string-0\", [] ]");
     }
@@ -97,7 +97,7 @@ context "strings"
     {
       p = fabr_n_string("3x", "xxx");
       t = fabr_parse("xxx", 0, p);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f "[ \"3x\", 1, 0, 3, null, \"string-0\", [] ]");
     }
@@ -106,7 +106,7 @@ context "strings"
     {
       p = fabr_string("xxx");
       t = fabr_parse("yyy", 0, p);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f "[ null, 0, 0, 0, null, \"string-0\", [] ]");
     }

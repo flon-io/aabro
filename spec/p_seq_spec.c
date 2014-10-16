@@ -82,7 +82,7 @@ context "sequence"
     {
       p = fabr_seq(fabr_string("x"), fabr_string("y"), NULL);
       t = fabr_parse("xy", 0, p);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
         "[ null, 1, 0, 2, null, \"seq-0\", [\n"
@@ -95,7 +95,7 @@ context "sequence"
     {
       p = fabr_n_seq("xtheny", fabr_string("x"), fabr_string("y"), NULL);
       t = fabr_parse("xy", 0, p);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
         "[ \"xtheny\", 1, 0, 2, null, \"seq-0\", [\n"
@@ -108,7 +108,7 @@ context "sequence"
     {
       p = fabr_seq(fabr_string("x"), fabr_string("y"), NULL);
       t = fabr_parse("z", 0, p);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
         "[ null, 0, 0, 0, null, \"seq-0\", [] ]");
@@ -118,7 +118,7 @@ context "sequence"
     {
       p = fabr_seq(fabr_string("x"), fabr_string("y"), NULL);
       t = fabr_parse("xz", 0, p);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
         "[ null, 0, 0, 0, null, \"seq-0\", [] ]");
@@ -128,7 +128,7 @@ context "sequence"
     {
       p = fabr_seq(fabr_string("x"), fabr_string("y"), NULL);
       t = fabr_parse_f("xz", 0, p, FABR_F_ALL);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
         "[ null, 0, 0, 0, null, \"seq-0\", [\n"
@@ -141,7 +141,7 @@ context "sequence"
     {
       p = fabr_seq(fabr_string("x"), fabr_n("y"), NULL);
       t = fabr_parse("xz", 0, p);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
         "[ null, -1, 0, 0, null, \"seq-0\", [\n"

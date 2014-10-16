@@ -65,7 +65,7 @@ context "name"
     {
       p = fabr_n("z");
       t = fabr_parse("x", 0, p);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
         "[ \"z\", -1, 0, 0, \"unlinked fabr_n(\"z\")\", \"n-0\", [] ]");
@@ -91,7 +91,7 @@ context "name"
       p = exp;
 
       t = fabr_parse("0", 0, p);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
         "[ \"exp\", 1, 0, 1, null, \"alt-0\", [\n"

@@ -83,7 +83,7 @@ context "tree functions"
     {
       char *s = "[1,2,3]";
       t = fabr_parse_all(s, 0, p);
-      //char *st = fabr_tree_to_string(t, NULL); puts(st); free(st);
+      //char *st = fabr_tree_to_string(t, NULL, 1); puts(st); free(st);
 
       flu_list *l = fabr_tree_list(fabr_t_child(t, 0), is_value);
 
@@ -100,7 +100,7 @@ context "tree functions"
       ensure(t2->name === "value");
       ensure(fabr_tree_string(s, t2) ===f "3");
 
-      ensure(fabr_tree_to_string(t0, NULL) ===f ""
+      ensure(fabr_tree_to_string(t0, NULL, 0) ===f ""
         "[ \"value\", 1, 1, 1, null, \"alt-0\", [\n"
         "  [ \"number\", 1, 1, 1, null, \"rex-00\", [] ]\n"
         "] ]"
@@ -118,7 +118,7 @@ context "tree functions"
     {
       char *s = "[1,2,3]";
       t = fabr_parse_all(s, 0, p);
-      //char *st = fabr_tree_to_string(t, NULL); puts(st); free(st);
+      //char *st = fabr_tree_to_string(t, NULL, 1); puts(st); free(st);
 
       flu_list *l = fabr_tree_list_named(fabr_t_child(t, 0), "value");
 
@@ -144,7 +144,7 @@ context "tree functions"
     {
       char *s = "[1,2,3]";
       t = fabr_parse_all(s, 0, p);
-      //char *st = fabr_tree_to_string(t, NULL); puts(st); free(st);
+      //char *st = fabr_tree_to_string(t, NULL, 1); puts(st); free(st);
 
       flu_list *l = fabr_tree_list_named(fabr_t_child(t, 0), "nada");
 
@@ -160,7 +160,7 @@ context "tree functions"
     {
       char *s = "[1,2,3]";
       t = fabr_parse_all(s, 0, p);
-      //char *st = fabr_tree_to_string(t, NULL); puts(st); free(st);
+      //char *st = fabr_tree_to_string(t, NULL, 1); puts(st); free(st);
 
       fabr_tree **ts = fabr_tree_collect(t->child, is_value);
 
@@ -176,7 +176,7 @@ context "tree functions"
       ensure(ts[2]->name === "value");
       ensure(fabr_tree_string(s, ts[2]) ===f "3");
 
-      ensure(fabr_tree_to_string(ts[0], NULL) ===f ""
+      ensure(fabr_tree_to_string(ts[0], NULL, 0) ===f ""
         "[ \"value\", 1, 1, 1, null, \"alt-0\", [\n"
         "  [ \"number\", 1, 1, 1, null, \"rex-00\", [] ]\n"
         "] ]"
@@ -249,7 +249,7 @@ context "tree functions"
     it "returns a string representation of a fabr_tree"
     {
       t = fabr_parse_all("-1", 0, p);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       //puts(s);
       ensure(s ===f ""
@@ -265,9 +265,10 @@ context "tree functions"
     {
       char *in = "[-1,0,1]";
       t = fabr_parse_all(in, 0, p);
-      char *s = fabr_tree_to_string(t, in);
+      char *s = fabr_tree_to_string(t, in, 0);
 
-      //puts(s);
+      //puts(fabr_tree_to_string(t, in, 1));
+
       ensure(s ===f ""
         "[ \"value\", 1, 0, 8, null, \"alt-0\", [\n"
         "  [ \"array\", 1, 0, 8, null, \"seq-01\", [\n"
@@ -302,7 +303,7 @@ context "tree functions"
     {
       char *in = "\"hello\nworld\"";
       t = fabr_parse_all(in, 0, p);
-      char *s = fabr_tree_to_string(t, in);
+      char *s = fabr_tree_to_string(t, in, 0);
 
       ensure(s ===f ""
         "[ \"value\", 1, 0, 13, null, \"alt-0\", [\n"
@@ -317,7 +318,7 @@ context "tree functions"
     {
       char *in = "-1";
       t = fabr_parse_all(in, 0, p);
-      char *s = fabr_tree_to_str(t, in);
+      char *s = fabr_tree_to_str(t, in, 0);
 
       //puts(s);
       ensure(s ===f "[ \"value\", 1, 0, 2, null, \"alt-0\", 1 ]");
@@ -328,7 +329,7 @@ context "tree functions"
       t = fabr_parse_all("-1", 0, p);
       fabr_tree *tt = t->child;
 
-      char *s = fabr_tree_to_str(tt, NULL);
+      char *s = fabr_tree_to_str(tt, NULL, 0);
       ensure(s ===f "[ \"number\", 1, 0, 2, null, \"rex-00\", 0 ]");
     }
 
@@ -338,7 +339,7 @@ context "tree functions"
       t = fabr_parse_all(in, 0, p);
       fabr_tree *tt = t->child;
 
-      char *s = fabr_tree_to_str(tt, in);
+      char *s = fabr_tree_to_str(tt, in, 0);
       ensure(s ===f "[ \"number\", 1, 0, 2, null, \"rex-00\", \"-1\" ]");
     }
   }
@@ -350,7 +351,7 @@ context "tree functions"
       char *s = "[1,2,3]";
       t = fabr_parse_all(s, 0, p);
 
-      //puts(fabr_tree_to_string(t, s));
+      //puts(fabr_tree_to_string(t, s, 1));
 
       fabr_tree *r = fabr_tree_lookup(t, "string");
 
@@ -362,7 +363,7 @@ context "tree functions"
       char *s = "[1,\"deux\",3]";
       t = fabr_parse_all(s, 0, p);
 
-      //puts(fabr_tree_to_string(t, s);
+      //puts(fabr_tree_to_string(t, s, 1);
 
       fabr_tree *r = fabr_tree_lookup(t, "string");
 

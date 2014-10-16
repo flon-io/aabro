@@ -357,7 +357,7 @@ context "fabr_rex"
       char *in = "abdef";
 
       t = fabr_parse(in, 0, p);
-      char *s = fabr_tree_to_string(t, in);
+      char *s = fabr_tree_to_string(t, in, 0);
 
       ensure(s ===f ""
         "[ null, 1, 0, 5, null, \"rex-0\", \"abdef\" ]");
@@ -370,7 +370,7 @@ context "fabr_rex"
       char *in = "abdef";
 
       t = fabr_parse_f(in, 0, p, FABR_F_ALL);
-      char *s = fabr_tree_to_string(t, in);
+      char *s = fabr_tree_to_string(t, in, 0);
 
       ensure(s ===f ""
         "[ null, 1, 0, 5, null, \"rex-0\", [\n"
@@ -393,49 +393,49 @@ context "fabr_rex"
       //fabr_tree_free(t);
       in = "1";
       t = fabr_parse(in, 0, p);
-      //puts(fabr_tree_to_string(t, in));
+      //puts(fabr_tree_to_string(t, in, 1));
       ensure(t->result == 1);
       ensure(fabr_tree_string(in, t) ===f in);
 
       fabr_tree_free(t);
       in = "-1";
       t = fabr_parse(in, 0, p);
-      //puts(fabr_tree_to_string(t, in));
+      //puts(fabr_tree_to_string(t, in, 1));
       ensure(t->result == 1);
       ensure(fabr_tree_string(in, t) ===f in);
 
       fabr_tree_free(t);
       in = "1.1";
       t = fabr_parse(in, 0, p);
-      //puts(fabr_tree_to_string(t, in));
+      //puts(fabr_tree_to_string(t, in, 1));
       ensure(t->result == 1);
       ensure(fabr_tree_string(in, t) ===f in);
 
       fabr_tree_free(t);
       in = "-1.1";
       t = fabr_parse(in, 0, p);
-      //puts(fabr_tree_to_string(t, in));
+      //puts(fabr_tree_to_string(t, in, 1));
       ensure(t->result == 1);
       ensure(fabr_tree_string(in, t) ===f in);
 
       fabr_tree_free(t);
       in = "-1.1e1234";
       t = fabr_parse(in, 0, p);
-      //puts(fabr_tree_to_string(t, in));
+      //puts(fabr_tree_to_string(t, in, 1));
       ensure(t->result == 1);
       ensure(fabr_tree_string(in, t) ===f in);
 
       fabr_tree_free(t);
       in = "-1.1e-1234";
       t = fabr_parse(in, 0, p);
-      //puts(fabr_tree_to_string(t, in));
+      //puts(fabr_tree_to_string(t, in, 1));
       ensure(t->result == 1);
       ensure(fabr_tree_string(in, t) ===f in);
 
       fabr_tree_free(t);
       in = "-1.1e1234X";
       t = fabr_parse(in, 0, p);
-      //puts(fabr_tree_to_string(t, in));
+      //puts(fabr_tree_to_string(t, in, 1));
       ensure(t->result == 1);
       ensure(fabr_tree_string(in, t) ===f "-1.1e1234");
     }

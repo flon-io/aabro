@@ -75,14 +75,14 @@ void fabr_tree_free(fabr_tree *t);
  * leaves. If the input is given, the parsed strings are displayed at
  * the leaves.
  */
-char *fabr_tree_to_string(fabr_tree *t, const char *input);
+char *fabr_tree_to_string(fabr_tree *t, const char *input, short color);
 
 /* Returns a string representation (JSON) of the fabr_tree.
  * The children are not displayed. If the tree is a leaf and the input
  * is not NULL, the parsed string is displayed, else the children count
  * is displayed.
  */
-char *fabr_tree_to_str(fabr_tree *t, const char *input);
+char *fabr_tree_to_str(fabr_tree *t, const char *input, short color);
 
 /* Returns a copy of the string behind the fabr_tree.
  * Returns an empty string if the tree is not a successful one.

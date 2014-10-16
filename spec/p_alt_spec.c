@@ -98,7 +98,7 @@ context "alternative"
     {
       p = fabr_alt(fabr_string("x"), fabr_string("y"), NULL);
       t = fabr_parse("x", 0, p);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
         "[ null, 1, 0, 1, null, \"alt-0\", [\n"
@@ -110,7 +110,7 @@ context "alternative"
     {
       p = fabr_n_alt("xory", fabr_string("x"), fabr_string("y"), NULL);
       t = fabr_parse("x", 0, p);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
         "[ \"xory\", 1, 0, 1, null, \"alt-0\", [\n"
@@ -122,7 +122,7 @@ context "alternative"
     {
       p = fabr_alt(fabr_string("x"), fabr_string("y"), NULL);
       t = fabr_parse("y", 0, p);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
         "[ null, 1, 0, 1, null, \"alt-0\", [\n"
@@ -134,7 +134,7 @@ context "alternative"
     {
       p = fabr_alt(fabr_string("x"), fabr_string("y"), NULL);
       t = fabr_parse("z", 0, p);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
         "[ null, 0, 0, 0, null, \"alt-0\", [] ]");
@@ -144,7 +144,7 @@ context "alternative"
     {
       p = fabr_n_alt("xory", fabr_string("x"), fabr_string("y"), NULL);
       t = fabr_parse("z", 0, p);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
         "[ \"xory\", 0, 0, 0, null, \"alt-0\", [] ]");
@@ -154,7 +154,7 @@ context "alternative"
     {
       p = fabr_alt(fabr_string("x"), fabr_string("y"), NULL);
       t = fabr_parse_f("y", 0, p, FABR_F_ALL);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
         "[ null, 1, 0, 1, null, \"alt-0\", [\n"
@@ -167,7 +167,7 @@ context "alternative"
     {
       p = fabr_alt(fabr_string("x"), fabr_n("y"), NULL);
       t = fabr_parse("z", 0, p);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
         "[ null, -1, 0, 0, null, \"alt-0\", [\n"

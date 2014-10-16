@@ -97,7 +97,7 @@ context "repetition"
     {
       p = fabr_rep(fabr_string("xy"), 0, 1);
       t = fabr_parse("xy", 0, p);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
         "[ null, 1, 0, 2, null, \"rep-0\", [\n"
@@ -109,7 +109,7 @@ context "repetition"
     {
       p = fabr_n_rep("xandy", fabr_string("xy"), 0, 1);
       t = fabr_parse("xy", 0, p);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
         "[ \"xandy\", 1, 0, 2, null, \"rep-0\", [\n"
@@ -134,7 +134,7 @@ context "repetition"
       ensure(fabr_t_child(t, 1)->offset == 2);
       ensure(fabr_t_child(t, 1)->length == 2);
 
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
         "[ null, 1, 0, 4, null, \"rep-0\", [\n"
@@ -147,7 +147,7 @@ context "repetition"
     {
       p = fabr_rep(fabr_string("xy"), 2, 3);
       t = fabr_parse("xy", 0, p);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
         "[ null, 0, 0, 2, null, \"rep-0\", [] ]");
@@ -157,7 +157,7 @@ context "repetition"
     {
       p = fabr_rep(fabr_string("xy"), 2, 3);
       t = fabr_parse_f("xy", 0, p, FABR_F_ALL);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
         "[ null, 0, 0, 2, null, \"rep-0\", [\n"
@@ -170,7 +170,7 @@ context "repetition"
     {
       p = fabr_rep(fabr_n("x"), 2, 3);
       t = fabr_parse("x", 0, p);
-      char *s = fabr_tree_to_string(t, NULL);
+      char *s = fabr_tree_to_string(t, NULL, 0);
 
       ensure(s ===f ""
         "[ null, -1, 0, 0, null, \"rep-0\", [\n"
