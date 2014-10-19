@@ -267,7 +267,9 @@ context "tree functions"
       t = fabr_parse_all(in, 0, p);
       char *s = fabr_tree_to_string(t, in, 0);
 
-      //puts(fabr_tree_to_string(t, in, 1));
+      //fabr_tree *tt = fabr_parse_f(in, 0, p, 0);
+      //puts(fabr_tree_to_string(tt, in, 1));
+      //fabr_tree_free(tt);
 
       ensure(s ===f ""
         "[ \"value\", 1, 0, 8, null, \"alt-0\", [\n"
