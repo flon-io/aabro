@@ -366,6 +366,10 @@ context "tree functions"
       t = fabr_parse_all(s, 0, p);
 
       //puts(fabr_tree_to_string(t, s, 1);
+        //
+      //fabr_tree *tt = fabr_parse_f(s, 0, p, 0);
+      //puts(fabr_tree_to_string(tt, s, 1));
+      //fabr_tree_free(tt);
 
       fabr_tree *r = fabr_tree_lookup(t, "string");
 
