@@ -1475,12 +1475,12 @@ static fabr_parser *fabr_decompose_rex_group(const char *s, ssize_t n)
   for (size_t i = 0, j = 0, stack = 0, range = 0; ; j++)
   {
     char c = (j >= n) ? '\0' : s[j];
-    char c1 = (c == '\0') ? '\0' : s[j + 1];
+    //char c1 = (c == '\0') ? '\0' : s[j + 1];
     //printf("i: %zu, j: %zu c+1: >%c%c<\n", i, j, c, c1);
 
     //if (c == '\\') printf(" \\ + %c\n", s[j + 1]);
-    if (c == '\\' && (c1 == '(' || c1 == ')')) { j++; continue; }
-    if (c == '\\') continue;
+    //if (c == '\\' && (c1 == '(' || c1 == ')')) { j++; continue; }
+    if (c == '\\') { j++; continue; }
 
     if (range && c != ']' && c != '\0') continue;
     if (range && c == ']') { range = 0; continue; }
