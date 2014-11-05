@@ -306,6 +306,17 @@ context "fabr_rex"
         "fabr_rep( /* 0 */\n"
         "  fabr_range(\"\"\\]\") /* 00 */, 1, -1)");
     }
+
+    it "accepts \"(\\(\\)|\\)\\()\""
+    {
+      p = fabr_rex("(\\(\\)|\\)\\()");
+
+      ensure(fabr_parser_to_string(p->children[0]) ===f ""
+        "fabr_alt( /* 0 */\n"
+        "  fabr_string(\"()\") /* 00 */,\n"
+        "  fabr_string(\")(\") /* 01 */,\n"
+        "  NULL)");
+    }
   }
 
   describe "fabr_n_rex(name, s)"
