@@ -203,6 +203,21 @@ context "fabr_rex"
         "  NULL)");
     }
 
+    it "accepts \"ab|(cd[a-z\\)])ef\""
+    {
+      p = fabr_rex("ab|(cd[a-z\\)])ef");
+
+      ensure(fabr_parser_to_string(p->children[0]) ===f ""
+        "fabr_alt( /* 0 */\n"
+        "  fabr_string(\"ab\") /* 00 */,\n"
+        "  fabr_seq( /* 01 */\n"
+        "    fabr_string(\"cd\") /* 010 */,\n"
+        "    fabr_range(\"a-z\\)\") /* 011 */,\n"
+        "    fabr_string(\"ef\") /* 012 */,\n"
+        "    NULL),\n"
+        "  NULL)");
+    }
+
     it "accepts \"a.b\""
     {
       p = fabr_rex("a.b");
