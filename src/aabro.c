@@ -1154,6 +1154,13 @@ fabr_tree *fabr_subtree_lookup(fabr_tree *t, const char *name)
   return NULL;
 }
 
+char *fabr_lookup_string(const char *input, fabr_tree *t, const char *name)
+{
+  fabr_tree *tt = fabr_tree_lookup(t, name);
+
+  return tt ? fabr_tree_string(input, tt) : NULL;
+}
+
 static void fabr_t_list(flu_list *l, fabr_tree *t, fabr_tree_func *f)
 {
   short r = f(t);

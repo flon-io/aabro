@@ -189,6 +189,12 @@ fabr_tree *fabr_tree_lookup(fabr_tree *t, const char *name);
  */
 fabr_tree *fabr_subtree_lookup(fabr_tree *t, const char *name);
 
+/* Like fabr_tree_lookup(), but returns a copy of the resulting tree's
+ * string.
+ * Returns NULL if it didn't find the subtree.
+ */
+char *fabr_lookup_string(const char *input, fabr_tree *t, const char *name);
+
 /* The model for a function that, given a tree, returns an integer.
  *
  * -1: no, don't go on with my children
