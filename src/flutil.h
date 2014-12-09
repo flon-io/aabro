@@ -140,6 +140,14 @@ int flu_writeall(const char *path, ...);
  */
 int flu_unlink(const char *path, ...);
 
+/* Composes a path
+ */
+char *flu_vpath(const char *path, va_list ap);
+
+/* Composes a path.
+ */
+char *flu_path(const char *path, ...);
+
 /* It canonicalizes a path, like realpath().
  * Unlike realpath(), it doesn't care if the path points to nowhere.
  */
@@ -178,6 +186,24 @@ int flu_move(const char *path, ...);
  */
 int flu_mkdir_p(const char *path, ...);
 
+/* Given a wordexp path, unlinks the matching files.
+ *
+ * Returns the count of unlinked files in case of success.
+ *
+ * In case of error, it returns -1, immediately after the error. Files
+ * seen up to the error are unlinked. Files after the error are not unlinked.
+ */
+ssize_t flu_rm_files(const char *path, ...);
+
+/* Empties a dir recursively.
+ * Doesn't remove files prefixed with a dot.
+ *
+ * Returns 0 in case of success.
+ */
+int flu_empty_dir(const char *path, ...);
+
+int flu_prune_empty_dirs(const char *path, ...);
+
 
 //
 // flu_list
@@ -206,6 +232,10 @@ flu_list *flu_list_malloc();
  * items in the nodes.
  */
 void flu_list_free(flu_list *l);
+
+/* Used by functions that remove items from flu_list instances.
+ */
+void flu_node_free(flu_node *n);
 
 /* Frees a flu_list and all its nodes. Calls the given free_item function
  * on each of the items within the nodes.
@@ -264,6 +294,11 @@ void *flu_list_shift(flu_list *l);
 //void *flu_list_pop(flu_list *l);
 //void flu_list_insert(flu_list *l, size_t index, const void *item);
 
+/* Inserts an item at the right position...
+ */
+void flu_list_oinsert(
+  flu_list *l, void *item, int (*cmp)(const void *, const void *));
+
 /* Performs an insertion sort (in place) of the flu_list.
  */
 void flu_list_isort(flu_list *l, int (*cmp)(const void *, const void *));
@@ -284,10 +319,14 @@ void flu_list_set(flu_list *l, const char *key, void *item);
  */
 void flu_list_set_last(flu_list *l, const char *key, void *item);
 
+/* Like flu_list_get() but a default is specified.
+ */
+void *flu_list_getd(flu_list *l, const char *key, void *def);
+
 /* Given a key, returns the item bound for it, NULL instead.
  * (O(n)).
  */
-void *flu_list_get(flu_list *l, const char *key);
+#define flu_list_get(l, key) flu_list_getd(l, key, NULL)
 
 /* Returns a trimmed (a unique value per key) version of the given flu_list
  * dictionary. Meant for iterating over key/values.
@@ -304,6 +343,16 @@ flu_list *flu_vd(va_list ap);
  * it has made a dict of all the memory from v0...
  */
 flu_list *flu_d(char *k0, void *v0, ...);
+
+/* Used behind the scenes by flu_sd(). Composes a flu_list dict from the
+ * given va_list. Allows formatted keys and values.
+ */
+flu_list *flu_vsd(va_list ap);
+
+/* Like flu_d() but allows keys and values to be formatted (printf-style).
+ * Values must be strings. Disposed via flu_list_free_all().
+ */
+flu_list *flu_sd(char *k0, ...);
 
 
 //
@@ -374,10 +423,22 @@ char *flu_strdup(char *s);
  */
 int flu_system(const char *format, ...);
 
+/* Popens a cmd and returns the result as a string.
+ */
+char *flu_plines(const char *cmd, ...);
+
+/* Popens a cmd and returns the result's first line as a string.
+ */
+char *flu_pline(const char *cmd, ...);
+
 /* Like strtoll(3), but accepts a length.
  * Returns 0 when in doubt.
  */
 long long flu_stoll(char *s, size_t l, int base);
+
+/* Calls puts() with its argument, then frees it. Returns puts() result.
+ */
+int flu_putf(char *s);
 
 #endif // FLON_FLUTIL_H
 
