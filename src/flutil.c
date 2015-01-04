@@ -27,6 +27,7 @@
 
 #define _POSIX_C_SOURCE 200809L
 
+#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -56,17 +57,21 @@ int flu_strends(const char *s, const char *end)
   return (strncmp(s + ls - le, end, le) == 0);
 }
 
-char *flu_strrtrim(const char *s)
+char *flu_rtrim(char *s)
 {
-  char *r = strdup(s);
-  for (size_t l = strlen(r); l > 0; l--)
+  if (s) for (size_t l = strlen(s); l > 0; l--)
   {
-    char c = r[l - 1];
-    if (c == ' ' || c == '\t' || c == '\n' || c == '\r') r[l - 1] = '\0';
+    char c = s[l - 1];
+    if (c == ' ' || c == '\t' || c == '\n' || c == '\r') s[l - 1] = 0;
     else break;
   }
 
-  return r;
+  return s;
+}
+
+char *flu_strrtrim(const char *s)
+{
+  return flu_rtrim(strdup(s));
 }
 
 char *flu_strtrim(const char *s)
@@ -75,8 +80,7 @@ char *flu_strtrim(const char *s)
   char *s2 = s1;
   while (1)
   {
-    char c = *s2;
-    if (c == ' ' || c == '\t' || c == '\n' || c == '\r') ++s2;
+    if (*s2 == ' ' || *s2 == '\t' || *s2 == '\n' || *s2 == '\r') ++s2;
     else break;
   }
   char *r = strdup(s2);
@@ -90,7 +94,7 @@ ssize_t flu_index(const char *s, size_t off, char c)
   for (size_t i = off; ; ++i)
   {
     char cc = s[i];
-    if (cc == '\0') break;
+    if (cc == 0) break;
     if (cc == c) return i;
   }
   return -1;
@@ -179,6 +183,14 @@ int flu_sbputs_n(flu_sbuffer *b, const char *s, size_t n)
     r = putc(s[i], b->stream);
     if (r == EOF) return EOF;
   }
+
+  return r;
+}
+
+int flu_sbputs_f(flu_sbuffer *b, char *s)
+{
+  int r = flu_sbputs(b, s);
+  free(s);
 
   return r;
 }
@@ -351,7 +363,7 @@ static char *flu_simplify_path(const char *s)
     {
       *(rr - 1) = 0;
       rr = strrchr(r, '/');
-      rr = rr ? rr + 1 : r + 1;
+      rr = rr ? rr + 1 : r;
     }
     else if (dots < 1)
     {
@@ -412,6 +424,10 @@ char *flu_dirname(const char *path, ...)
   va_list ap; va_start(ap, path);
   char *s = flu_svprintf(path, ap);
   va_end(ap);
+
+  size_t l = strlen(s);
+
+  if (l > 0 && s[l - 1] == '/') { s[l - 1] = 0; return s; }
 
   char *dn = dirname(s);
   char *ddn = strdup(dn);
@@ -576,10 +592,10 @@ int flu_prune_empty_dirs(const char *path, ...)
 
   int r = 1;
 
+  char *pa = NULL;
+
   DIR *dir = opendir(p);
   if (dir == NULL) goto _over;
-
-  char *pa = NULL;
 
   struct dirent *de;
   while ((de = readdir(dir)) != NULL)
@@ -634,6 +650,19 @@ flu_list *flu_list_malloc()
   l->size = 0;
 
   return l;
+}
+
+flu_list *flu_l(void *elt0, ...)
+{
+  va_list ap; va_start(ap, elt0);
+
+  flu_list *r = flu_list_malloc();
+
+  for (void *e = elt0; e; e = va_arg(ap, void *)) flu_list_add(r, e);
+
+  va_end(ap);
+
+  return r;
 }
 
 void flu_list_free(flu_list *l)
@@ -767,17 +796,89 @@ void flu_list_isort(flu_list *l, int (*cmp)(const void *, const void *))
   free(ll);
 }
 
-void flu_list_set(flu_list *l, const char *key, void *item)
+void flu_list_concat(flu_list *to, flu_list *from)
 {
-  flu_list_unshift(l, item); l->first->key = strdup(key);
+  for (flu_node *n = from->first; n; n = n->next)
+  {
+    flu_list_add(to, n->item);
+    if (n->key) to->last->key = strdup(n->key);
+  }
 }
 
-void flu_list_set_last(flu_list *l, const char *key, void *item)
+static char *list_to_s(flu_list *l, char mode)
 {
-  flu_list_add(l, item); l->last->key = strdup(key);
+  if (l == NULL) return strdup("(null flu_list)");
+
+  int multi = (mode == 'S');
+  mode = tolower(mode);
+
+  flu_sbuffer *b = flu_sbuffer_malloc();
+
+  short isdict = (l->first && l->first->key);
+
+  flu_sbputc(b, isdict ? '{' : '[');
+  for (flu_node *n = l->first; n; n = n->next)
+  {
+    if (n != l->first) flu_sbputc(b, ',');
+    if (multi) flu_sbputs(b, "\n  ");
+    if (isdict) flu_sbprintf(b, "%s:", n->key);
+    if (multi) flu_sbputc(b, ' ');
+    if (mode == 's') flu_sbputs(b, n->item ? (char *)n->item : "NULL");
+    else flu_sbprintf(b, "%p", n->item);
+  }
+  if (multi && l->first) flu_sbputc(b, '\n');
+  flu_sbputc(b, isdict ? '}' : ']');
+
+  return flu_sbuffer_to_string(b);
+}
+char *flu_list_to_s(flu_list *l) { return list_to_s(l, 's'); }
+char *flu_list_to_sm(flu_list *l) { return list_to_s(l, 'S'); }
+char *flu_list_to_sp(flu_list *l) { return list_to_s(l, 'p'); }
+
+void flu_list_setk(flu_list *l, char *key, void *item, int set_as_last)
+{
+  if (set_as_last)
+  {
+    flu_list_add(l, item); l->last->key = key;
+  }
+  else
+  {
+    flu_list_unshift(l, item); l->first->key = key;
+  }
 }
 
-static flu_node *flu_list_getn(flu_list *l, const char *key)
+void flu_list_set(flu_list *l, const char *key, ...)
+{
+  va_list ap; va_start(ap, key);
+  char *k = flu_svprintf(key, ap);
+  void *item = va_arg(ap, void *);
+  va_end(ap);
+
+  flu_list_setk(l, k, item, 0);
+}
+
+void flu_list_set_last(flu_list *l, const char *key, ...)
+{
+  va_list ap; va_start(ap, key);
+  char *k = flu_svprintf(key, ap);
+  void *item = va_arg(ap, void *);
+  va_end(ap);
+
+  flu_list_add(l, item); l->last->key = k;
+}
+
+void flu_list_sets(flu_list *l, const char *key, ...)
+{
+  va_list ap; va_start(ap, key);
+  char *k = flu_svprintf(key, ap);
+  char *value = va_arg(ap, char *);
+  char *v = flu_svprintf(value, ap);
+  va_end(ap);
+
+  flu_list_setk(l, k, v, 0);
+}
+
+flu_node *flu_list_getn(flu_list *l, const char *key)
 {
   for (flu_node *n = l->first; n != NULL; n = n->next)
   {
@@ -786,11 +887,31 @@ static flu_node *flu_list_getn(flu_list *l, const char *key)
   return NULL;
 }
 
-void *flu_list_getd(flu_list *l, const char *key, void *def)
+void *flu_list_getd(flu_list *l, const char *key, ...)
 {
-  flu_node *n = flu_list_getn(l, key);
+  va_list ap; va_start(ap, key);
+  char *k = flu_svprintf(key, ap);
+  void *def = va_arg(ap, void *);
+  va_end(ap);
+
+  flu_node *n = flu_list_getn(l, k);
+
+  free(k);
 
   return n ? n->item : def;
+}
+
+void *flu_list_get(flu_list *l, const char *key, ...)
+{
+  va_list ap; va_start(ap, key);
+  char *k = flu_svprintf(key, ap);
+  va_end(ap);
+
+  flu_node *n = flu_list_getn(l, k);
+
+  free(k);
+
+  return n ? n->item : NULL;
 }
 
 flu_list *flu_list_dtrim(flu_list *l)
@@ -803,6 +924,43 @@ flu_list *flu_list_dtrim(flu_list *l)
     if (flu_list_getn(r, n->key) != NULL) continue;
     flu_list_add(r, n->item); r->last->key = strdup(n->key);
   }
+
+  return r;
+}
+
+flu_dict *flu_readdict(const char *path, ...)
+{
+  va_list ap; va_start(ap, path);
+  char *s = flu_vreadall(path, ap);
+  va_end(ap);
+
+  if (s == NULL) return NULL;
+
+  char *os = s;
+  flu_dict *r = flu_list_malloc();
+
+  while (1)
+  {
+    while (*s == '\n' || *s == '\r' || *s == ' ' || *s == '\t') ++s;
+    if (s == 0) break;
+
+    char *col = strpbrk(s, ":="); if (col == NULL) break;
+    char *end = strpbrk(s, "\n\r\0");
+
+    char *co = col - 1; while (*co == ' ' || *co == '\t') --co;
+    char *key = strndup(s, co + 1 - s);
+
+    ++col; while (*col == ' ' || *col == '\t') ++col;
+    char *en = end - 1; while (*en == ' ' || *en == '\t') --en;
+    char *val = strndup(col, en + 1 - col);
+
+    flu_list_setk(r, key, val, 0);
+
+    s = end;
+  }
+
+  memset(os, 0, strlen(os));
+  free(os);
 
   return r;
 }
@@ -846,9 +1004,7 @@ flu_list *flu_vsd(va_list ap)
     char *vf = va_arg(ap, char *);
     char *v = vf ? flu_svprintf(vf, ap) : NULL;
 
-    flu_list_set(d, k, v);
-
-    free(k);
+    flu_list_setk(d, k, v, 0);
   }
 
   return d;
@@ -864,10 +1020,10 @@ flu_list *flu_sd(char *kf0, ...)
   char *v0 = vf0 ? flu_svprintf(vf0, ap) : NULL;
 
   flu_list *d = flu_vsd(ap);
+
   va_end(ap);
 
-  flu_list_set(d, k0, v0);
-  free(k0);
+  flu_list_setk(d, k0, v0, 0);
 
   return d;
 }
@@ -1088,3 +1244,14 @@ char *flu_pline(const char *cmd, ...)
   return r;
 }
 
+void flu_zero_and_free(char *s, ssize_t n)
+{
+  memset(s, 0, n < 0 ? strlen(s) : n);
+  free(s);
+}
+
+//commit 8bd26914eb363198989a82f404ee5ffe692c4a63
+//Author: John Mettraux <jmettraux@gmail.com>
+//Date:   Wed Dec 31 06:44:19 2014 +0900
+//
+//    implement flu_zero_and_free()
