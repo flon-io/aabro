@@ -1,6 +1,6 @@
 
 //
-// Copyright (c) 2013-2014, John Mettraux, jmettraux+flon@gmail.com
+// Copyright (c) 2013-2015, John Mettraux, jmettraux+flon@gmail.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -106,6 +106,8 @@ char *flu_sbuffer_to_string(flu_sbuffer *b);
  * Returns NULL in case of issue.
  */
 char *flu_svprintf(const char *format, va_list ap);
+
+#define flu_sv(format, ap) flu_svprintf(format, ap)
 
 /* Wraps the sbuffer operations in a single call, yielding the result string.
  *
@@ -504,8 +506,8 @@ void flu_zero_and_free(char *s, ssize_t n);
 
 #endif // FLON_FLUTIL_H
 
-//commit 8bd26914eb363198989a82f404ee5ffe692c4a63
+//commit 86f3f65cab0fc210be3e60d08fb42c7de9ca9afc
 //Author: John Mettraux <jmettraux@gmail.com>
-//Date:   Wed Dec 31 06:44:19 2014 +0900
+//Date:   Fri Feb 27 09:40:05 2015 +0900
 //
-//    implement flu_zero_and_free()
+//    add flu_sv() as shortcut for flu_svprintf()
