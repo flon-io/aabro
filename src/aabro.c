@@ -44,18 +44,19 @@ fabr_tree *fabr_tree_malloc(
   size_t offset,
   size_t length,
   char *note,
-  fabr_parser *p,
+  //fabr_parser *p,
   fabr_tree *child
 )
 {
   fabr_tree *t = calloc(1, sizeof(fabr_tree));
 
-  t->name = (p->name == NULL) ? NULL : strdup(p->name);
+  //t->name = (p->name == NULL) ? NULL : strdup(p->name);
+  t->name = NULL;
   t->result = result;
   t->offset = offset;
   t->length = length;
   t->note = (note == NULL) ? NULL : strdup(note);
-  t->parser = p;
+  //t->parser = p;
   t->sibling = NULL;
   t->child = child;
 
@@ -110,11 +111,15 @@ static void fabr_t_to_s(
   if (t->name) name = flu_sprintf("\"%s%s%s\"", namec, t->name, resultc);
   if (t->note) note = flu_sprintf("\"%s%s%s\"", notec, t->note, resultc);
   //
+  //flu_sbprintf(
+  //  b,
+  //  "%s[ %s, %d, %d, %d, %s, \"%s-%s\", ",
+  //  resultc, name, t->result, t->offset, t->length,
+  //  note, fabr_p_names[t->parser->type], t->parser->id);
   flu_sbprintf(
     b,
-    "%s[ %s, %d, %d, %d, %s, \"%s-%s\", ",
-    resultc, name, t->result, t->offset, t->length,
-    note, fabr_p_names[t->parser->type], t->parser->id);
+    "%s[ %s, %d, %d, %d, %s, ",
+    resultc, name, t->result, t->offset, t->length, note);
   //
   if (t->name) free(name);
   if (t->note) free(note);
