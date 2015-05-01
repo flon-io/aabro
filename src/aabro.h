@@ -120,5 +120,16 @@ fabr_tree **fabr_tree_collect(fabr_tree *t, fabr_tree_func *f);
  */
 fabr_tree *fabr_t_child(fabr_tree *t, size_t index);
 
+
+//
+// parsers
+
+//fabr_tree *fabr_parse_all(
+//  const char *input, size_t offset, fabr_parser *p);
+
+//typedef fabr_tree *fabr_parser(...
+
+//fabr_tree *fabr_str(
+
 #endif // FLON_AABRO_H
 
