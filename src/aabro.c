@@ -288,16 +288,19 @@ fabr_tree *fabr_t_child(fabr_tree *t, size_t index)
 
 fabr_tree *fabr_str(char *name, char *str, fabr_input *i)
 {
-  //if (p->min == -1) p->min = strlen(p->string);
+  fabr_tree *r = fabr_tree_malloc(1, i->offset, strlen(str), NULL, NULL);
 
-  //int su = 1;
-  //size_t le = p->min;
+  if (strncmp(i->string + i->offset, str, r->length) != 0)
+  {
+    r->result = 0;
+    r->length = 0;
+  }
+  else
+  {
+    r->name = name ? strdup(name) : NULL;
+  }
 
-  //if (strncmp(input + offset, p->string, le) != 0) { su = 0; le = 0; }
-
-  //return fabr_tree_malloc(su, offset, le, NULL, p, NULL);
-
-  return NULL;
+  return r;
 }
 
 
