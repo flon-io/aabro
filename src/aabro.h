@@ -131,20 +131,19 @@ typedef struct {
 
 
 //
+// parsers
+
+typedef fabr_tree *fabr_parser(fabr_input *);
+
+//
 // parters (partial parsers)
 
 fabr_tree *fabr_str(char *name, char *str, fabr_input *i);
 
-
-//
-// parsers
+fabr_tree *fabr_seq(char *name, fabr_input *i, fabr_parser *p, ...);
 
 //fabr_tree *fabr_parse_all(
 //  const char *input, size_t offset, fabr_parser *p);
-
-//typedef fabr_tree *fabr_parser(...
-
-//fabr_tree *fabr_str(
 
 #endif // FLON_AABRO_H
 

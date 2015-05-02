@@ -303,6 +303,11 @@ fabr_tree *fabr_str(char *name, char *str, fabr_input *i)
   return r;
 }
 
+fabr_tree *fabr_seq(char *name, fabr_input *i, fabr_parser *p, ...)
+{
+  return NULL;
+}
+
 
 //
 // parsers
