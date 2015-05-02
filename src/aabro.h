@@ -122,9 +122,18 @@ fabr_tree *fabr_t_child(fabr_tree *t, size_t index);
 
 
 //
+// fabr_input
+
+typedef struct {
+  char *string;
+  size_t offset;
+} fabr_input;
+
+
+//
 // parters (partial parsers)
 
-fabr_tree *fabr_str(char *name, char *str, char *input, size_t off);
+fabr_tree *fabr_str(char *name, char *str, fabr_input *i);
 
 
 //

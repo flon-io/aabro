@@ -12,6 +12,8 @@ context "strings"
 {
   before each
   {
+    fabr_input i = { "toto", 0 };
+
     fabr_tree *t = NULL;
   }
   after each
@@ -23,14 +25,14 @@ context "strings"
   {
     it "returns a tree with result == 0 in case of failure"
     {
-      t = fabr_str(NULL, "tutu", "toto", 0);
+      t = fabr_str(NULL, "tutu", &i);
 
       expect(t != NULL);
     }
 
     it "returns a tree with result == 1 in case of success"
     {
-      t = fabr_str(NULL, "toto", "toto", 0);
+      t = fabr_str(NULL, "toto", &i);
 
       expect(t != NULL);
       expect(t->name == NULL);
@@ -38,7 +40,7 @@ context "strings"
 
     it "names the result if there is a name"
     {
-      t = fabr_str("x", "toto", "toto", 0);
+      t = fabr_str("x", "toto", &i);
 
       expect(t != NULL);
       expect(t->name === "x");
@@ -46,7 +48,7 @@ context "strings"
 
     it "doesn't name in case of failure"
     {
-      t = fabr_str("x", "tutu", "toto", 0);
+      t = fabr_str("x", "tutu", &i);
 
       expect(t != NULL);
       expect(t->name == NULL);

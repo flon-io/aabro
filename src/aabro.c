@@ -286,7 +286,7 @@ fabr_tree *fabr_t_child(fabr_tree *t, size_t index)
 //
 // parters (partial parsers)
 
-fabr_tree *fabr_str(char *name, char *str, char *input, size_t off)
+fabr_tree *fabr_str(char *name, char *str, fabr_input *i)
 {
   //if (p->min == -1) p->min = strlen(p->string);
 
