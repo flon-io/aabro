@@ -23,7 +23,7 @@ describe "fabr_str()"
 
   it "returns a tree with result == 0 in case of failure"
   {
-    t = fabr_str(NULL, "tutu", &i);
+    t = fabr_str(NULL, &i, "tutu");
 
     expect(t != NULL);
     expect(t->name == NULL);
@@ -34,7 +34,7 @@ describe "fabr_str()"
 
   it "returns a tree with result == 1 in case of success"
   {
-    t = fabr_str(NULL, "toto", &i);
+    t = fabr_str(NULL, &i, "toto");
 
     expect(t != NULL);
     expect(t->name == NULL);
@@ -45,7 +45,7 @@ describe "fabr_str()"
 
   it "names the result if there is a name"
   {
-    t = fabr_str("x", "toto", &i);
+    t = fabr_str("x", &i, "toto");
 
     expect(t != NULL);
     expect(t->name === "x");
@@ -56,7 +56,7 @@ describe "fabr_str()"
 
   it "doesn't name in case of failure"
   {
-    t = fabr_str("x", "tutu", &i);
+    t = fabr_str("x", &i, "tutu");
 
     expect(t != NULL);
     expect(t->name == NULL);

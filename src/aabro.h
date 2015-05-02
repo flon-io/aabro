@@ -138,7 +138,7 @@ typedef fabr_tree *fabr_parser(fabr_input *);
 //
 // parters (partial parsers)
 
-fabr_tree *fabr_str(char *name, char *str, fabr_input *i);
+fabr_tree *fabr_str(char *name, fabr_input *i, char *str);
 
 fabr_tree *fabr_seq(char *name, fabr_input *i, fabr_parser *p, ...);
 

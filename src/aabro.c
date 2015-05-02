@@ -286,7 +286,7 @@ fabr_tree *fabr_t_child(fabr_tree *t, size_t index)
 //
 // parters (partial parsers)
 
-fabr_tree *fabr_str(char *name, char *str, fabr_input *i)
+fabr_tree *fabr_str(char *name, fabr_input *i, char *str)
 {
   fabr_tree *r = fabr_tree_malloc(1, i->offset, strlen(str), NULL, NULL);
 
