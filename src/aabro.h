@@ -36,7 +36,7 @@
 
 typedef struct fabr_tree {
   char *name;
-  short result; // -1 error, 0 failure, 1 success
+  short result; // -1 error, 0 nomatch, 1 success
   size_t offset;
   size_t length;
   char *note; // set in case of error
@@ -119,6 +119,12 @@ fabr_tree **fabr_tree_collect(fabr_tree *t, fabr_tree_func *f);
 /* Returns the child at the given index, or NULL if there is none there.
  */
 fabr_tree *fabr_t_child(fabr_tree *t, size_t index);
+
+
+//
+// parters (partial parsers)
+
+fabr_tree *fabr_str(char *name, char *str, char *input, size_t off);
 
 
 //

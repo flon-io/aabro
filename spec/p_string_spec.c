@@ -21,7 +21,36 @@ context "strings"
 
   describe "fabr_str()"
   {
-    it "flips burgers"
+    it "returns a tree with result == 0 in case of failure"
+    {
+      t = fabr_str(NULL, "tutu", "toto", 0);
+
+      expect(t != NULL);
+    }
+
+    it "returns a tree with result == 1 in case of success"
+    {
+      t = fabr_str(NULL, "toto", "toto", 0);
+
+      expect(t != NULL);
+      expect(t->name == NULL);
+    }
+
+    it "names the result if there is a name"
+    {
+      t = fabr_str("x", "toto", "toto", 0);
+
+      expect(t != NULL);
+      expect(t->name === "x");
+    }
+
+    it "doesn't name in case of failure"
+    {
+      t = fabr_str("x", "tutu", "toto", 0);
+
+      expect(t != NULL);
+      expect(t->name == NULL);
+    }
   }
 
   //describe "fabr_string(s)"

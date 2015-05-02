@@ -65,6 +65,8 @@ fabr_tree *fabr_tree_malloc(
 
 void fabr_tree_free(fabr_tree *t)
 {
+  if (t == NULL) return;
+
   if (t->name != NULL) free(t->name);
   if (t->note != NULL) free(t->note);
 
@@ -279,4 +281,26 @@ fabr_tree *fabr_t_child(fabr_tree *t, size_t index)
 
   return NULL;
 }
+
+
+//
+// parters (partial parsers)
+
+fabr_tree *fabr_str(char *name, char *str, char *input, size_t off)
+{
+  //if (p->min == -1) p->min = strlen(p->string);
+
+  //int su = 1;
+  //size_t le = p->min;
+
+  //if (strncmp(input + offset, p->string, le) != 0) { su = 0; le = 0; }
+
+  //return fabr_tree_malloc(su, offset, le, NULL, p, NULL);
+
+  return NULL;
+}
+
+
+//
+// parsers
 
