@@ -54,12 +54,12 @@ describe "fabr_str()"
     expect(t->length zu== 4);
   }
 
-  it "doesn't name in case of failure"
+  it "names in case of failure as well"
   {
     t = fabr_str("x", &i, "tutu");
 
     expect(t != NULL);
-    expect(t->name == NULL);
+    expect(t->name === "x");
     expect(t->result i== 0);
     expect(t->offset zu== 0);
     expect(t->length zu== 0);

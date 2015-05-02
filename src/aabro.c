@@ -39,26 +39,17 @@
 //#define MAX_DEPTH 2048
 
 
-fabr_tree *fabr_tree_malloc(
-  short result,
-  size_t offset,
-  size_t length,
-  char *note,
-  //fabr_parser *p,
-  fabr_tree *child
-)
+fabr_tree *fabr_tree_malloc(char *name, short result, size_t off, size_t len)
 {
   fabr_tree *t = calloc(1, sizeof(fabr_tree));
 
-  //t->name = (p->name == NULL) ? NULL : strdup(p->name);
-  t->name = NULL;
+  t->name = name ? strdup(name) : NULL;
   t->result = result;
-  t->offset = offset;
-  t->length = length;
-  t->note = (note == NULL) ? NULL : strdup(note);
-  //t->parser = p;
+  t->offset = off;
+  t->length = len;
+  t->note = NULL;
   t->sibling = NULL;
-  t->child = child;
+  t->child = NULL;
 
   return t;
 }
@@ -288,24 +279,66 @@ fabr_tree *fabr_t_child(fabr_tree *t, size_t index)
 
 fabr_tree *fabr_str(char *name, fabr_input *i, char *str)
 {
-  fabr_tree *r = fabr_tree_malloc(1, i->offset, strlen(str), NULL, NULL);
+  fabr_tree *r = fabr_tree_malloc(name, 1, i->offset, strlen(str));
 
   if (strncmp(i->string + i->offset, str, r->length) != 0)
   {
     r->result = 0;
     r->length = 0;
   }
-  else
-  {
-    r->name = name ? strdup(name) : NULL;
-  }
 
   return r;
 }
 
+//fabr_tree *fabr_p_seq(
+//  const char *input,
+//  size_t offset, size_t depth,
+//  fabr_parser *p,
+//  int flags)
+//{
+//  short result = 1;
+//  size_t length = 0;
+//  size_t off = offset;
+//
+//  fabr_tree *first = NULL;
+//  fabr_tree *prev = NULL;
+//
+//  for (size_t i = 0; p->children[i] != NULL; i++)
+//  {
+//    fabr_parser *pc = p->children[i];
+//
+//    fabr_tree *t = fabr_do_parse(input, off, depth + 1, pc, flags);
+//
+//    if (first == NULL) first = t;
+//    if (prev != NULL) prev->sibling = t;
+//    prev = t;
+//
+//    if (t->result != 1) { result = t->result; length = 0; break; }
+//    off += t->length;
+//    length += t->length;
+//  }
+//
+//  return fabr_tree_malloc(result, offset, length, NULL, p, first);
+//}
 fabr_tree *fabr_seq(char *name, fabr_input *i, fabr_parser *p, ...)
 {
-  return NULL;
+  fabr_tree *r = fabr_tree_malloc(name, 1, i->offset, 0);
+
+  fabr_tree **next = &r->child;
+
+  va_list ap; va_start(ap, p);
+  while (1)
+  {
+    *next = p(i);
+
+    if ((*next)->result != 1) { r->result = 0; r->length = 0; break; }
+
+    p = va_arg(ap, fabr_parser *); if (p == NULL) break;
+    next = &((*next)->sibling);
+  }
+  va_end(ap);
+
+  return r;
 }
 
 
