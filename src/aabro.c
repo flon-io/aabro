@@ -39,13 +39,24 @@
 //#define MAX_DEPTH 2048
 
 
-fabr_tree *fabr_tree_malloc(char *name, short result, size_t off, size_t len)
+static char *determine_parter(char *parter, fabr_input *i)
+{
+  char *r = calloc(strlen(parter) + 1 + strlen(i->location) + 1, sizeof(char));
+
+  strcat(r, parter); strcat(r, "-"); strcat(r, i->location);
+
+  return r;
+}
+
+fabr_tree *fabr_tree_malloc(
+  char *name, short result, char *parter, fabr_input *i, size_t len)
 {
   fabr_tree *t = calloc(1, sizeof(fabr_tree));
 
   t->name = name ? strdup(name) : NULL;
   t->result = result;
-  t->offset = off;
+  t->parter = determine_parter(parter, i);
+  t->offset = i->offset;
   t->length = len;
   t->note = NULL;
   t->sibling = NULL;
@@ -104,15 +115,10 @@ static void fabr_t_to_s(
   if (t->name) name = flu_sprintf("\"%s%s%s\"", namec, t->name, resultc);
   if (t->note) note = flu_sprintf("\"%s%s%s\"", notec, t->note, resultc);
   //
-  //flu_sbprintf(
-  //  b,
-  //  "%s[ %s, %d, %d, %d, %s, \"%s-%s\", ",
-  //  resultc, name, t->result, t->offset, t->length,
-  //  note, fabr_p_names[t->parser->type], t->parser->id);
   flu_sbprintf(
     b,
-    "%s[ %s, %d, %d, %d, %s, ",
-    resultc, name, t->result, t->offset, t->length, note);
+    "%s[ %s, %d, %d, %d, %s, \"%s\", ",
+    resultc, name, t->result, t->offset, t->length, note, t->parter);
   //
   if (t->name) free(name);
   if (t->note) free(note);
@@ -279,7 +285,7 @@ fabr_tree *fabr_t_child(fabr_tree *t, size_t index)
 
 fabr_tree *fabr_str(char *name, fabr_input *i, char *str)
 {
-  fabr_tree *r = fabr_tree_malloc(name, 1, i->offset, strlen(str));
+  fabr_tree *r = fabr_tree_malloc(name, 1, "str", i, strlen(str));
 
   if (strncmp(i->string + i->offset, str, r->length) != 0)
   {
@@ -322,7 +328,7 @@ fabr_tree *fabr_str(char *name, fabr_input *i, char *str)
 //}
 fabr_tree *fabr_seq(char *name, fabr_input *i, fabr_parser *p, ...)
 {
-  fabr_tree *r = fabr_tree_malloc(name, 1, i->offset, 0);
+  fabr_tree *r = fabr_tree_malloc(name, 1, "seq", i, 0);
 
   fabr_tree **next = &r->child;
 

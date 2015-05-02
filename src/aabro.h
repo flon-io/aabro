@@ -40,7 +40,7 @@ typedef struct fabr_tree {
   size_t offset;
   size_t length;
   char *note; // set in case of error
-  //fabr_parser *parser;
+  char *parter; // "str-01" for example
   struct fabr_tree *sibling;
   struct fabr_tree *child;
 } fabr_tree;
@@ -127,6 +127,7 @@ fabr_tree *fabr_t_child(fabr_tree *t, size_t index);
 typedef struct {
   char *string;
   size_t offset;
+  char *location;
 } fabr_input;
 
 
