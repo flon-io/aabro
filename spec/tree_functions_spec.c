@@ -10,6 +10,15 @@
 
 context "tree functions"
 {
+  describe "fabr_tree_to_string()"
+  {
+    it "returns \"null\" if the tree is NULL"
+    {
+      char *s = fabr_tree_to_string(NULL, NULL, 0);
+
+      expect(s ===f "null");
+    }
+  }
 //  before each
 //  {
 //    fabr_tree *t = NULL;
