@@ -127,7 +127,6 @@ fabr_tree *fabr_t_child(fabr_tree *t, size_t index);
 typedef struct {
   char *string;
   size_t offset;
-  char *location;
 } fabr_input;
 
 

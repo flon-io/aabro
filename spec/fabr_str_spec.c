@@ -12,7 +12,7 @@ describe "fabr_str()"
 {
   before each
   {
-    fabr_input i = { "toto", 0, "0" };
+    fabr_input i = { "toto", 0, };
     fabr_tree *t = NULL;
   }
   after each
@@ -27,7 +27,7 @@ describe "fabr_str()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ null, 0, 0, 0, null, \"str-0\", [] ]");
+      "[ null, 0, 0, 0, null, \"str\", [] ]");
   }
 
   it "returns a tree with result == 1 in case of success"
@@ -37,7 +37,7 @@ describe "fabr_str()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ null, 1, 0, 4, null, \"str-0\", [] ]");
+      "[ null, 1, 0, 4, null, \"str\", [] ]");
   }
 
   it "names the result if there is a name"
@@ -47,7 +47,7 @@ describe "fabr_str()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 1, 0, 4, null, \"str-0\", [] ]");
+      "[ \"x\", 1, 0, 4, null, \"str\", [] ]");
   }
 
   it "names in case of failure as well"
@@ -57,7 +57,7 @@ describe "fabr_str()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 0, 0, 0, null, \"str-0\", [] ]");
+      "[ \"x\", 0, 0, 0, null, \"str\", [] ]");
   }
 }
 

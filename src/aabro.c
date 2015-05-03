@@ -39,15 +39,6 @@
 //#define MAX_DEPTH 2048
 
 
-static char *determine_parter(char *parter, fabr_input *i)
-{
-  char *r = calloc(strlen(parter) + 1 + strlen(i->location) + 1, sizeof(char));
-
-  strcat(r, parter); strcat(r, "-"); strcat(r, i->location);
-
-  return r;
-}
-
 fabr_tree *fabr_tree_malloc(
   char *name, short result, char *parter, fabr_input *i, size_t len)
 {
@@ -55,7 +46,7 @@ fabr_tree *fabr_tree_malloc(
 
   t->name = name ? strdup(name) : NULL;
   t->result = result;
-  t->parter = determine_parter(parter, i);
+  t->parter = parter;
   t->offset = i->offset;
   t->length = len;
   t->note = NULL;
@@ -69,8 +60,8 @@ void fabr_tree_free(fabr_tree *t)
 {
   if (t == NULL) return;
 
-  if (t->name != NULL) free(t->name);
-  if (t->note != NULL) free(t->note);
+  free(t->name);
+  free(t->note);
 
   for (fabr_tree *c = t->child; c != NULL; )
   {

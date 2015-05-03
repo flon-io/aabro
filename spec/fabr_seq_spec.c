@@ -12,7 +12,7 @@ describe "fabr_seq()"
 {
   before each
   {
-    fabr_input i = { "tato", 0, "0" };
+    fabr_input i = { "tato", 0, };
     fabr_tree *t = NULL;
   }
   after each
@@ -30,8 +30,8 @@ describe "fabr_seq()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ null, 0, 0, 0, null, \"seq-0\", [\n"
-      "  [ null, 0, 0, 0, null, \"str-00\", [] ]\n"
+      "[ null, 0, 0, 0, null, \"seq\", [\n"
+      "  [ null, 0, 0, 0, null, \"str\", [] ]\n"
       "] ]");
   }
 
@@ -42,9 +42,9 @@ describe "fabr_seq()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ null, 0, 0, 0, null, \"seq-0\", [\n"
-      "  [ null, 1, 0, 2, null, \"str-00\", [] ],\n"
-      "  [ null, 0, 2, 0, null, \"str-01\", [] ]\n"
+      "[ null, 0, 0, 0, null, \"seq\", [\n"
+      "  [ null, 1, 0, 2, null, \"str\", [] ],\n"
+      "  [ null, 0, 2, 0, null, \"str\", [] ]\n"
       "] ]");
   }
 
@@ -55,9 +55,9 @@ describe "fabr_seq()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ null, 1, 0, 4, null, \"seq-0\", [\n"
-      "  [ null, 1, 0, 2, null, \"str-00\", [] ],\n"
-      "  [ null, 1, 2, 2, null, \"str-01\", [] ],\n"
+      "[ null, 1, 0, 4, null, \"seq\", [\n"
+      "  [ null, 1, 0, 2, null, \"str\", [] ],\n"
+      "  [ null, 1, 2, 2, null, \"str\", [] ],\n"
       "] ]");
   }
 
@@ -68,9 +68,9 @@ describe "fabr_seq()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 1, 0, 4, null, \"seq-0\", [\n"
-      "  [ null, 1, 0, 2, null, \"str-00\", [] ],\n"
-      "  [ null, 1, 2, 2, null, \"str-01\", [] ],\n"
+      "[ \"x\", 1, 0, 4, null, \"seq\", [\n"
+      "  [ null, 1, 0, 2, null, \"str\", [] ],\n"
+      "  [ null, 1, 2, 2, null, \"str\", [] ],\n"
       "] ]");
   }
 
@@ -81,8 +81,8 @@ describe "fabr_seq()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 0, 0, 0, null, \"seq-0\", [\n"
-      "  [ null, 0, 0, 0, null, \"str-00\", [] ]\n"
+      "[ \"x\", 0, 0, 0, null, \"seq\", [\n"
+      "  [ null, 0, 0, 0, null, \"str\", [] ]\n"
       "] ]");
   }
 }
