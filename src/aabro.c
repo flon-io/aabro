@@ -287,36 +287,6 @@ fabr_tree *fabr_str(char *name, fabr_input *i, char *str)
   return r;
 }
 
-//fabr_tree *fabr_p_seq(
-//  const char *input,
-//  size_t offset, size_t depth,
-//  fabr_parser *p,
-//  int flags)
-//{
-//  short result = 1;
-//  size_t length = 0;
-//  size_t off = offset;
-//
-//  fabr_tree *first = NULL;
-//  fabr_tree *prev = NULL;
-//
-//  for (size_t i = 0; p->children[i] != NULL; i++)
-//  {
-//    fabr_parser *pc = p->children[i];
-//
-//    fabr_tree *t = fabr_do_parse(input, off, depth + 1, pc, flags);
-//
-//    if (first == NULL) first = t;
-//    if (prev != NULL) prev->sibling = t;
-//    prev = t;
-//
-//    if (t->result != 1) { result = t->result; length = 0; break; }
-//    off += t->length;
-//    length += t->length;
-//  }
-//
-//  return fabr_tree_malloc(result, offset, length, NULL, p, first);
-//}
 fabr_tree *fabr_seq(char *name, fabr_input *i, fabr_parser *p, ...)
 {
   fabr_tree *r = fabr_tree_malloc(name, 1, "seq", i, 0);
@@ -326,19 +296,19 @@ fabr_tree *fabr_seq(char *name, fabr_input *i, fabr_parser *p, ...)
   va_list ap; va_start(ap, p);
   while (1)
   {
-    *next = p(i);
+    fabr_tree *t = p(i);
+    *next = t;
 
-    if ((*next)->result != 1) { r->result = 0; r->length = 0; break; }
+    if (t->result != 1) { r->result = 0; r->length = 0; break; }
+
+    r->length += t->length;
+    i->offset += t->length;
 
     p = va_arg(ap, fabr_parser *); if (p == NULL) break;
-    next = &((*next)->sibling);
+    next = &(t->sibling);
   }
   va_end(ap);
 
   return r;
 }
-
-
-//
-// parsers
 

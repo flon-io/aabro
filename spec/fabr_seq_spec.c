@@ -57,7 +57,7 @@ describe "fabr_seq()"
     ensure(s ===f ""
       "[ null, 1, 0, 4, null, \"seq\", [\n"
       "  [ null, 1, 0, 2, null, \"str\", [] ],\n"
-      "  [ null, 1, 2, 2, null, \"str\", [] ],\n"
+      "  [ null, 1, 2, 2, null, \"str\", [] ]\n"
       "] ]");
   }
 
@@ -70,7 +70,7 @@ describe "fabr_seq()"
     ensure(s ===f ""
       "[ \"x\", 1, 0, 4, null, \"seq\", [\n"
       "  [ null, 1, 0, 2, null, \"str\", [] ],\n"
-      "  [ null, 1, 2, 2, null, \"str\", [] ],\n"
+      "  [ null, 1, 2, 2, null, \"str\", [] ]\n"
       "] ]");
   }
 
