@@ -306,3 +306,26 @@ fabr_tree *fabr_seq(char *name, fabr_input *i, fabr_parser *p, ...)
   return r;
 }
 
+fabr_tree *fabr_alt(char *name, fabr_input *i, fabr_parser *p, ...)
+{
+  fabr_tree *r = fabr_tree_malloc(name, "alt", i);
+  r->result = 0;
+
+  fabr_tree **next = &r->child;
+
+  va_list ap; va_start(ap, p);
+  while (1)
+  {
+    fabr_tree *t = p(i);
+    *next = t;
+
+    if (t->result == 1) { r->result = 1; r->length = t->length; break; }
+
+    p = va_arg(ap, fabr_parser *); if (p == NULL) break;
+    next = &(t->sibling);
+  }
+  va_end(ap);
+
+  return r;
+}
+

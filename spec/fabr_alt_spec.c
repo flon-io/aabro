@@ -31,20 +31,20 @@ describe "fabr_alt()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ null, 0, 0, 0, null, \"alt\", [\n"
-      "  [ null, 0, 0, 0, null, \"str\", [] ]\n"
+      "[ \"x\", 0, 0, 0, null, \"alt\", [\n"
+      "  [ null, 0, 0, 0, null, \"str\", [] ],\n"
       "  [ null, 0, 0, 0, null, \"str\", [] ]\n"
       "] ]");
   }
 
   it "returns a tree with result == 1 in case of success"
   {
-    t = fabr_alt(NULL, &i, _ty, _tz, NULL);
+    t = fabr_alt("x", &i, _ty, _tz, NULL);
 
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ null, 1, 0, 2, null, \"seq\", [\n"
+      "[ \"x\", 1, 0, 2, null, \"alt\", [\n"
       "  [ null, 0, 0, 0, null, \"str\", [] ],\n"
       "  [ null, 1, 0, 2, null, \"str\", [] ]\n"
       "] ]");
