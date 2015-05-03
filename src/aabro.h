@@ -141,6 +141,7 @@ typedef fabr_tree *fabr_parser(fabr_input *);
 fabr_tree *fabr_str(char *name, fabr_input *i, char *str);
 
 fabr_tree *fabr_seq(char *name, fabr_input *i, fabr_parser *p, ...);
+fabr_tree *fabr_alt(char *name, fabr_input *i, fabr_parser *p, ...);
 
 //fabr_tree *fabr_parse_all(
 //  const char *input, size_t offset, fabr_parser *p);

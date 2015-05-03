@@ -20,8 +20,8 @@ describe "fabr_seq()"
     fabr_tree_free(t);
   }
 
-  static fabr_tree *_ta(fabr_input *i) { return fabr_str(NULL, i, "ta"); }
-  static fabr_tree *_to(fabr_input *i) { return fabr_str(NULL, i, "to"); }
+  fabr_tree *_ta(fabr_input *i) { return fabr_str(NULL, i, "ta"); }
+  fabr_tree *_to(fabr_input *i) { return fabr_str(NULL, i, "to"); }
 
   it "returns a tree with result == 0 in case of failure"
   {
