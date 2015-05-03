@@ -28,27 +28,20 @@
 #define _POSIX_C_SOURCE 200809L
 
 #include <stdlib.h>
-//#include <stdio.h>
 #include <string.h>
-//#include <stdarg.h>
-//#include <stdint.h>
-//#include <limits.h>
 
 #include "aabro.h"
 
-//#define MAX_DEPTH 2048
 
-
-fabr_tree *fabr_tree_malloc(
-  char *name, short result, char *parter, fabr_input *i, size_t len)
+fabr_tree *fabr_tree_malloc(char *name, char *parter, fabr_input *i)
 {
   fabr_tree *t = calloc(1, sizeof(fabr_tree));
 
   t->name = name ? strdup(name) : NULL;
-  t->result = result;
+  t->result = 1;
   t->parter = parter;
   t->offset = i->offset;
-  t->length = len;
+  t->length = 0;
   t->note = NULL;
   t->sibling = NULL;
   t->child = NULL;
@@ -276,20 +269,21 @@ fabr_tree *fabr_t_child(fabr_tree *t, size_t index)
 
 fabr_tree *fabr_str(char *name, fabr_input *i, char *str)
 {
-  fabr_tree *r = fabr_tree_malloc(name, 1, "str", i, strlen(str));
+  size_t l = strlen(str);
 
-  if (strncmp(i->string + i->offset, str, r->length) != 0)
-  {
+  fabr_tree *r = fabr_tree_malloc(name, "str", i);
+
+  if (strncmp(i->string + i->offset, str, l) != 0)
     r->result = 0;
-    r->length = 0;
-  }
+  else
+    r->length = l;
 
   return r;
 }
 
 fabr_tree *fabr_seq(char *name, fabr_input *i, fabr_parser *p, ...)
 {
-  fabr_tree *r = fabr_tree_malloc(name, 1, "seq", i, 0);
+  fabr_tree *r = fabr_tree_malloc(name, "seq", i);
 
   fabr_tree **next = &r->child;
 
