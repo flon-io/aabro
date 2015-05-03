@@ -82,11 +82,7 @@ static void fabr_t_to_s(
 {
   for (size_t i = 0; i < indent; i++) flu_sbprintf(b, "  ");
 
-  if (t == NULL)
-  {
-    flu_sbprintf(b, "{null}");
-    return;
-  }
+  if (t == NULL) { flu_sbprintf(b, "null"); return; }
 
   char *stringc = color ? "[1;33m" : ""; // yellow
   char *clearc = color ? "[0;0m" : "";
@@ -361,5 +357,11 @@ fabr_tree *fabr_rep(
   if (r->result != 1) r->length = 0;
 
   return r;
+}
+
+fabr_tree *fabr_rng(
+  char *name, fabr_input *i, char *range)
+{
+  return NULL;
 }
 

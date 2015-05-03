@@ -150,6 +150,9 @@ fabr_tree *fabr_alt(
 fabr_tree *fabr_rep(
   char *name, fabr_input *i, fabr_parser *p, size_t min, size_t max);
 
+fabr_tree *fabr_rng(
+  char *name, fabr_input *i, char *range);
+
 
 //
 // helpers
