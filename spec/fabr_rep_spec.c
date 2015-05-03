@@ -50,5 +50,52 @@ describe "fabr_rep()"
       "  [ null, 1, 2, 2, null, \"str\", [] ]\n"
       "] ]");
   }
+
+  it "fails midway"
+  {
+    i.string = "t0t1t0";
+
+    t = fabr_rep("x", &i, _t0, 1, 2);
+
+    char *s = fabr_tree_to_string(t, NULL, 0);
+
+    ensure(s ===f ""
+      "[ \"x\", 0, 0, 0, null, \"rep\", [\n"
+      "  [ null, 1, 0, 2, null, \"str\", [] ],\n"
+      "  [ null, 0, 2, 0, null, \"str\", [] ]\n"
+      "] ]");
+  }
+
+  it "fails when not enough"
+  {
+    i.string = "t0t0t0";
+
+    t = fabr_rep("x", &i, _t0, 4, 0);
+
+    char *s = fabr_tree_to_string(t, NULL, 0);
+
+    ensure(s ===f ""
+      "[ \"x\", 0, 0, 0, null, \"rep\", [\n"
+      "  [ null, 1, 0, 2, null, \"str\", [] ],\n"
+      "  [ null, 1, 2, 2, null, \"str\", [] ],\n"
+      "  [ null, 1, 4, 2, null, \"str\", [] ]\n"
+      "] ]");
+  }
+
+  it "succeeds when max is open"
+  {
+    i.string = "t0t0t0";
+
+    t = fabr_rep("x", &i, _t0, 2, 0);
+
+    char *s = fabr_tree_to_string(t, NULL, 0);
+
+    ensure(s ===f ""
+      "[ \"x\", 1, 0, 6, null, \"rep\", [\n"
+      "  [ null, 1, 0, 2, null, \"str\", [] ],\n"
+      "  [ null, 1, 2, 2, null, \"str\", [] ],\n"
+      "  [ null, 1, 4, 2, null, \"str\", [] ]\n"
+      "] ]");
+  }
 }
 

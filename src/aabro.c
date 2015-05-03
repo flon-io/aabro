@@ -267,7 +267,8 @@ fabr_tree *fabr_t_child(fabr_tree *t, size_t index)
 //
 // parters (partial parsers)
 
-fabr_tree *fabr_str(char *name, fabr_input *i, char *str)
+fabr_tree *fabr_str(
+  char *name, fabr_input *i, char *str)
 {
   size_t l = strlen(str);
 
@@ -281,7 +282,8 @@ fabr_tree *fabr_str(char *name, fabr_input *i, char *str)
   return r;
 }
 
-fabr_tree *fabr_seq(char *name, fabr_input *i, fabr_parser *p, ...)
+fabr_tree *fabr_seq(
+  char *name, fabr_input *i, fabr_parser *p, ...)
 {
   fabr_tree *r = fabr_tree_malloc(name, "seq", i);
 
@@ -306,7 +308,8 @@ fabr_tree *fabr_seq(char *name, fabr_input *i, fabr_parser *p, ...)
   return r;
 }
 
-fabr_tree *fabr_alt(char *name, fabr_input *i, fabr_parser *p, ...)
+fabr_tree *fabr_alt(
+  char *name, fabr_input *i, fabr_parser *p, ...)
 {
   fabr_tree *r = fabr_tree_malloc(name, "alt", i);
   r->result = 0;
@@ -325,6 +328,37 @@ fabr_tree *fabr_alt(char *name, fabr_input *i, fabr_parser *p, ...)
     next = &(t->sibling);
   }
   va_end(ap);
+
+  return r;
+}
+
+fabr_tree *fabr_rep(
+  char *name, fabr_input *i, fabr_parser *p, size_t min, size_t max)
+{
+  fabr_tree *r = fabr_tree_malloc(name, "rep", i);
+
+  fabr_tree **next = &r->child;
+  size_t count = 0;
+
+  while (1)
+  {
+    if (*(i->string + i->offset) == 0) break; // EOS
+
+    fabr_tree *t = p(i);
+    *next = t;
+
+    if (t->result == 0) { r->result = 0; break; }
+
+    i->offset += t->length;
+    r->length += t->length;
+
+    if (++count == max) break;
+
+    next = &(t->sibling);
+  }
+
+  if (count < min) r->result = 0;
+  if (r->result != 1) r->length = 0;
 
   return r;
 }
