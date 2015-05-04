@@ -42,121 +42,156 @@ describe "fabr_rng()"
       "[ \"x\", 1, 0, 1, null, \"rng\", [] ]");
   }
 
-  it "accepts \"a-z\""
-  it "accepts \"a-z0-9X\""
-  it "accepts \"\\-\\[\""
-  it "accepts \"\\--\\[\""
-  it "accepts \"^a-z\""
-  it "accepts \"\\^a-z\""
-  it "accepts \"+-\""
+  it "accepts \"a-z\" (failure)"
+  {
+    i.string = "1";
+    t = fabr_rng("x", &i, "a-z");
+
+    char *s = fabr_tree_to_string(t, NULL, 0);
+
+    ensure(s ===f ""
+      "[ \"x\", 0, 0, 0, null, \"rng\", [] ]");
+  }
+
+  it "accepts \"a-z\" (success)"
+  {
+    i.string = "a";
+    t = fabr_rng("x", &i, "a-z");
+
+    char *s = fabr_tree_to_string(t, NULL, 0);
+
+    ensure(s ===f ""
+      "[ \"x\", 1, 0, 1, null, \"rng\", [] ]");
+  }
+
+  it "accepts \"a-z0-9X\" (failure)"
+  {
+    i.string = "Y";
+    t = fabr_rng("x", &i, "a-z0-9X");
+
+    char *s = fabr_tree_to_string(t, NULL, 0);
+
+    ensure(s ===f ""
+      "[ \"x\", 0, 0, 0, null, \"rng\", [] ]");
+  }
+
+  it "accepts \"a-z0-9X\" (success)"
+  {
+    i.string = "8";
+    t = fabr_rng("x", &i, "a-z0-9X");
+
+    char *s = fabr_tree_to_string(t, NULL, 0);
+
+    ensure(s ===f ""
+      "[ \"x\", 1, 0, 1, null, \"rng\", [] ]");
+  }
+
+  it "accepts \"\\-\\[\" (failure)"
+  {
+    i.string = "a";
+    t = fabr_rng("x", &i, "\\-\\[");
+
+    char *s = fabr_tree_to_string(t, NULL, 0);
+
+    ensure(s ===f ""
+      "[ \"x\", 0, 0, 0, null, \"rng\", [] ]");
+  }
+
+  it "accepts \"\\-\\[\" (success)"
+  {
+    i.string = "-";
+    t = fabr_rng("x", &i, "\\-\\[");
+
+    char *s = fabr_tree_to_string(t, NULL, 0);
+
+    ensure(s ===f ""
+      "[ \"x\", 1, 0, 1, null, \"rng\", [] ]");
+  }
+
+  it "accepts \"\\-\\[\" (success 2)"
+  {
+    i.string = "[";
+    t = fabr_rng("x", &i, "\\-\\[");
+
+    char *s = fabr_tree_to_string(t, NULL, 0);
+
+    ensure(s ===f ""
+      "[ \"x\", 1, 0, 1, null, \"rng\", [] ]");
+  }
+
+  it "accepts \"\\--\\[\" (failure)"
+  {
+    i.string = "a";
+    t = fabr_rng("x", &i, "\\--\\[");
+
+    char *s = fabr_tree_to_string(t, NULL, 0);
+
+    ensure(s ===f ""
+      "[ \"x\", 0, 0, 0, null, \"rng\", [] ]");
+  }
+
+  it "accepts \"\\--\\[\" (success)"
+  {
+    i.string = ".";
+    t = fabr_rng("x", &i, "\\--\\[");
+
+    char *s = fabr_tree_to_string(t, NULL, 0);
+
+    ensure(s ===f ""
+      "[ \"x\", 1, 0, 1, null, \"rng\", [] ]");
+  }
+
+  it "accepts \"^a-z\" (failure)"
+  {
+    i.string = "z";
+    t = fabr_rng("x", &i, "^a-z");
+
+    char *s = fabr_tree_to_string(t, NULL, 0);
+
+    ensure(s ===f ""
+      "[ \"x\", 0, 0, 0, null, \"rng\", [] ]");
+  }
+
+  it "accepts \"^a-z\" (success)"
+  {
+    i.string = "Z";
+    t = fabr_rng("x", &i, "^a-z");
+
+    char *s = fabr_tree_to_string(t, NULL, 0);
+
+    ensure(s ===f ""
+      "[ \"x\", 1, 0, 1, null, \"rng\", [] ]");
+  }
+
+  it "accepts \"\\^a-z\" (failure)"
+  {
+    i.string = "Z";
+    t = fabr_rng("x", &i, "\\^a-z");
+
+    char *s = fabr_tree_to_string(t, NULL, 0);
+
+    ensure(s ===f ""
+      "[ \"x\", 0, 0, 0, null, \"rng\", [] ]");
+  }
+
+  it "accepts \"\\^a-z\" (success)"
+  {
+    i.string = "^";
+    t = fabr_rng("x", &i, "\\^a-z");
+
+    char *s = fabr_tree_to_string(t, NULL, 0);
+
+    ensure(s ===f ""
+      "[ \"x\", 1, 0, 1, null, \"rng\", [] ]");
+  }
+
+  it "accepts \"+-\" (failure)"
+  it "accepts \"+-\" (success)"
+
   it "accepts \".\" (a dot on its own, any char except newline)"
   it "accepts \"$\" (dollar on its own, the end of the input)"
   it "accepts \"\\\\\" (backslashing the backslash)"
 }
-//      it "is successful when the input starts with a char in the range"
-//      {
-//        p = fabr_range("abc");
-//        t = fabr_parse("aaa", 0, p);
-//
-//        ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-//          "[ null, 1, 0, 1, null, \"range-0\", [] ]");
-//      }
-//
-//      it "fails when the input does not start with a char in the range"
-//      {
-//        p = fabr_range("abc");
-//        t = fabr_parse("daa", 0, p);
-//
-//        ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-//          "[ null, 0, 0, 0, null, \"range-0\", [] ]");
-//      }
-//
-//      it "accepts \"a-z\""
-//      {
-//        p = fabr_range("a-z");
-//
-//        t = fabr_parse("aaa", 0, p);
-//
-//        ensure(t->result == 1);
-//
-//        fabr_tree_free(t);
-//        t = fabr_parse("zaa", 0, p);
-//
-//        ensure(t->result == 1);
-//
-//        fabr_tree_free(t);
-//        t = fabr_parse("Aaa", 0, p);
-//
-//        ensure(t->result == 0);
-//      }
-//
-//      it "accepts \"a-z0-9X\""
-//      {
-//        p = fabr_range("a-z0-9X");
-//
-//        t = fabr_parse("a", 0, p);
-//
-//        ensure(t->result == 1);
-//
-//        fabr_tree_free(t);
-//        t = fabr_parse("9", 0, p);
-//
-//        ensure(t->result == 1);
-//
-//        fabr_tree_free(t);
-//        t = fabr_parse("X", 0, p);
-//
-//        ensure(t->result == 1);
-//
-//        fabr_tree_free(t);
-//        t = fabr_parse("-", 0, p);
-//
-//        ensure(t->result == 0);
-//      }
-//
-//      it "accepts \"\\-\\[\""
-//      {
-//        p = fabr_range("\\-\\[");
-//
-//        t = fabr_parse("a", 0, p);
-//
-//        ensure(t->result == 0);
-//
-//        fabr_tree_free(t);
-//        t = fabr_parse("-", 0, p);
-//
-//        ensure(t->result == 1);
-//
-//        fabr_tree_free(t);
-//        t = fabr_parse("[", 0, p);
-//
-//        ensure(t->result == 1);
-//      }
-//
-//      it "accepts \"\\--\\[\""
-//      {
-//        p = fabr_range("\\--\\[");
-//
-//        t = fabr_parse("a", 0, p);
-//
-//        ensure(t->result == 0);
-//
-//        fabr_tree_free(t);
-//        t = fabr_parse("-", 0, p);
-//
-//        ensure(t->result == 1);
-//
-//        fabr_tree_free(t);
-//        t = fabr_parse("[", 0, p);
-//
-//        ensure(t->result == 1);
-//
-//        fabr_tree_free(t);
-//        t = fabr_parse("A", 0, p);
-//
-//        ensure(t->result == 1);
-//      }
-//
 //      it "accepts \"^a-z\""
 //      {
 //        p = fabr_range("^a-z");
