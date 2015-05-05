@@ -363,6 +363,10 @@ static char irex_char_at(fabr_input *i, size_t index)
 {
   return index >= i->rexn ? 0 : i->rex[index];
 }
+static void irex_increment(fabr_input *i, size_t inc)
+{
+  i->rex += inc; i->rexn -= inc;
+}
 
 static void rng_next(fabr_input *i, char *next)
 {
@@ -385,11 +389,12 @@ static fabr_tree *rng(fabr_input *i)
   fabr_tree *r = fabr_tree_malloc(NULL, "rng", i);
 
   char c = (i->string + i->offset)[0];
+  char irc = irex_char_at(i, 0);
 
-  if (strcmp(i->rex, "$") == 0) { r->result = (c == '\0'); return r; }
+  if (irc == '$') { r->result = (c == '\0'); return r; }
   if (c == '\0') { r->result = 0; return r; }
 
-  if (strcmp(i->rex, ".") == 0)
+  if (irc == '.')
   {
     if (c == '\n') r->result = 0; else r->length = 1;
     return r;
@@ -397,7 +402,7 @@ static fabr_tree *rng(fabr_input *i)
 
   r->result = 0;
 
-  short not = (i->rex[0] == '^'); if (not) { i->rex++; i->rexn--; }
+  short not = (irc == '^'); if (not) irex_increment(i, 1);
 
   char next[] = { 0, 0, 0 };
   while (1)
@@ -405,7 +410,7 @@ static fabr_tree *rng(fabr_input *i)
     rng_next(i, next);
     if (next[0] == 0) break;
     if (c >= next[1] && c <= next[2]) { r->result = 1; break; }
-    i->rex += next[0]; i->rexn -= next[0];
+    irex_increment(i, next[0]);
   }
 
   if (not) r->result = ( ! r->result);
