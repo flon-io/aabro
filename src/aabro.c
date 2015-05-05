@@ -359,7 +359,7 @@ fabr_tree *fabr_rep(
   return r;
 }
 
-static char rex_char_at(fabr_input *i, size_t index)
+static char irex_char_at(fabr_input *i, size_t index)
 {
   return index >= i->rexn ? 0 : i->rex[index];
 }
@@ -367,15 +367,15 @@ static char rex_char_at(fabr_input *i, size_t index)
 static void rng_next(fabr_input *i, char *next)
 {
   size_t b_index = 1;
-  char a = rex_char_at(i, 0);
-  if (a == '\\') { a = rex_char_at(i, 1); b_index = 2; }
+  char a = irex_char_at(i, 0);
+  if (a == '\\') { a = irex_char_at(i, 1); b_index = 2; }
   if (a == '\0') { next[0] = 0; next[1] = 0; next[2] = 0; return; }
 
-  char b = rex_char_at(i, b_index);
-  char c = (b != '\0') ? rex_char_at(i, b_index + 1) : 'X'; // don't go too far
+  char b = irex_char_at(i, b_index);
+  char c = (b != '\0') ? irex_char_at(i, b_index + 1) : 'X'; // don't go too far
   if (b != '-' || c == '\0') { next[0] = 1; next[1] = a; next[2] = a; return; }
-  b = rex_char_at(i, ++b_index);
-  if (b == '\\') b = rex_char_at(i, ++b_index);
+  b = irex_char_at(i, ++b_index);
+  if (b == '\\') b = irex_char_at(i, ++b_index);
 
   next[0] = 2; next[1] = a; next[2] = b;
 }
@@ -397,7 +397,7 @@ static fabr_tree *rng(fabr_input *i)
 
   r->result = 0;
 
-  short not = (i->rex[0] == '^'); if (not) ++(i->rex);
+  short not = (i->rex[0] == '^'); if (not) { i->rex++; i->rexn--; }
 
   char next[] = { 0, 0, 0 };
   while (1)
@@ -405,7 +405,7 @@ static fabr_tree *rng(fabr_input *i)
     rng_next(i, next);
     if (next[0] == 0) break;
     if (c >= next[1] && c <= next[2]) { r->result = 1; break; }
-    i->rex = i->rex + next[0];
+    i->rex += next[0]; i->rexn -= next[0];
   }
 
   if (not) r->result = ( ! r->result);
