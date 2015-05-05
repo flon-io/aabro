@@ -378,9 +378,9 @@ static void rng_next(fabr_input *i, char *next)
   char b = irex_char_at(i, b_index);
   char c = (b != '\0') ? irex_char_at(i, b_index + 1) : 'X'; // don't go too far
   if (b != '-' || c == '\0') { next[0] = 1; next[1] = a; next[2] = a; return; }
+
   b = irex_char_at(i, ++b_index);
   if (b == '\\') b = irex_char_at(i, ++b_index);
-
   next[0] = 2; next[1] = a; next[2] = b;
 }
 
@@ -419,6 +419,64 @@ static fabr_tree *rng(fabr_input *i)
   return r;
 }
 
+static ssize_t find_range_end(fabr_input *i)
+{
+  for (size_t j = 0; ; ++j)
+  {
+    char c = irex_char_at(i, j);
+
+    if (c == '\0') break;
+    if (c == '\\') { ++j; continue; }
+    if (c == ']') return j;
+  }
+
+  return -1;
+}
+
+//static fabr_tree *fail(fabr_input *i, const char *msg, ...)
+//{
+//  t->result = -1;
+//  t->note = flu_svprintf("range not closed >%s<", i->rex);
+//}
+
+static fabr_tree *rex(fabr_input *i)
+{
+  return NULL;
+  fabr_tree *r = fabr_tree_malloc(NULL, "_rex", i);
+
+  fabr_tree **next = &(r->child);
+
+  while (1)
+  {
+    char irc = irex_char_at(i, 0); if (irc == 0) break;
+
+    // FIXME detect rep (postfix)
+
+    if (irc == '[')
+    {
+      ssize_t end = find_range_end(i);
+      i->rex++; i->rexn = end < 1 ? 0 : end;
+      fabr_tree *t = rng(i);
+      *next = t;
+      if (t->result == -1) break;
+      //if (end < 1)
+      //{
+      //  fail(i, "range not closed >%s<", i->rex) :
+      //}
+      //else
+      //{
+      //  rng(i
+      //}
+    }
+    else
+    {
+      break; // FIXME
+    }
+  }
+
+  return r;
+}
+
 fabr_tree *fabr_rng(
   char *name, fabr_input *i, char *range)
 {
@@ -433,8 +491,16 @@ fabr_tree *fabr_rng(
 }
 
 fabr_tree *fabr_rex(
-  char *name, fabr_input *i, char *rex)
+  char *name, fabr_input *i, char *regex)
 {
-  return NULL;
+  i->rex = regex;
+  i->rexn = strlen(regex);
+
+  fabr_tree *r = rex(i);
+
+  //r->name = name ? strdup(name) : NULL;
+    // TODO: bring me back
+
+  return r;
 }
 

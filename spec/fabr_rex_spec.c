@@ -34,6 +34,33 @@ describe "fabr_rex()"
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
       "[ \"x\", 1, 0, 1, null, \"rex\", [] ]");
   }
+
+  it "accepts \"[ab]\""
+  {
+    i.string = "catapult";
+    t = fabr_rex("x", &i, "[ab]");
+
+    ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
+      "[ \"x\", 0, 0, 0, null, \"rex\", [] ]");
+
+    i.string = "arles";
+    t = fabr_rex("x", &i, "[ab]");
+
+    ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
+      "[ \"x\", 1, 0, 1, null, \"rex\", [] ]");
+  }
+
+  context "errors"
+  {
+    it "fails on \"[ab\""
+    {
+      i.string = "nada";
+      t = fabr_rex("x", &i, "[ab");
+
+      ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
+        "[ \"x\", -1, 0, 0, \"range not closed >[ab<\", \"_rex\", [] ]");
+    }
+  }
 }
 
 //  context "parsing"
