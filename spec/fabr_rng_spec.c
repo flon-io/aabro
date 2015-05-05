@@ -186,116 +186,91 @@ describe "fabr_rng()"
   }
 
   it "accepts \"+-\" (failure)"
-  it "accepts \"+-\" (success)"
+  {
+    i.string = "*";
+    t = fabr_rng("x", &i, "+-");
 
-  it "accepts \".\" (a dot on its own, any char except newline)"
-  it "accepts \"$\" (dollar on its own, the end of the input)"
-  it "accepts \"\\\\\" (backslashing the backslash)"
+    char *s = fabr_tree_to_string(t, NULL, 0);
+
+    ensure(s ===f ""
+      "[ \"x\", 0, 0, 0, null, \"rng\", [] ]");
+  }
+
+  it "accepts \"+-\" (success)"
+  {
+    i.string = "-";
+    t = fabr_rng("x", &i, "+-");
+
+    char *s = fabr_tree_to_string(t, NULL, 0);
+
+    ensure(s ===f ""
+      "[ \"x\", 1, 0, 1, null, \"rng\", [] ]");
+  }
+
+  it "accepts \".\" (a dot on its own, any char except newline) (failure)"
+  {
+    i.string = "\n";
+    t = fabr_rng("x", &i, ".");
+
+    char *s = fabr_tree_to_string(t, NULL, 0);
+
+    ensure(s ===f ""
+      "[ \"x\", 0, 0, 0, null, \"rng\", [] ]");
+  }
+
+  it "accepts \".\" (a dot on its own, any char except newline) (success)"
+  {
+    i.string = "*";
+    t = fabr_rng("x", &i, ".");
+
+    char *s = fabr_tree_to_string(t, NULL, 0);
+
+    ensure(s ===f ""
+      "[ \"x\", 1, 0, 1, null, \"rng\", [] ]");
+  }
+
+  it "accepts \"$\" (dollar on its own, the end of the input) (failure)"
+  {
+    i.string = "A";
+    t = fabr_rng("x", &i, "$");
+
+    char *s = fabr_tree_to_string(t, NULL, 0);
+
+    ensure(s ===f ""
+      "[ \"x\", 0, 0, 0, null, \"rng\", [] ]");
+  }
+
+  it "accepts \"$\" (dollar on its own, the end of the input) (success)"
+  {
+    i.string = "";
+    t = fabr_rng("x", &i, "$");
+
+    char *s = fabr_tree_to_string(t, NULL, 0);
+
+    ensure(s ===f ""
+      "[ \"x\", 1, 0, 0, null, \"rng\", [] ]");
+  }
+
+  it "accepts \"\\\\\" (backslashing the backslash) (failure)"
+  {
+    i.string = "A";
+    t = fabr_rng("x", &i, "\\\\");
+
+    char *s = fabr_tree_to_string(t, NULL, 0);
+
+    ensure(s ===f ""
+      "[ \"x\", 0, 0, 0, null, \"rng\", [] ]");
+  }
+
+  it "accepts \"\\\\\" (backslashing the backslash) (success)"
+  {
+    i.string = "\\";
+    t = fabr_rng("x", &i, "\\\\");
+
+    char *s = fabr_tree_to_string(t, NULL, 0);
+
+    ensure(s ===f ""
+      "[ \"x\", 1, 0, 1, null, \"rng\", [] ]");
+  }
 }
-//      it "accepts \"^a-z\""
-//      {
-//        p = fabr_range("^a-z");
-//
-//        t = fabr_parse("a", 0, p);
-//
-//        ensure(t->result == 0);
-//
-//        fabr_tree_free(t);
-//        t = fabr_parse("A", 0, p);
-//
-//        ensure(t->result == 1);
-//      }
-//
-//      it "accepts \"\\^a-z\""
-//      {
-//        p = fabr_range("\\^a-z");
-//
-//        t = fabr_parse("a", 0, p);
-//
-//        ensure(t->result == 1);
-//
-//        fabr_tree_free(t);
-//        t = fabr_parse("^", 0, p);
-//
-//        ensure(t->result == 1);
-//
-//        fabr_tree_free(t);
-//        t = fabr_parse("A", 0, p);
-//
-//        ensure(t->result == 0);
-//      }
-//
-//      it "accepts \"+-\""
-//      {
-//        p = fabr_range("+-");
-//
-//        t = fabr_parse("+", 0, p);
-//
-//        ensure(t->result == 1);
-//
-//        fabr_tree_free(t);
-//        t = fabr_parse("-", 0, p);
-//
-//        ensure(t->result == 1);
-//
-//        fabr_tree_free(t);
-//        t = fabr_parse("*", 0, p);
-//
-//        ensure(t->result == 0);
-//      }
-//
-//      it "accepts \".\" (a dot on its own, any char except newline)"
-//      {
-//        p = fabr_range(".");
-//
-//        t = fabr_parse("a", 0, p);
-//
-//        ensure(t->result == 1);
-//
-//        fabr_tree_free(t);
-//        t = fabr_parse("\n", 0, p);
-//
-//        ensure(t->result == 0);
-//
-//        fabr_tree_free(t);
-//        t = fabr_parse("\0", 0, p);
-//
-//        ensure(t->result == 0);
-//      }
-//
-//      it "accepts \"$\" (dollar on its own, the end of the input)"
-//      {
-//        p = fabr_range("$");
-//
-//        t = fabr_parse("", 0, p);
-//
-//        ensure(t->result == 1);
-//        ensure(t->length == 0);
-//
-//        fabr_tree_free(t);
-//        t = fabr_parse("\0", 0, p);
-//
-//        ensure(t->result == 1);
-//        ensure(t->length == 0);
-//
-//        fabr_tree_free(t);
-//        t = fabr_parse("a", 0, p);
-//
-//        ensure(t->result == 0);
-//        ensure(t->length == 0);
-//      }
-//
-//      it "accepts \"\\\\\" (backslashing the backslash)"
-//      {
-//        p = fabr_range("\\\\");
-//
-//        t = fabr_parse("a", 0, p);
-//
-//        ensure(t->result == 0);
-//
-//        fabr_tree_free(t);
-//        t = fabr_parse("\\", 0, p);
-//
-//        ensure(t->result == 1);
-//      }
 
