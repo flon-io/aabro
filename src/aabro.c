@@ -359,8 +359,10 @@ fabr_tree *fabr_rep(
   return r;
 }
 
-static void rng_next(char *range, char *next)
+static void rng_next(fabr_input *i, char *next)
 {
+  char *range = strndup(i->rex, i->rexn); // :-(
+
   size_t b_index = 1;
   char a = range[0];
   if (a == '\\') { a = range[1]; b_index = 2; }
@@ -375,17 +377,16 @@ static void rng_next(char *range, char *next)
   next[0] = 2; next[1] = a; next[2] = b;
 }
 
-fabr_tree *fabr_rng(
-  char *name, fabr_input *i, char *range)
+static fabr_tree *rng(fabr_input *i)
 {
-  fabr_tree *r = fabr_tree_malloc(name, "rng", i);
+  fabr_tree *r = fabr_tree_malloc(NULL, "rng", i);
 
   char c = (i->string + i->offset)[0];
 
-  if (strcmp(range, "$") == 0) { r->result = (c == '\0'); return r; }
+  if (strcmp(i->rex, "$") == 0) { r->result = (c == '\0'); return r; }
   if (c == '\0') { r->result = 0; return r; }
 
-  if (strcmp(range, ".") == 0)
+  if (strcmp(i->rex, ".") == 0)
   {
     if (c == '\n') r->result = 0; else r->length = 1;
     return r;
@@ -393,19 +394,32 @@ fabr_tree *fabr_rng(
 
   r->result = 0;
 
-  short not = (range[0] == '^'); if (not) ++range;
+  short not = (i->rex[0] == '^'); if (not) ++range;
 
   char next[] = { 0, 0, 0 };
   while (1)
   {
-    rng_next(range, next);
+    rng_next(i, next);
     if (next[0] == 0) break;
     if (c >= next[1] && c <= next[2]) { r->result = 1; break; }
-    range = range + next[0];
+    i->rex = i->rex + next[0];
   }
 
   if (not) r->result = ( ! r->result);
   r->length = r->result ? 1 : 0;
+
+  return r;
+}
+
+fabr_tree *fabr_rng(
+  char *name, fabr_input *i, char *range)
+{
+  i->rex = range;
+  i->rexn = strlen(range);
+
+  fabr_tree *r = rng(i);
+
+  r->name = name ? strdup(name) : NULL;
 
   return r;
 }
