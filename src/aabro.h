@@ -153,6 +153,9 @@ fabr_tree *fabr_rep(
 fabr_tree *fabr_rng(
   char *name, fabr_input *i, char *range);
 
+fabr_tree *fabr_rex(
+  char *name, fabr_input *i, char *rex);
+
 
 //
 // helpers

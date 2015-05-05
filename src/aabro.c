@@ -410,3 +410,9 @@ fabr_tree *fabr_rng(
   return r;
 }
 
+fabr_tree *fabr_rex(
+  char *name, fabr_input *i, char *rex)
+{
+  return NULL;
+}
+
