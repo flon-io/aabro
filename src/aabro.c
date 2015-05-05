@@ -359,20 +359,23 @@ fabr_tree *fabr_rep(
   return r;
 }
 
+static char rex_char_at(fabr_input *i, size_t index)
+{
+  return index >= i->rexn ? 0 : i->rex[index];
+}
+
 static void rng_next(fabr_input *i, char *next)
 {
-  char *range = strndup(i->rex, i->rexn); // :-(
-
   size_t b_index = 1;
-  char a = range[0];
-  if (a == '\\') { a = range[1]; b_index = 2; }
+  char a = rex_char_at(i, 0);
+  if (a == '\\') { a = rex_char_at(i, 1); b_index = 2; }
   if (a == '\0') { next[0] = 0; next[1] = 0; next[2] = 0; return; }
 
-  char b = range[b_index];
-  char c = (b != '\0') ? range[b_index + 1] : 'X'; // don't read too far
+  char b = rex_char_at(i, b_index);
+  char c = (b != '\0') ? rex_char_at(i, b_index + 1) : 'X'; // don't go too far
   if (b != '-' || c == '\0') { next[0] = 1; next[1] = a; next[2] = a; return; }
-  b = range[++b_index];
-  if (b == '\\') b = range[++b_index];
+  b = rex_char_at(i, ++b_index);
+  if (b == '\\') b = rex_char_at(i, ++b_index);
 
   next[0] = 2; next[1] = a; next[2] = b;
 }
@@ -394,7 +397,7 @@ static fabr_tree *rng(fabr_input *i)
 
   r->result = 0;
 
-  short not = (i->rex[0] == '^'); if (not) ++range;
+  short not = (i->rex[0] == '^'); if (not) ++(i->rex);
 
   char next[] = { 0, 0, 0 };
   while (1)
