@@ -433,7 +433,7 @@ static ssize_t find_range_end(fabr_input *i)
   return -1;
 }
 
-static fabr_tree *fail(fabr_tree *t, const char *format, ...)
+static fabr_tree *error(fabr_tree *t, const char *format, ...)
 {
   t->result = -1;
 
@@ -454,7 +454,7 @@ static fabr_tree *rex_range(fabr_input *i)
 
   ssize_t end = find_range_end(i);
 
-  if (end < 2) return fail(r, "range not closed >%s<", i->rex);
+  if (end < 2) return error(r, "range not closed >%s<", i->rex);
 
   r->result = 0; // FIXME
 

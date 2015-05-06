@@ -62,7 +62,7 @@ describe "fabr_rex()"
 
   context "errors"
   {
-    it "fails on \"[ab\""
+    it "rejects \"[ab\""
     {
       i.string = "nada";
       t = fabr_rex("x", &i, "[ab");
