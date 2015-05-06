@@ -433,15 +433,24 @@ static ssize_t find_range_end(fabr_input *i)
   return -1;
 }
 
-//static fabr_tree *fail(fabr_input *i, const char *msg, ...)
-//{
-//  t->result = -1;
-//  t->note = flu_svprintf("range not closed >%s<", i->rex);
-//}
+static fabr_tree *rex_range(fabr_input *i)
+{
+  // detect range end
+  // determine repetition (defaults to 1, 1)
+  // return rng() wrapped in rep()
+  return NULL;
+}
+
+static fabr_tree *rex_group(fabr_input *i)
+{
+  // TODO
+  return NULL;
+
+  // eventually, rex() and rex_group() are the same thing
+}
 
 static fabr_tree *rex(fabr_input *i)
 {
-  return NULL;
   fabr_tree *r = fabr_tree_malloc(NULL, "_rex", i);
 
   fabr_tree **next = &(r->child);
@@ -450,28 +459,16 @@ static fabr_tree *rex(fabr_input *i)
   {
     char irc = irex_char_at(i, 0); if (irc == 0) break;
 
-    // FIXME detect rep (postfix)
+    fabr_tree *t = NULL;
 
-    if (irc == '[')
-    {
-      ssize_t end = find_range_end(i);
-      i->rex++; i->rexn = end < 1 ? 0 : end;
-      fabr_tree *t = rng(i);
-      *next = t;
-      if (t->result == -1) break;
-      //if (end < 1)
-      //{
-      //  fail(i, "range not closed >%s<", i->rex) :
-      //}
-      //else
-      //{
-      //  rng(i
-      //}
-    }
-    else
-    {
-      break; // FIXME
-    }
+    if (irc == '[') t = rex_range(i);
+    else if (irc == '(') t = rex_group(i);
+    //else ...
+
+    *next = t;
+    next = &(t->sibling);
+
+    break; // FIXME
   }
 
   return r;
