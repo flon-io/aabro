@@ -20,14 +20,17 @@ describe "fabr_rex()"
     fabr_tree_free(t);
   }
 
-  it "accepts \"a\""
+  it "accepts \"a\" (failure)"
   {
     i.string = "bravo";
     t = fabr_rex("x", &i, "a");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
       "[ \"x\", 0, 0, 0, null, \"rex\", [] ]");
+  }
 
+  it "accepts \"a\" (success)"
+  {
     i.string = "alpha";
     t = fabr_rex("x", &i, "a");
 
@@ -35,19 +38,26 @@ describe "fabr_rex()"
       "[ \"x\", 1, 0, 1, null, \"rex\", [] ]");
   }
 
-  it "accepts \"[ab]\""
+  it "accepts \"[ab]\" (failure)"
   {
     i.string = "catapult";
     t = fabr_rex("x", &i, "[ab]");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 0, 0, 0, null, \"rex\", [] ]");
+      "[ \"x\", 0, 0, 0, null, \"_rex\", [\n"
+      "  [ null, 0, 0, 0, null, \"_rng\", [] ]\n"
+      "] ]");
+  }
 
+  it "accepts \"[ab]\" (success)"
+  {
     i.string = "arles";
     t = fabr_rex("x", &i, "[ab]");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 1, 0, 1, null, \"rex\", [] ]");
+      "[ \"x\", 1, 0, 1, null, \"_rex\", [\n"
+      "  [ null, 1, 0, 1, null, \"_rng\", [] ]\n"
+      "] ]");
   }
 
   context "errors"
