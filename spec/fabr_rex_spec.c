@@ -58,7 +58,9 @@ describe "fabr_rex()"
       t = fabr_rex("x", &i, "[ab");
 
       ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-        "[ \"x\", -1, 0, 0, \"range not closed >[ab<\", \"_rex\", [] ]");
+        "[ \"x\", -1, 0, 0, null, \"_rex\", [\n"
+        "  [ null, -1, 0, 0, \"range not closed >[ab<\", \"_rng\", [] ]\n"
+        "] ]");
     }
   }
 }

@@ -433,12 +433,32 @@ static ssize_t find_range_end(fabr_input *i)
   return -1;
 }
 
+static fabr_tree *fail(fabr_tree *t, const char *format, ...)
+{
+  t->result = -1;
+
+  va_list ap; va_start(ap, format);
+  t->note = flu_svprintf(format, ap);
+  va_end(ap);
+
+  return t;
+}
+
 static fabr_tree *rex_range(fabr_input *i)
 {
   // detect range end
   // determine repetition (defaults to 1, 1)
   // return rng() wrapped in rep()
-  return NULL;
+
+  fabr_tree *r = fabr_tree_malloc(NULL, "_rng", i);
+
+  ssize_t end = find_range_end(i);
+
+  if (end < 2) return fail(r, "range not closed >%s<", i->rex);
+
+  r->result = 0; // FIXME
+
+  return r;
 }
 
 static fabr_tree *rex_group(fabr_input *i)
@@ -468,6 +488,9 @@ static fabr_tree *rex(fabr_input *i)
     *next = t;
     next = &(t->sibling);
 
+    if (t == NULL) break;
+    if (t->result == -1) { r->result = -1; break; }
+
     break; // FIXME
   }
 
@@ -495,8 +518,7 @@ fabr_tree *fabr_rex(
 
   fabr_tree *r = rex(i);
 
-  //r->name = name ? strdup(name) : NULL;
-    // TODO: bring me back
+  r->name = name ? strdup(name) : NULL;
 
   return r;
 }
