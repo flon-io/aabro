@@ -360,31 +360,6 @@ fabr_tree *fabr_rep(
 }
 
 /*
-static char irex_char_at(fabr_input *i, size_t index)
-{
-  return index >= i->rexn ? 0 : i->rex[index];
-}
-static void irex_increment(fabr_input *i, size_t inc)
-{
-  i->rex += inc; i->rexn -= inc;
-}
-
-static void rng_next(fabr_input *i, char *next)
-{
-  size_t b_index = 1;
-  char a = irex_char_at(i, 0);
-  if (a == '\\') { a = irex_char_at(i, 1); b_index = 2; }
-  if (a == '\0') { next[0] = 0; next[1] = 0; next[2] = 0; return; }
-
-  char b = irex_char_at(i, b_index);
-  char c = (b != '\0') ? irex_char_at(i, b_index + 1) : 'X'; // don't go too far
-  if (b != '-' || c == '\0') { next[0] = 1; next[1] = a; next[2] = a; return; }
-
-  b = irex_char_at(i, ++b_index);
-  if (b == '\\') b = irex_char_at(i, ++b_index);
-  next[0] = 2; next[1] = a; next[2] = b;
-}
-
 static fabr_tree *rng(fabr_input *i)
 {
   fabr_tree *r = fabr_tree_malloc(NULL, "rng", i);
@@ -528,30 +503,92 @@ static fabr_tree *rex(fabr_input *i, char *regex, size_t regex_n)
 
   return r;
 }
+*/
+
+static char char_at(char *rx, size_t rxn, size_t index)
+{
+  return rxn > index ? rx[index] : 0;
+}
+
+typedef fabr_tree *fabr_rex_parser(fabr_input *i, char *rx, size_t rxn);
+
+static void rng_next(char *rx, size_t rxn, char *next)
+{
+  size_t b_index = 1;
+  char a = char_at(rx, rxn, 0);
+  if (a == '\\') { a = char_at(rx, rxn, 1); b_index = 2; }
+  if (a == '\0') { next[0] = 0; next[1] = 0; next[2] = 0; return; }
+
+  char b = char_at(rx, rxn, b_index);
+  char c = (b != '\0') ? char_at(rx, rxn, b_index + 1) : 'X'; // don't go over
+  if (b != '-' || c == '\0') { next[0] = 1; next[1] = a; next[2] = a; return; }
+
+  b = char_at(rx, rxn, ++b_index);
+  if (b == '\\') b = char_at(rx, rxn, ++b_index);
+  next[0] = 2; next[1] = a; next[2] = b;
+}
+
+static fabr_tree *rng(fabr_input *i, char *rx, size_t rxn)
+{
+  fabr_tree *r = fabr_tree_malloc(NULL, "rng", i);
+
+  char c = (i->string + i->offset)[0];
+  char irc = rxn > 0 ? rx[0] : 0;
+
+  if (irc == '$') { r->result = (c == '\0'); return r; }
+  if (c == '\0') { r->result = 0; return r; }
+
+  if (irc == '.')
+  {
+    if (c == '\n') r->result = 0; else r->length = 1;
+    return r;
+  }
+
+  r->result = 0;
+
+  short not = (irc == '^'); if (not) { rx++; rxn--; }
+
+  char next[] = { 0, 0, 0 };
+  while (1)
+  {
+    rng_next(rx, rxn, next);
+    if (next[0] == 0) break;
+    if (c >= next[1] && c <= next[2]) { r->result = 1; break; }
+    rx += next[0]; rxn -= next[0];
+  }
+
+  if (not) r->result = ( ! r->result);
+  r->length = r->result ? 1 : 0;
+
+  return r;
+}
 
 fabr_tree *fabr_rng(
   char *name, fabr_input *i, char *range)
 {
-  i->rex = range;
-  i->rexn = strlen(range);
-
-  fabr_tree *r = rng(i);
+  fabr_tree *r = rng(i, range, strlen(range));
 
   r->name = name ? strdup(name) : NULL;
 
   return r;
 }
-*/
 
-fabr_tree *fabr_rng(
-  char *name, fabr_input *i, char *range)
+static fabr_tree *rex(fabr_input *i, char *rx, size_t rxn)
 {
-  return NULL;
+  fabr_tree *r = fabr_tree_malloc(NULL, "rex", i);
+
+  // TODO
+
+  return r;
 }
 
 fabr_tree *fabr_rex(
   char *name, fabr_input *i, char *regex)
 {
-  return NULL;
+  fabr_tree *r = rex(i, regex, strlen(regex));
+
+  r->name = name ? strdup(name) : NULL;
+
+  return r;
 }
 
