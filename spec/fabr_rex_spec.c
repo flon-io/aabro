@@ -44,8 +44,8 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "[ab]");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 0, 0, 0, null, \"_rex\", [\n"
-      "  [ null, 0, 0, 0, null, \"_rng\", [] ]\n"
+      "[ \"x\", 0, 0, 0, null, \"rex\", [\n"
+      "  [ null, 0, 0, 0, null, \"rng\", [] ]\n"
       "] ]");
   }
 
@@ -55,8 +55,8 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "[ab]");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 1, 0, 1, null, \"_rex\", [\n"
-      "  [ null, 1, 0, 1, null, \"_rng\", [] ]\n"
+      "[ \"x\", 1, 0, 1, null, \"rex\", [\n"
+      "  [ null, 1, 0, 1, null, \"rng\", [] ]\n"
       "] ]");
   }
 
@@ -68,8 +68,8 @@ describe "fabr_rex()"
       t = fabr_rex("x", &i, "[ab");
 
       ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-        "[ \"x\", -1, 0, 0, null, \"_rex\", [\n"
-        "  [ null, -1, 0, 0, \"range not closed >[ab<\", \"_rng\", [] ]\n"
+        "[ \"x\", -1, 0, 0, null, \"rex\", [\n"
+        "  [ null, -1, 0, 0, \"range not closed >[ab<\", \"rng\", [] ]\n"
         "] ]");
     }
   }

@@ -433,15 +433,23 @@ static ssize_t find_range_end(fabr_input *i)
   return -1;
 }
 
-static fabr_tree *error(fabr_tree *t, const char *format, ...)
+static fabr_tree *error(fabr_input *i, char *parter, const char *format, ...)
 {
-  t->result = -1;
+  fabr_tree *r = fabr_tree_malloc(NULL, parter, i);
+
+  r->result = -1;
 
   va_list ap; va_start(ap, format);
-  t->note = flu_svprintf(format, ap);
+  r->note = flu_svprintf(format, ap);
   va_end(ap);
 
-  return t;
+  return r;
+}
+
+static void determine_reps(fabr_input *i, size_t *reps)
+{
+  //printf("dr >%s< %zu\n", i->rex, i->rexn);
+  if (i->rexn == 0) return;
 }
 
 static fabr_tree *rex_range(fabr_input *i)
@@ -450,15 +458,29 @@ static fabr_tree *rex_range(fabr_input *i)
   // determine repetition (defaults to 1, 1)
   // return rng() wrapped in rep()
 
-  fabr_tree *r = fabr_tree_malloc(NULL, "_rng", i);
-
   ssize_t end = find_range_end(i);
 
-  if (end < 2) return error(r, "range not closed >%s<", i->rex);
+  if (end < 2) return error(i, "rng", "range not closed >%s<", i->rex);
 
-  r->result = 0; // FIXME
+  char *rex = i->rex + 1;
+  size_t rexn = end - 1;
 
-  return r;
+  //printf("_rng >%s< %zu\n", rex, rexn);
+
+  irex_increment(i, end + 1);
+  size_t reps[] = { 1, 1 }; // exactly one
+  determine_reps(i, reps);
+
+  //printf("_rng reps (%zu, %zu)\n", reps[0], reps[1]);
+
+  if (reps[0] != 1 || reps[1] != 1)
+  {
+  }
+
+  //else // exactly one, don't wrap
+
+  i->rex = rex; i->rexn = rexn;
+  return rng(i);
 }
 
 static fabr_tree *rex_group(fabr_input *i)
@@ -471,7 +493,7 @@ static fabr_tree *rex_group(fabr_input *i)
 
 static fabr_tree *rex(fabr_input *i)
 {
-  fabr_tree *r = fabr_tree_malloc(NULL, "_rex", i);
+  fabr_tree *r = fabr_tree_malloc(NULL, "rex", i);
 
   fabr_tree **next = &(r->child);
 
@@ -489,7 +511,9 @@ static fabr_tree *rex(fabr_input *i)
     next = &(t->sibling);
 
     if (t == NULL) break;
-    if (t->result == -1) { r->result = -1; break; }
+    if (t->result != 1) { r->result = t->result; break; }
+
+    r->length += t->length;
 
     break; // FIXME
   }
