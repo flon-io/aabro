@@ -359,6 +359,7 @@ fabr_tree *fabr_rep(
   return r;
 }
 
+/*
 static char irex_char_at(fabr_input *i, size_t index)
 {
   return index >= i->rexn ? 0 : i->rex[index];
@@ -497,7 +498,7 @@ static fabr_tree *rex_group(fabr_input *i)
   // eventually, rex() and rex_group() are the same thing
 }
 
-static fabr_tree *rex(fabr_input *i)
+static fabr_tree *rex(fabr_input *i, char *regex, size_t regex_n)
 {
   fabr_tree *r = fabr_tree_malloc(NULL, "rex", i);
 
@@ -523,6 +524,7 @@ static fabr_tree *rex(fabr_input *i)
 
     break; // FIXME
   }
+  r->name = name ? strdup(name) : NULL;
 
   return r;
 }
@@ -539,17 +541,17 @@ fabr_tree *fabr_rng(
 
   return r;
 }
+*/
+
+fabr_tree *fabr_rng(
+  char *name, fabr_input *i, char *range)
+{
+  return NULL;
+}
 
 fabr_tree *fabr_rex(
   char *name, fabr_input *i, char *regex)
 {
-  i->rex = regex;
-  i->rexn = strlen(regex);
-
-  fabr_tree *r = rex(i);
-
-  r->name = name ? strdup(name) : NULL;
-
-  return r;
+  return NULL;
 }
 
