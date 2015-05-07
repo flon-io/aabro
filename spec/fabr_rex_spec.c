@@ -60,6 +60,27 @@ describe "fabr_rex()"
       "] ]");
   }
 
+  it "accepts \"[ab]+\" (failure)"
+  {
+    i.string = "carl";
+    t = fabr_rex("x", &i, "[ab]+");
+
+    ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
+      "[ \"x\", 0, 0, 0, null, \"rex\", [\n"
+      "  [ null, 0, 0, 0, null, \"rng\", [] ]\n"
+      "] ]");
+  }
+
+  it "accepts \"[ab]+\" (success)"
+  it "accepts \"[ab]?\" (failure)"
+  it "accepts \"[ab]?\" (success)"
+  it "accepts \"[ab]*\" (failure)"
+  it "accepts \"[ab]*\" (success)"
+  it "accepts \"[ab]{2}\" (failure)"
+  it "accepts \"[ab]{2}\" (success)"
+  it "accepts \"[ab]{2,3}\" (failure)"
+  it "accepts \"[ab]{2,3}\" (success)"
+
   context "errors"
   {
     it "rejects \"[ab\""

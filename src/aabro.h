@@ -125,10 +125,16 @@ fabr_tree *fabr_t_child(fabr_tree *t, size_t index);
 // fabr_input
 
 typedef struct {
+
   char *string;
   size_t offset;
+
   char *rex;
   size_t rexn;
+
+  size_t rmin;
+  size_t rmax;
+
 } fabr_input;
 
 

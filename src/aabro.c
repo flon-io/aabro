@@ -446,10 +446,13 @@ static fabr_tree *error(fabr_input *i, char *parter, const char *format, ...)
   return r;
 }
 
-static void determine_reps(fabr_input *i, size_t *reps)
+static size_t determine_rminmax(fabr_input *i)
 {
-  //printf("dr >%s< %zu\n", i->rex, i->rexn);
-  if (i->rexn == 0) return;
+  printf("dr >%s< %zu\n", i->rex, i->rexn);
+  if (i->rex == 0) return 0;
+  if (*i->rex == '+') { i->rmax = 0; return 1; }
+  if (*i->rex == '*') { i->rmin = 0; i->rmax = 0; return 1; }
+  if (*i=>rex == '{') return 2; // FIXME
 }
 
 static fabr_tree *rex_range(fabr_input *i)
@@ -468,18 +471,21 @@ static fabr_tree *rex_range(fabr_input *i)
   //printf("_rng >%s< %zu\n", rex, rexn);
 
   irex_increment(i, end + 1);
-  size_t reps[] = { 1, 1 }; // exactly one
-  determine_reps(i, reps);
+
+  i->rmin = 1; i->rmax = 1; // exactly one
+  size_t replen = determine_rminmax(i);
 
   //printf("_rng reps (%zu, %zu)\n", reps[0], reps[1]);
 
+  i->rex = rex; i->rexn = rexn;
+
   if (reps[0] != 1 || reps[1] != 1)
   {
+    i->rmin = reps[0]; i->
   }
 
   //else // exactly one, don't wrap
 
-  i->rex = rex; i->rexn = rexn;
   return rng(i);
 }
 
