@@ -515,6 +515,7 @@ typedef fabr_tree *fabr_rex_parser(fabr_input *i, char *rx, size_t rxn);
 static void rng_next(char *rx, size_t rxn, char *next)
 {
   size_t b_index = 1;
+
   char a = char_at(rx, rxn, 0);
   if (a == '\\') { a = char_at(rx, rxn, 1); b_index = 2; }
   if (a == '\0') { next[0] = 0; next[1] = 0; next[2] = 0; return; }
@@ -573,11 +574,72 @@ fabr_tree *fabr_rng(
   return r;
 }
 
-static fabr_tree *rex(fabr_input *i, char *rx, size_t rxn)
+static fabr_tree *rex_sequence(fabr_input *i, char *rx, size_t rxn)
 {
-  fabr_tree *r = fabr_tree_malloc(NULL, "rex", i);
-
   // TODO
+
+  printf("rex_sequence() >%s< %zu\n", rx, rxn);
+
+  //return NULL;
+  char *s = strndup(rx, rxn);
+  fabr_tree *r = fabr_str(NULL, i, s);
+  free(s);
+  return r;
+}
+
+static fabr_tree *rex_group(fabr_input *i, char *rx, size_t rxn)
+{
+  fabr_tree *r = fabr_tree_malloc(NULL, "rex_group", i);
+
+  // TODO/WARNING: greedy, the wants to have the longest match...
+
+  fabr_tree *prev = NULL;
+  fabr_tree **next = &r->child;
+
+  char c = 'a';
+  char *crx = rx;
+  size_t crxn = rxn;
+
+  do
+  {
+    printf("rex_group() >%s< %zu c%i\n", crx, crxn, c);
+
+    for (size_t j = 0, range = 0, groups = 0; ; j++)
+    {
+      c = j == crxn ? 0 : crx[j];
+
+      if (c == '\0')
+      {
+        *next = rex_sequence(i, crx, j);
+        prev = *next;
+        next = &prev->sibling;
+        break;
+      }
+
+      if (c == '\\') { i++; continue; }
+
+      if (c == '[') { range = 1; continue; }
+      if (range && c == ']') { range = 0; continue; }
+      if (range) continue;
+
+      if (c == '(') { groups++; continue; }
+      if (groups > 0 && c == ')') { groups--; continue; }
+
+      if (c == '|')
+      {
+        *next = rex_sequence(i, crx, j);
+        prev = *next;
+        next = &prev->sibling;
+        crx = crx + j + 1; crxn = crxn - j - 1;
+        break;
+      }
+
+      // else continue
+    }
+
+    // TODO: break in case of successful prev
+
+  } while (c != 0);
 
   return r;
 }
@@ -585,7 +647,7 @@ static fabr_tree *rex(fabr_input *i, char *rx, size_t rxn)
 fabr_tree *fabr_rex(
   char *name, fabr_input *i, char *regex)
 {
-  fabr_tree *r = rex(i, regex, strlen(regex));
+  fabr_tree *r = rex_group(i, regex, strlen(regex));
 
   r->name = name ? strdup(name) : NULL;
 

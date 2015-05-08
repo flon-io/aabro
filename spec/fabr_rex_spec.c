@@ -38,6 +38,17 @@ describe "fabr_rex()"
       "[ \"x\", 1, 0, 1, null, \"rex\", [] ]");
   }
 
+  it "accepts \"ab|cd\" (failure)"
+  {
+    i.string = "acadabra";
+    t = fabr_rex("x", &i, "ab|cd");
+
+    ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
+      "[ \"x\", 0, 0, 0, null, \"rex\", [] ]");
+  }
+
+  it "accepts \"ab|cd\" (success)"
+
   it "accepts \"[ab]\" (failure)"
   {
     i.string = "catapult";
