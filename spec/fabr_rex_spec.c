@@ -111,6 +111,9 @@ describe "fabr_rex()"
         "  [ null, -1, 0, 0, \"range not closed >[ab<\", \"rng\", [] ]\n"
         "] ]");
     }
+
+    it "rejects \"a{1,2fda\""
+    it "rejects \"a{1,2fda}nada\""
   }
 }
 

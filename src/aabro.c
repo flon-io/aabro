@@ -263,17 +263,24 @@ fabr_tree *fabr_t_child(fabr_tree *t, size_t index)
 //
 // parters (partial parsers)
 
-fabr_tree *fabr_str(
-  char *name, fabr_input *i, char *str)
+static fabr_tree *str(fabr_input *i, char *rx, size_t rxn)
 {
-  size_t l = strlen(str);
+  fabr_tree *r = fabr_tree_malloc(NULL, "str", i);
 
-  fabr_tree *r = fabr_tree_malloc(name, "str", i);
-
-  if (strncmp(i->string + i->offset, str, l) != 0)
+  if (strncmp(i->string + i->offset, rx, rxn) != 0)
     r->result = 0;
   else
-    r->length = l;
+    r->length = rxn;
+
+  return r;
+}
+
+fabr_tree *fabr_str(
+  char *name, fabr_input *i, char *s)
+{
+  fabr_tree *r = str(i, s, strlen(s));
+
+  r->name = name ? strdup(name) : NULL;
 
   return r;
 }
@@ -359,152 +366,6 @@ fabr_tree *fabr_rep(
   return r;
 }
 
-/*
-static fabr_tree *rng(fabr_input *i)
-{
-  fabr_tree *r = fabr_tree_malloc(NULL, "rng", i);
-
-  char c = (i->string + i->offset)[0];
-  char irc = irex_char_at(i, 0);
-
-  if (irc == '$') { r->result = (c == '\0'); return r; }
-  if (c == '\0') { r->result = 0; return r; }
-
-  if (irc == '.')
-  {
-    if (c == '\n') r->result = 0; else r->length = 1;
-    return r;
-  }
-
-  r->result = 0;
-
-  short not = (irc == '^'); if (not) irex_increment(i, 1);
-
-  char next[] = { 0, 0, 0 };
-  while (1)
-  {
-    rng_next(i, next);
-    if (next[0] == 0) break;
-    if (c >= next[1] && c <= next[2]) { r->result = 1; break; }
-    irex_increment(i, next[0]);
-  }
-
-  if (not) r->result = ( ! r->result);
-  r->length = r->result ? 1 : 0;
-
-  return r;
-}
-
-static ssize_t find_range_end(fabr_input *i)
-{
-  for (size_t j = 0; ; ++j)
-  {
-    char c = irex_char_at(i, j);
-
-    if (c == '\0') break;
-    if (c == '\\') { ++j; continue; }
-    if (c == ']') return j;
-  }
-
-  return -1;
-}
-
-static fabr_tree *error(fabr_input *i, char *parter, const char *format, ...)
-{
-  fabr_tree *r = fabr_tree_malloc(NULL, parter, i);
-
-  r->result = -1;
-
-  va_list ap; va_start(ap, format);
-  r->note = flu_svprintf(format, ap);
-  va_end(ap);
-
-  return r;
-}
-
-static size_t determine_rminmax(fabr_input *i)
-{
-  printf("dr >%s< %zu\n", i->rex, i->rexn);
-  if (i->rex == 0) return 0;
-  if (*i->rex == '+') { i->rmax = 0; return 1; }
-  if (*i->rex == '*') { i->rmin = 0; i->rmax = 0; return 1; }
-  if (*i=>rex == '{') return 2; // FIXME
-}
-
-static fabr_tree *rex_range(fabr_input *i)
-{
-  // detect range end
-  // determine repetition (defaults to 1, 1)
-  // return rng() wrapped in rep()
-
-  ssize_t end = find_range_end(i);
-
-  if (end < 2) return error(i, "rng", "range not closed >%s<", i->rex);
-
-  char *rex = i->rex + 1;
-  size_t rexn = end - 1;
-
-  //printf("_rng >%s< %zu\n", rex, rexn);
-
-  irex_increment(i, end + 1);
-
-  i->rmin = 1; i->rmax = 1; // exactly one
-  size_t replen = determine_rminmax(i);
-
-  //printf("_rng reps (%zu, %zu)\n", reps[0], reps[1]);
-
-  i->rex = rex; i->rexn = rexn;
-
-  if (reps[0] != 1 || reps[1] != 1)
-  {
-    i->rmin = reps[0]; i->
-  }
-
-  //else // exactly one, don't wrap
-
-  return rng(i);
-}
-
-static fabr_tree *rex_group(fabr_input *i)
-{
-  // TODO
-  return NULL;
-
-  // eventually, rex() and rex_group() are the same thing
-}
-
-static fabr_tree *rex(fabr_input *i, char *regex, size_t regex_n)
-{
-  fabr_tree *r = fabr_tree_malloc(NULL, "rex", i);
-
-  fabr_tree **next = &(r->child);
-
-  while (1)
-  {
-    char irc = irex_char_at(i, 0); if (irc == 0) break;
-
-    fabr_tree *t = NULL;
-
-    if (irc == '[') t = rex_range(i);
-    else if (irc == '(') t = rex_group(i);
-    //else ...
-
-    *next = t;
-    next = &(t->sibling);
-
-    if (t == NULL) break;
-    if (t->result != 1) { r->result = t->result; break; }
-
-    r->length += t->length;
-
-    break; // FIXME
-  }
-  r->name = name ? strdup(name) : NULL;
-
-  return r;
-}
-*/
-
 static char char_at(char *rx, size_t rxn, size_t index)
 {
   return rxn > index ? rx[index] : 0;
@@ -574,22 +435,107 @@ fabr_tree *fabr_rng(
   return r;
 }
 
+static fabr_tree *ferr(fabr_input *i, char *parter, char *format, ...)
+{
+  fabr_tree *r = fabr_tree_malloc(NULL, parter, i);
+
+  va_list ap; va_start(ap, format);
+  r->note = flu_svprintf(format, ap);
+  va_end(ap);
+
+  return r;
+}
+
+static size_t determine_reps(char *rx, size_t *reps)
+{
+  if (*rx == '?') { reps[0] = 0; reps[1] = 1; return 1; }
+  if (*rx == '*') { reps[0] = 0; reps[1] = 0; return 1; }
+  if (*rx == '+') { reps[0] = 1; reps[1] = 0; return 1; }
+
+  char *end = strchr(rx, '}'); if (end == NULL) return 0; // error
+
+  reps[0] = strtol(rx + 1, NULL, 10);
+
+  char *comma = strchr(rx, ',');
+
+  reps[1] = comma == NULL ? reps[0] : strtol(comma + 1, NULL, 10);
+  return end - rx;
+}
+
+static fabr_tree *rex_element(fabr_input *i, char *rx, size_t rxn)
+{
+  // maybe TODO
+
+  return NULL;
+}
+
 static fabr_tree *rex_sequence(fabr_input *i, char *rx, size_t rxn)
 {
-  // TODO
-
   printf("rex_sequence() >%s< %zu\n", rx, rxn);
 
   // a sequence is a sequence of
   //
-  // a character with a quantifier or not
-  // a range with a quantifier or not
-  // a group with a quantifier or not
+  // a string of characters without a quantifier  abcd* -> abc
+  // a character with a quantifier or not  d*
+  // a range with a quantifier or not  [a-b]+
+  // a group with a quantifier or not  (truc)?
 
-  //return NULL;
-  char *s = strndup(rx, rxn);
-  fabr_tree *r = fabr_str(NULL, i, s);
-  free(s);
+  //char *s = strndup(rx, rxn);
+  //fabr_tree *r = fabr_str(NULL, i, s);
+  //free(s);
+  //return r;
+
+  fabr_tree *r = fabr_tree_malloc(NULL, "rex_sequence", i);
+
+  fabr_tree *prev = NULL;
+  fabr_tree **next = &r->child;
+
+  char c = 'a';
+  char *crx = rx;
+  size_t crxn = rxn;
+
+  do
+  {
+    for (size_t j = 0; ; j++)
+    {
+      c = j >= crxn ? 0 : crx[j];
+
+      if (c == '\0')
+      {
+        *next = str(i, crx, j);
+        //*next = rex_element(i, crx, j);
+        prev = *next;
+        break;
+      }
+
+      if (c == '\\') { j++; continue; }
+
+      if (c == '[' || c == '(')
+      {
+        // TODO, parse based on what came previously
+      }
+
+      if (c == '?' || c == '*' || c == '+' || c == '{')
+      {
+        size_t reps[] = { 1, 1 };
+        size_t l = determine_reps(crx + j, reps);
+
+        if (l == 0)
+        {
+          *next = ferr(i, "quantifier not closed >%s<", crx + j);
+          prev = *next;
+          break;
+        }
+      }
+    }
+
+    if (prev->result != 1) break;
+    r->length += prev->length;
+
+  } while (c != 0);
+
+  if (prev->result != 1) r->length = 0;
+
   return r;
 }
 
@@ -612,13 +558,13 @@ static fabr_tree *rex_group(fabr_input *i, char *rx, size_t rxn)
 
     for (size_t j = 0, range = 0, groups = 0; ; j++)
     {
-      c = j == crxn ? 0 : crx[j];
+      c = j >= crxn ? 0 : crx[j];
 
       if (c == '\0')
       {
         *next = rex_sequence(i, crx, j);
         prev = *next;
-        next = &prev->sibling;
+        //next = &prev->sibling;
         break;
       }
 
