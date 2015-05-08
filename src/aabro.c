@@ -580,6 +580,12 @@ static fabr_tree *rex_sequence(fabr_input *i, char *rx, size_t rxn)
 
   printf("rex_sequence() >%s< %zu\n", rx, rxn);
 
+  // a sequence is a sequence of
+  //
+  // a character with a quantifier or not
+  // a range with a quantifier or not
+  // a group with a quantifier or not
+
   //return NULL;
   char *s = strndup(rx, rxn);
   fabr_tree *r = fabr_str(NULL, i, s);
@@ -637,9 +643,11 @@ static fabr_tree *rex_group(fabr_input *i, char *rx, size_t rxn)
       // else continue
     }
 
-    // TODO: break in case of successful prev
+    if (prev->result == 1) break;
 
   } while (c != 0);
+
+  if (prev) r->length = prev->length;
 
   return r;
 }

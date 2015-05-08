@@ -48,6 +48,13 @@ describe "fabr_rex()"
   }
 
   it "accepts \"ab|cd\" (success)"
+  {
+    i.string = "abdera";
+    t = fabr_rex("x", &i, "ab|cd");
+
+    ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
+      "[ \"x\", 1, 0, 2, null, \"rex\", [] ]");
+  }
 
   it "accepts \"[ab]\" (failure)"
   {
