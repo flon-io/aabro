@@ -466,6 +466,10 @@ static fabr_tree *rex_element(fabr_input *i, char *rx, size_t rxn)
 {
   // maybe TODO
 
+  // if it begins with a [ it's a range
+  // if it begins with a ( it's a group
+  // else it's a string
+
   return NULL;
 }
 
@@ -494,6 +498,9 @@ static fabr_tree *rex_sequence(fabr_input *i, char *rx, size_t rxn)
   char *crx = rx;
   size_t crxn = rxn;
 
+  // split by quantifier?  ab+[cd]*(ef)a?  no
+  // split by range / group... as jotted down above
+
   do
   {
     for (size_t j = 0; ; j++)
@@ -510,23 +517,33 @@ static fabr_tree *rex_sequence(fabr_input *i, char *rx, size_t rxn)
 
       if (c == '\\') { j++; continue; }
 
-      if (c == '[' || c == '(')
-      {
-        // TODO, parse based on what came previously
-      }
+      // if start of range
+      // if start of group
 
-      if (c == '?' || c == '*' || c == '+' || c == '{')
-      {
-        size_t reps[] = { 1, 1 };
-        size_t l = determine_reps(crx + j, reps);
+      // if end of range
+      // if end of group
+      // if quantifier
 
-        if (l == 0)
-        {
-          *next = ferr(i, "quantifier not closed >%s<", crx + j);
-          prev = *next;
-          break;
-        }
-      }
+//      if (c == '[' || c == '(')
+//      {
+//        // TODO parse based on what came previously, without quantifier
+//        // NO, nested group...
+//      }
+//
+//      if (c == '?' || c == '*' || c == '+' || c == '{')
+//      {
+//        // TODO parse based on what came previously, with quantifier
+//
+//        size_t reps[] = { 1, 1 };
+//        size_t l = determine_reps(crx + j, reps);
+//
+//        if (l == 0)
+//        {
+//          *next = ferr(i, "quantifier not closed >%s<", crx + j);
+//          prev = *next;
+//          break;
+//        }
+//      }
     }
 
     if (prev->result != 1) break;
