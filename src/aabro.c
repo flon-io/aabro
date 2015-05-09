@@ -366,9 +366,16 @@ fabr_tree *fabr_rep(
   return r;
 }
 
-static char char_at(char *rx, size_t rxn, size_t index)
+static char rx_at(char *rx, size_t rxn, size_t index)
 {
   return rxn > index ? rx[index] : 0;
+}
+
+static char *rx_chr(char *rx, size_t rxn, int c)
+{
+  char *r = strchr(rx, c);
+
+  return r - rx >= rxn ? NULL : r;
 }
 
 typedef fabr_tree *fabr_rex_parser(fabr_input *i, char *rx, size_t rxn);
@@ -377,16 +384,16 @@ static void rng_next(char *rx, size_t rxn, char *next)
 {
   size_t b_index = 1;
 
-  char a = char_at(rx, rxn, 0);
-  if (a == '\\') { a = char_at(rx, rxn, 1); b_index = 2; }
+  char a = rx_at(rx, rxn, 0);
+  if (a == '\\') { a = rx_at(rx, rxn, 1); b_index = 2; }
   if (a == '\0') { next[0] = 0; next[1] = 0; next[2] = 0; return; }
 
-  char b = char_at(rx, rxn, b_index);
-  char c = (b != '\0') ? char_at(rx, rxn, b_index + 1) : 'X'; // don't go over
+  char b = rx_at(rx, rxn, b_index);
+  char c = (b != '\0') ? rx_at(rx, rxn, b_index + 1) : 'X'; // don't go over
   if (b != '-' || c == '\0') { next[0] = 1; next[1] = a; next[2] = a; return; }
 
-  b = char_at(rx, rxn, ++b_index);
-  if (b == '\\') b = char_at(rx, rxn, ++b_index);
+  b = rx_at(rx, rxn, ++b_index);
+  if (b == '\\') b = rx_at(rx, rxn, ++b_index);
   next[0] = 2; next[1] = a; next[2] = b;
 }
 
@@ -446,21 +453,23 @@ static fabr_tree *ferr(fabr_input *i, char *parter, char *format, ...)
   return r;
 }
 
-static size_t determine_reps(char *rx, size_t rxn, size_t *reps)
+static size_t quantify(char *rx, size_t rxn, size_t *reps)
 {
-  //if (rxn < 1) return 0; // error
+  if (reps == NULL) reps = (size_t []){ 0, 0 };
 
-  if (*rx == '?') { reps[0] = 0; reps[1] = 1; return 1; }
-  if (*rx == '*') { reps[0] = 0; reps[1] = 0; return 1; }
-  if (*rx == '+') { reps[0] = 1; reps[1] = 0; return 1; }
+  char c = rx_at(rx, rxn, 0);
 
-  char *end = strchr(rx, '}'); if (end == NULL) return 0; // error
+  if (c == '?') { reps[0] = 0; reps[1] = 1; return 1; }
+  if (c == '*') { reps[0] = 0; reps[1] = 0; return 1; }
+  if (c == '+') { reps[0] = 1; reps[1] = 0; return 1; }
+
+  char *end = rx_chr(rx, rxn, '}'); if (end == NULL) return 0; // error
 
   //if (end - rx > rxn) return 0; // error
 
   reps[0] = strtol(rx + 1, NULL, 10);
 
-  char *comma = strchr(rx, ',');
+  char *comma = rx_chr(rx, rxn, ',');
 
   reps[1] = comma == NULL ? reps[0] : strtol(comma + 1, NULL, 10);
   return end - rx;
@@ -487,11 +496,6 @@ static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
   // a character with a quantifier or not  d*
   // a range with a quantifier or not  [a-b]+
   // a group with a quantifier or not  (truc)?
-
-  //char *s = strndup(rx, rxn);
-  //fabr_tree *r = fabr_str(NULL, i, s);
-  //free(s);
-  //return r;
 
   fabr_tree *r = fabr_tree_malloc(NULL, "rex_seq", i);
 
@@ -544,7 +548,7 @@ static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
 //        // TODO parse based on what came previously, with quantifier
 //
 //        size_t reps[] = { 1, 1 };
-//        size_t l = determine_reps(crx + j, xxx, reps);
+//        size_t l = quantify(crx + j, xxx, reps);
 //
 //        if (l == 0)
 //        {
