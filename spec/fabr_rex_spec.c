@@ -53,7 +53,27 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "ab|cd");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 1, 0, 2, null, \"rex\", [] ]");
+      "[ \"x\", 1, 0, 2, null, \"rex_alt\", [\n"
+      "  [ null, 1, 0, 2, null, \"rex_seq\", [\n"
+      "    [ null, 1, 0, 2, null, \"str\", [] ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
+
+  it "accepts \"ab|cd\" (success 2)"
+  {
+    i.string = "cdhulu";
+    t = fabr_rex("x", &i, "ab|cd");
+
+    ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
+      "[ \"x\", 1, 0, 2, null, \"rex_alt\", [\n"
+      "  [ null, 1, 0, 2, null, \"rex_seq\", [\n"
+      "    [ null, 0, 0, 0, null, \"str\", [] ]\n"
+      "  ] ],\n"
+      "  [ null, 1, 0, 2, null, \"rex_seq\", [\n"
+      "    [ null, 1, 0, 2, null, \"str\", [] ]\n"
+      "  ] ]\n"
+      "] ]");
   }
 
   it "accepts \"[ab]\" (failure)"

@@ -455,7 +455,7 @@ static fabr_tree *ferr(fabr_input *i, char *parter, char *format, ...)
 
 static size_t quantify(char *rx, size_t rxn, size_t *reps)
 {
-  if (reps == NULL) reps = (size_t []){ 0, 0 };
+  //if (reps == NULL) reps = (size_t []){ 0, 0 };
 
   char c = rx_at(rx, rxn, 0);
 
@@ -464,8 +464,6 @@ static size_t quantify(char *rx, size_t rxn, size_t *reps)
   if (c == '+') { reps[0] = 1; reps[1] = 0; return 1; }
 
   char *end = rx_chr(rx, rxn, '}'); if (end == NULL) return 0; // error
-
-  //if (end - rx > rxn) return 0; // error
 
   reps[0] = strtol(rx + 1, NULL, 10);
 
@@ -477,7 +475,8 @@ static size_t quantify(char *rx, size_t rxn, size_t *reps)
 
 static fabr_tree *rex_elt(fabr_input *i, char *rx, size_t rxn)
 {
-  // maybe TODO
+  //printf("rex_elt() >%s< %zu\n", rx, rxn);
+  printf("rex_elt() >%.*s< %zu\n", rxn, rx, rxn);
 
   // if it begins with a [ it's a range
   // if it begins with a ( it's a group
@@ -511,7 +510,7 @@ static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
 
   do
   {
-    for (size_t j = 0; ; j++)
+    for (size_t j = 0, range = 0, groups = 0; ; j++)
     {
       c = j >= crxn ? 0 : crx[j];
 
@@ -530,7 +529,7 @@ static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
       // if end of group
       // if quantifier
 
-      if (c == '[')
+      if (c == '[' && j > 0)
       {
         *next = rex_elt(i, crx, j); prev = *next;
         crx = crx + j; crxn = crxn - j;
