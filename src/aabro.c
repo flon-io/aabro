@@ -455,7 +455,7 @@ static fabr_tree *ferr(fabr_input *i, char *parter, char *format, ...)
 
 static size_t quantify(char *rx, size_t rxn, size_t *reps)
 {
-  //if (reps == NULL) reps = (size_t []){ 0, 0 };
+  if (reps == NULL) reps = (size_t []){ 0, 0 };
 
   char c = rx_at(rx, rxn, 0);
 
@@ -475,19 +475,21 @@ static size_t quantify(char *rx, size_t rxn, size_t *reps)
 
 static fabr_tree *rex_elt(fabr_input *i, char *rx, size_t rxn)
 {
-  //printf("rex_elt() >%s< %zu\n", rx, rxn);
-  printf("rex_elt() >%.*s< %zu\n", rxn, rx, rxn);
+  //printf("    rex_elt() >%s< %zu\n", rx, rxn);
+  printf("    rex_elt() >%.*s< %zu\n", rxn, rx, rxn);
 
   // if it begins with a [ it's a range
   // if it begins with a ( it's a group
   // else it's a string
+
+  // TODO deal with quantifier (suffix)
 
   return str(i, rx, rxn);
 }
 
 static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
 {
-  printf("rex_seq() >%s< %zu\n", rx, rxn);
+  printf("  rex_seq() >%s< %zu\n", rx, rxn);
 
   // a sequence is a sequence of
   //
@@ -504,9 +506,6 @@ static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
   char c = 'a';
   char *crx = rx;
   size_t crxn = rxn;
-
-  // split by quantifier?  ab+[cd]*(ef)a?  no
-  // split by range / group... as jotted down above
 
   do
   {
@@ -529,12 +528,26 @@ static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
       // if end of group
       // if quantifier
 
-      if (c == '[' && j > 0)
+      // abc+
+      size_t ql = j > 0 ? quantify(crx + j, crxn - j, NULL) : 0;
+      if (ql > 0)
       {
-        *next = rex_elt(i, crx, j); prev = *next;
-        crx = crx + j; crxn = crxn - j;
+        *next = rex_elt(i, crx, j - 1); // ab
+        prev = *next; next = &prev->sibling;
+        *next = rex_elt(i, crx + j - 1, 1 + ql); // c+
+        prev = *next; next = &prev->sibling;
+
+        crx = crx + j + ql; crxn = crxn - j - ql;
+
         break;
       }
+
+      //if (c == '[' && j > 0) // start of range
+      //{
+      //  *next = rex_elt(i, crx, j); prev = *next;
+      //  crx = crx + j; crxn = crxn - j;
+      //  break;
+      //}
 
 //      if (c == '[' || c == '(')
 //      {
@@ -563,7 +576,7 @@ static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
 
   } while (c != 0);
 
-  if (prev->result != 1) r->length = 0;
+  if (prev->result != 1) { r->result = prev->result; r->length = 0; }
 
   return r;
 }
@@ -609,8 +622,7 @@ static fabr_tree *rex_alt(fabr_input *i, char *rx, size_t rxn)
       if (c == '|')
       {
         *next = rex_seq(i, crx, j);
-        prev = *next;
-        next = &prev->sibling;
+        prev = *next; next = &prev->sibling;
         crx = crx + j + 1; crxn = crxn - j - 1;
         break;
       }
@@ -622,7 +634,10 @@ static fabr_tree *rex_alt(fabr_input *i, char *rx, size_t rxn)
 
   } while (c != 0);
 
-  if (prev) r->length = prev->length;
+  if (prev->result != 1)
+    r->result = prev->result;
+  else
+    r->length = prev->length;
 
   return r;
 }
