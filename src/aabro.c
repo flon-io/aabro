@@ -529,13 +529,21 @@ static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
   //
   // two passes
   //
-  // 1) ab[cd]+e*(fg|hi)?x --> ab [cd] + e * (fg|hi) ? x
+  // 1) ab[cd]+ef*(gh|ij)?k --> ab [cd] + e f * (gh|ij) ? k
   // 2) iterate the 1) list
   //
   // OR
   //
   // well, the one pass idea is not too bad...
   // but need a way to pass the computed quantifier info to rex_elt()
+
+  // AND if I only cared about quantifiers?
+  // NO, I have to care about transitions
+  //   ab[cd]+ef*(gh|ij)?k --> ab [cd] + e f * (gh|ij) ? k
+  // * start of range -> til end of range + quantifier
+  // * start of group -> til end of group + quantifier
+  // * [lonely] quantifier
+  // * end of rx
 
   do
   {
