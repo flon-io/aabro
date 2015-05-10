@@ -487,6 +487,24 @@ static fabr_tree *rex_elt(fabr_input *i, char *rx, size_t rxn)
   return str(i, rx, rxn);
 }
 
+//size_t z = find_range_end(crx + j, crxn - j):
+static find_range_end(char *rx, size_t rxn)
+{
+  for (size_t i = 1; i < rxn; i++)
+  {
+    char c = rx_at(rx, rxn, i);
+
+    if (c == '\0') break;
+    if (c == '\\') { i++; continue; }
+    if (c != ']') continue;
+
+    size_t ql = quantify(rx + i + 1, rxn - i - 1);
+    // TODO continue
+  }
+
+  return 0;
+}
+
 static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
 {
   printf("  rex_seq() >%s< %zu\n", rx, rxn);
@@ -507,9 +525,21 @@ static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
   char *crx = rx;
   size_t crxn = rxn;
 
+  // OR
+  //
+  // two passes
+  //
+  // 1) ab[cd]+e*(fg|hi)?x --> ab [cd] + e * (fg|hi) ? x
+  // 2) iterate the 1) list
+  //
+  // OR
+  //
+  // well, the one pass idea is not too bad...
+  // but need a way to pass the computed quantifier info to rex_elt()
+
   do
   {
-    for (size_t j = 0, range = 0, groups = 0; ; j++)
+    for (size_t j = 0; ; j++)
     {
       c = j >= crxn ? 0 : crx[j];
 
@@ -544,13 +574,22 @@ static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
       }
 
       // start of range
-      if (c == '[' && j > 0)
+      if (c == '[')
       {
-        *next = rex_elt(i, crx, j);
+        if (j > 0)
+        {
+          *next = rex_elt(i, crx, j);
+          prev = *next; next = &prev->sibling;
+        }
+
+        size_t z = find_range_end(crx + j, crxn - j):
+
+        if (z == 0) return ferr(i, "rex_seq", "range not closed >%s<", crx + j);
+
+        *next = rex_elt(i, crx + j, crx + j + z);
         prev = *next; next = &prev->sibling;
 
-        // TODO move to end of range and include quantifier...
-        crx = crx + j; crxn = crxn - j;
+        crx = crx + j + z; crxn = crxn - j - z;
 
         break;
       }
