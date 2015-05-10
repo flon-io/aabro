@@ -475,8 +475,8 @@ static size_t quantify(char *rx, size_t rxn, size_t *reps)
 
 static fabr_tree *rex_elt(fabr_input *i, char *rx, size_t rxn)
 {
-  //printf("    rex_elt() >%s< %zu\n", rx, rxn);
-  printf("    rex_elt() >%.*s< %zu\n", rxn, rx, rxn);
+  printf("    rex_elt() >%s< %zu\n", rx, rxn);
+  //printf("    rex_elt() >%.*s< %zu\n", rxn, rx, rxn);
 
   // if it begins with a [ it's a range
   // if it begins with a ( it's a group
@@ -529,11 +529,12 @@ static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
       // if quantifier
 
       // abc+
-      size_t ql = j > 0 ? quantify(crx + j, crxn - j, NULL) : 0;
+      size_t ql = quantify(crx + j, crxn - j, NULL);
       if (ql > 0)
       {
         *next = rex_elt(i, crx, j - 1); // ab
         prev = *next; next = &prev->sibling;
+
         *next = rex_elt(i, crx + j - 1, 1 + ql); // c+
         prev = *next; next = &prev->sibling;
 
@@ -542,12 +543,17 @@ static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
         break;
       }
 
-      //if (c == '[' && j > 0) // start of range
-      //{
-      //  *next = rex_elt(i, crx, j); prev = *next;
-      //  crx = crx + j; crxn = crxn - j;
-      //  break;
-      //}
+      // start of range
+      if (c == '[' && j > 0)
+      {
+        *next = rex_elt(i, crx, j);
+        prev = *next; next = &prev->sibling;
+
+        // TODO move to end of range and include quantifier...
+        crx = crx + j; crxn = crxn - j;
+
+        break;
+      }
 
 //      if (c == '[' || c == '(')
 //      {
