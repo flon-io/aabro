@@ -378,7 +378,7 @@ static char *rx_chr(char *rx, size_t rxn, int c)
   return r - rx >= rxn ? NULL : r;
 }
 
-typedef fabr_tree *fabr_rex_parser(fabr_input *i, char *rx, size_t rxn);
+//typedef fabr_tree *fabr_rex_parser(fabr_input *i, char *rx, size_t rxn);
 
 static void rng_next(char *rx, size_t rxn, char *next)
 {
@@ -487,23 +487,23 @@ static fabr_tree *rex_elt(fabr_input *i, char *rx, size_t rxn)
   return str(i, rx, rxn);
 }
 
-//size_t z = find_range_end(crx + j, crxn - j):
-static find_range_end(char *rx, size_t rxn)
-{
-  for (size_t i = 1; i < rxn; i++)
-  {
-    char c = rx_at(rx, rxn, i);
-
-    if (c == '\0') break;
-    if (c == '\\') { i++; continue; }
-    if (c != ']') continue;
-
-    size_t ql = quantify(rx + i + 1, rxn - i - 1);
-    // TODO continue
-  }
-
-  return 0;
-}
+//static size_t find_range_end(char *rx, size_t rxn)
+//{
+//  for (size_t i = 1; i < rxn; i++)
+//  {
+//    char c = rx_at(rx, rxn, i);
+//
+//    if (c == '\0') break;
+//    if (c == '\\') { i++; continue; }
+//    if (c != ']') continue;
+//
+//    size_t ql = quantify(rx + i + 1, rxn - i - 1, NULL);
+//
+//    return i + 1 + ql;
+//  }
+//
+//  return 0;
+//}
 
 static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
 {
@@ -545,93 +545,97 @@ static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
   // * [lonely] quantifier
   // * end of rx
 
-  do
+  while (1)
   {
-    for (size_t j = 0; ; j++)
-    {
-      c = j >= crxn ? 0 : crx[j];
+    size_t l = 0;
+    fabr_tree *t = rex_elt(i, rx, rxn, &l);
+    r->rexlen += t->rexlen;
 
-      if (c == '\0')
-      {
-        *next = rex_elt(i, crx, j); prev = *next;
-        break;
-      }
+    // TODO continue me
 
-      if (c == '\\') { j++; continue; }
+    break;
+  }
 
-      // if start of range
-      // if start of group
-
-      // if end of range
-      // if end of group
-      // if quantifier
-
-      // abc+
-      size_t ql = quantify(crx + j, crxn - j, NULL);
-      if (ql > 0)
-      {
-        *next = rex_elt(i, crx, j - 1); // ab
-        prev = *next; next = &prev->sibling;
-
-        *next = rex_elt(i, crx + j - 1, 1 + ql); // c+
-        prev = *next; next = &prev->sibling;
-
-        crx = crx + j + ql; crxn = crxn - j - ql;
-
-        break;
-      }
-
-      // start of range
-      if (c == '[')
-      {
-        if (j > 0)
-        {
-          *next = rex_elt(i, crx, j);
-          prev = *next; next = &prev->sibling;
-        }
-
-        size_t z = find_range_end(crx + j, crxn - j):
-
-        if (z == 0) return ferr(i, "rex_seq", "range not closed >%s<", crx + j);
-
-        *next = rex_elt(i, crx + j, crx + j + z);
-        prev = *next; next = &prev->sibling;
-
-        crx = crx + j + z; crxn = crxn - j - z;
-
-        break;
-      }
-
+//  do
+//  {
+//    for (size_t j = 0; ; j++)
+//    {
+//      c = j >= crxn ? 0 : crx[j];
+//
+//      if (c == '\0')
+//      {
+//        *next = rex_elt(i, crx, j); prev = *next;
+//        break;
+//      }
+//
+//      if (c == '\\') { j++; continue; }
+//
+//      // if start of range
+//      // if start of group
+//
+//      // if end of range
+//      // if end of group
+//      // if quantifier
+//
+//      // abc+
+//      size_t ql = quantify(crx + j, crxn - j, NULL);
+//      if (ql > 0)
+//      {
+//        *next = rex_elt(i, crx, j - 1); // ab
+//        prev = *next; next = &prev->sibling;
+//
+//        *next = rex_elt(i, crx + j - 1, 1 + ql); // c+
+//        prev = *next; next = &prev->sibling;
+//
+//        crx = crx + j + ql; crxn = crxn - j - ql;
+//
+//        break;
+//      }
+//
 //      if (c == '[' || c == '(')
 //      {
-//        // TODO parse based on what came previously, without quantifier
-//        // NO, nested group...
-//      }
+//        // parse what came before if j > 0
 //
-//      if (c == '?' || c == '*' || c == '+' || c == '{')
-//      {
-//        // TODO parse based on what came previously, with quantifier
-//
-//        size_t reps[] = { 1, 1 };
-//        size_t l = quantify(crx + j, xxx, reps);
-//
-//        if (l == 0)
+//        if (j > 0)
 //        {
-//          *next = ferr(i, "quantifier not closed >%s<", crx + j);
-//          prev = *next;
-//          break;
 //        }
+//        else
+//        {
+//        }
+//
+//        break;
 //      }
-    }
-
-    if (prev->result != 1) break;
-    r->length += prev->length;
-
-  } while (c != 0);
-
-  if (prev->result != 1) { r->result = prev->result; r->length = 0; }
-
-  return r;
+//
+////      if (c == '[' || c == '(')
+////      {
+////        // TODO parse based on what came previously, without quantifier
+////        // NO, nested group...
+////      }
+////
+////      if (c == '?' || c == '*' || c == '+' || c == '{')
+////      {
+////        // TODO parse based on what came previously, with quantifier
+////
+////        size_t reps[] = { 1, 1 };
+////        size_t l = quantify(crx + j, xxx, reps);
+////
+////        if (l == 0)
+////        {
+////          *next = ferr(i, "quantifier not closed >%s<", crx + j);
+////          prev = *next;
+////          break;
+////        }
+////      }
+//    }
+//
+//    if (prev->result != 1) break;
+//    r->length += prev->length;
+//
+//  } while (c != 0);
+//
+//  if (prev->result != 1) { r->result = prev->result; r->length = 0; }
+//
+//  return r;
 }
 
 static fabr_tree *rex_alt(fabr_input *i, char *rx, size_t rxn)
@@ -676,7 +680,8 @@ static fabr_tree *rex_alt(fabr_input *i, char *rx, size_t rxn)
       {
         *next = rex_seq(i, crx, j);
         prev = *next; next = &prev->sibling;
-        crx = crx + j + 1; crxn = crxn - j - 1;
+        //crx = crx + j + 1; crxn = crxn - j - 1;
+        crx += prev->rexlen; crxn -= prev->rexlen;
         break;
       }
 
