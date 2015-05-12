@@ -41,7 +41,6 @@ typedef struct fabr_tree {
   size_t length;
   char *note; // set in case of error
   char *parter; // "str-01" for example
-  size_t rexlen;
   struct fabr_tree *sibling;
   struct fabr_tree *child;
 } fabr_tree;

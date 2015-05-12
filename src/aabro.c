@@ -549,7 +549,7 @@ static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
   {
     size_t l = 0;
     fabr_tree *t = rex_elt(i, rx, rxn, &l);
-    r->rexlen += t->rexlen;
+    //r->rexlen += t->rexlen;
 
     // TODO continue me
 
@@ -680,8 +680,7 @@ static fabr_tree *rex_alt(fabr_input *i, char *rx, size_t rxn)
       {
         *next = rex_seq(i, crx, j);
         prev = *next; next = &prev->sibling;
-        //crx = crx + j + 1; crxn = crxn - j - 1;
-        crx += prev->rexlen; crxn -= prev->rexlen;
+        crx = crx + j + 1; crxn = crxn - j - 1;
         break;
       }
 
