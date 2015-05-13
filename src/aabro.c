@@ -543,6 +543,8 @@ static fabr_tree *rex_elt(fabr_input *i, char *rx, size_t rxn, size_t *rxl)
 
     printf("z%zu q%zu\n", z, q);
 
+    *rxl = z + 1 + q;
+
     if (q == 0) return rng(i, rx + 1, z - 1);
 
     // TODO

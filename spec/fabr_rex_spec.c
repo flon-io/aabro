@@ -120,6 +120,21 @@ describe "fabr_rex()"
       "] ]");
   }
 
+  it "accepts \"ab[cd]ef\" (success)"
+  {
+    i.string = "abcef";
+    t = fabr_rex("x", &i, "ab[cd]ef");
+
+    ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
+      "[ \"x\", 1, 0, 5, null, \"rex_alt\", [\n"
+      "  [ null, 1, 0, 5, null, \"rex_seq\", [\n"
+      "    [ null, 1, 0, 2, null, \"str\", [] ],\n"
+      "    [ null, 1, 2, 1, null, \"rng\", [] ],\n"
+      "    [ null, 1, 3, 2, null, \"str\", [] ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
+
   it "accepts \"[ab]cd\" (failure)"
   {
     i.string = "ccd";
