@@ -107,6 +107,18 @@ describe "fabr_rex()"
   }
 
   it "accepts \"ab[cd]\" (success)"
+  {
+    i.string = "abc";
+    t = fabr_rex("x", &i, "ab[cd]");
+
+    ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
+      "[ \"x\", 1, 0, 3, null, \"rex_alt\", [\n"
+      "  [ null, 1, 0, 3, null, \"rex_seq\", [\n"
+      "    [ null, 1, 0, 2, null, \"str\", [] ],\n"
+      "    [ null, 1, 2, 1, null, \"rng\", [] ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
 
   it "accepts \"[ab]cd\" (failure)"
   {
