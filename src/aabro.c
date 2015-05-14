@@ -380,7 +380,7 @@ static char *rx_chr(char *rx, size_t rxn, int c)
   return r - rx >= rxn ? NULL : r;
 }
 
-//typedef fabr_tree *fabr_rex_parser(fabr_input *i, char *rx, size_t rxn);
+typedef fabr_tree *fabr_rex_parser(fabr_input *i, char *rx, size_t rxn);
 
 static void rng_next(char *rx, size_t rxn, char *next)
 {
@@ -457,46 +457,80 @@ static fabr_tree *ferr(fabr_input *i, char *parter, char *format, ...)
   return r;
 }
 
-static size_t quantify(char *rx, size_t rxn, size_t *reps)
-{
-  if (reps == NULL) reps = (size_t []){ 0, 0 };
+//static size_t quantify(char *rx, size_t rxn, size_t *reps)
+//{
+//  if (reps == NULL) reps = (size_t []){ 0, 0 };
+//
+//  char c = rx_at(rx, rxn, 0);
+//
+//  if (c == '?') { reps[0] = 0; reps[1] = 1; return 1; }
+//  if (c == '*') { reps[0] = 0; reps[1] = 0; return 1; }
+//  if (c == '+') { reps[0] = 1; reps[1] = 0; return 1; }
+//
+//  char *end = rx_chr(rx, rxn, '}'); if (end == NULL) return 0; // error
+//
+//  reps[0] = strtol(rx + 1, NULL, 10);
+//
+//  char *comma = rx_chr(rx, rxn, ',');
+//
+//  reps[1] = comma == NULL ? reps[0] : strtol(comma + 1, NULL, 10);
+//  return end - rx;
+//}
 
+static ssize_t find_quantifier_end(char *rx, size_t rxn)
+{
   char c = rx_at(rx, rxn, 0);
 
-  if (c == '?') { reps[0] = 0; reps[1] = 1; return 1; }
-  if (c == '*') { reps[0] = 0; reps[1] = 0; return 1; }
-  if (c == '+') { reps[0] = 1; reps[1] = 0; return 1; }
+  if (c == '?' || c == '*' || c == '+') return 1;
+  if (c != '{') return 0;
 
-  char *end = rx_chr(rx, rxn, '}'); if (end == NULL) return 0; // error
+  for (size_t i = 1; ; i++)
+  {
+    c = rx_at(rx, rxn, i);
+    if (c == '}') return i;
+    if (c == ',' || c == ' ' || (c >= '0' && c <= '9')) continue;
+    break;
+  }
 
-  reps[0] = strtol(rx + 1, NULL, 10);
-
-  char *comma = rx_chr(rx, rxn, ',');
-
-  reps[1] = comma == NULL ? reps[0] : strtol(comma + 1, NULL, 10);
-  return end - rx;
+  return -1;
 }
 
 static size_t find_range_end(char *rx, size_t rxn)
 {
+  size_t r = 0;
+
   for (size_t i = 1; ; i++)
   {
     char c = rx_at(rx, rxn, i);
 
-    if (c == '\0') break;
+    if (c == '\0') return 0;
     if (c == '\\') { i++; continue; }
     if (c != ']') continue;
-
-    return i;
+    r = i; break;
   }
 
-  return 0;
+  //if ( ! is_quantifier(rx + r, rxn - r))
+  ssize_t l = find_quantifier_end(rx + r, rxn - r);
+
+  if (l < 0) return 0;
+
+  return r + l;
 }
 
 static size_t find_group_end(char *rx, size_t rxn)
 {
+  // TODO and include quantifier end
+
   return 0;
 }
+
+//static char is_quantifier(char *rx, size_t rxn)
+//{
+//  char c = rx_at(rx, rxn, 0);
+//
+//  if (c == '?' || char == '*' || char == '+' || char == '{') return c;
+//  return 0;
+//}
 
 static size_t find_quantifier(char *rx, size_t rxn)
 {
@@ -522,6 +556,14 @@ static size_t find_range_or_group_start(char *rx, size_t rxn)
     if (c == '[' || c == '(') return i;
   }
   return 0;
+}
+
+static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
+{
+  printf("      rex_rep() >%s< %zu\n", rx, rxn);
+
+  // TODO
+  return NULL;
 }
 
 static fabr_tree *rex_elt(fabr_input *i, char *rx, size_t rxn, size_t *rxl)
