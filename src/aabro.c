@@ -497,8 +497,6 @@ static ssize_t find_quantifier_end(char *rx, size_t rxn)
 
 static size_t find_range_end(char *rx, size_t rxn)
 {
-  size_t r = 0;
-
   for (size_t i = 1; ; i++)
   {
     char c = rx_at(rx, rxn, i);
@@ -506,15 +504,10 @@ static size_t find_range_end(char *rx, size_t rxn)
     if (c == '\0') return 0;
     if (c == '\\') { i++; continue; }
     if (c != ']') continue;
-    r = i; break;
+    return i;
   }
 
-  //if ( ! is_quantifier(rx + r, rxn - r))
-  ssize_t l = find_quantifier_end(rx + r, rxn - r);
-
-  if (l < 0) return 0;
-
-  return r + l;
+  return 0;
 }
 
 static size_t find_group_end(char *rx, size_t rxn)
@@ -558,77 +551,125 @@ static size_t find_range_or_group_start(char *rx, size_t rxn)
   return 0;
 }
 
-static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
+//static fabr_tree *rex_rep(
+//  fabr_input *i, char *rx, size_t rxn, size_t min, size_t max)
+//{
+//  printf("      rex_rep() >%s< %zu\n", rx, rxn);
+//
+//  // TODO
+//  return NULL;
+//}
+//
+//static fabr_tree *rex_elt(fabr_input *i, char *rx, size_t rxn)
+//{
+//  // determine repper
+//  // determine repped
+//  // call rex_rep
+//
+//  //printf("    rex_elt() i>%s< >%s< %zu\n", i->string, rx, rxn);
+//  printf("    rex_elt() >%s< %zu\n", rx, rxn);
+//
+//  // detect elt (and its quantifier)
+//
+//  char rc = *rx;
+//
+//  if (rc == '[')
+//  {
+//    size_t z = find_range_end(rx, rxn);
+//    if (z < 1) return ferr(i, "rex_elt", "range not closed >%s<%zu", rx, rxn);
+//
+//    size_t reps[] = { 0, 0 };
+//    size_t q = quantify(rx + z + 1, rxn - z -1, reps);
+//
+//    printf("z%zu q%zu\n", z, q);
+//
+//    *rxl = z + 1 + q;
+//
+//    if (q == 0) return rng(i, rx + 1, z - 1);
+//
+//    // TODO
+//  }
+//  else if (rc == '(')
+//  {
+//    size_t z = find_group_end(rx, rxn);
+//    // TODO
+//  }
+//  else
+//  {
+//    size_t q = find_quantifier(rx, rxn);
+//    size_t z = find_range_or_group_start(rx, rxn);
+//
+//    //printf("q%zu z%zu\n", q, z);
+//
+//    if (q == 0 && z == 0)
+//    {
+//      *rxl = rxn; return str(i, rx, rxn);
+//    }
+//    if ((q && z && q < z) || q)
+//    {
+//      if (q == 1 || (rc == '\\' && q == 2))
+//      {
+//        // char{quant
+//        // TODO
+//      }
+//      else
+//      {
+//        // str til char{quant
+//        // TODO
+//      }
+//    }
+//    if ((q && z && q > z) || z)
+//    {
+//      // parse str til z
+//      *rxl = z; return str(i, rx, z);
+//    }
+//  }
+//
+//  //return str(i, rx, rxn);
+//  return NULL;
+//}
+
+static fabr_tree *rex_elt(fabr_input *i, char *rx, size_t rxn)
 {
-  printf("      rex_rep() >%s< %zu\n", rx, rxn);
+  char c = rx_at(rx, rxn, 0);
 
-  // TODO
-  return NULL;
-}
+  fabr_rex_parser *p = NULL;
+  size_t z = 0;
 
-static fabr_tree *rex_elt(fabr_input *i, char *rx, size_t rxn, size_t *rxl)
-{
-  //printf("    rex_elt() i>%s< >%s< %zu\n", i->string, rx, rxn);
-  printf("    rex_elt() >%s< %zu\n", rx, rxn);
-
-  // detect elt (and its quantifier)
-
-  char rc = *rx;
-
-  if (rc == '[')
+  if (c == '[')
   {
-    size_t z = find_range_end(rx, rxn);
-    if (z < 1) return ferr(i, "rex_elt", "range not closed >%s<%zu", rx, rxn);
-
-    size_t reps[] = { 0, 0 };
-    size_t q = quantify(rx + z + 1, rxn - z -1, reps);
-
-    printf("z%zu q%zu\n", z, q);
-
-    *rxl = z + 1 + q;
-
-    if (q == 0) return rng(i, rx + 1, z - 1);
-
-    // TODO
+    p = rng;
+    z = find_range_end(rx, rxn);
+    if (z == 0) return ferr(i, "rex_elt", "range not closed >%s<%zu", rx, rxn);
   }
-  else if (rc == '(')
+  else if (c == '(')
   {
-    size_t z = find_group_end(rx, rxn);
-    // TODO
+    p = rex_alt;
+    z = find_group_end(rx, rxn);
+    if (z == 0) return ferr(i, "rex_elt", "group not closed >%s<%zu", rx, rxn);
   }
   else
   {
-    size_t q = find_quantifier(rx, rxn);
-    size_t z = find_range_or_group_start(rx, rxn);
-
-    //printf("q%zu z%zu\n", q, z);
-
-    if (q == 0 && z == 0)
-    {
-      *rxl = rxn; return str(i, rx, rxn);
-    }
-    if ((q && z && q < z) || q)
-    {
-      if (q == 1 || (rc == '\\' && q == 2))
-      {
-        // char{quant
-        // TODO
-      }
-      else
-      {
-        // str til char{quant
-        // TODO
-      }
-    }
-    if ((q && z && q > z) || z)
-    {
-      // parse str til z
-      *rxl = z; return str(i, rx, z);
-    }
+    p = str;
+    z = find_str_end(rx, rxn);
   }
 
-  //return str(i, rx, rxn);
-  return NULL;
+  size_t mm[] = { 0, 0 };
+  size_t mml = 0;
+
+  if (p == str && (z == 1 || (c == '\\' && z == 2))) // char{quant
+    quantify(rx + z, rxn - z, mm);
+  else if (p == str)
+    {} // no quantifier
+  else
+    quantify(rx + z, rxn - z, mm);
+
+  if (mml == 0) return p(i, rx, z);
+
+  while (1)
+  {
+    // TODO
+  }
 }
 
 static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
@@ -642,14 +683,13 @@ static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
 
   char *crx = rx;
   size_t crxn = rxn;
-  size_t l = 0;
 
   while (1)
   {
     if (*(i->string + i->offset) == '\0') break;
     if (rx_at(crx, crxn, 0) == '\0') break;
 
-    *next = rex_elt(i, crx, crxn, &l);
+    *next = rex_elt(i, crx, crxn);
     prev = *next;
     next = &(prev->sibling);
 
@@ -658,7 +698,7 @@ static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
     i->offset += prev->length;
     r->length += prev->length;
 
-    crx += l; crxn -= l;
+    crx += prev->rexlen; crxn -= prev->rexlen;
   }
 
   r->result = prev->result;
