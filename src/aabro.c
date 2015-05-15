@@ -404,9 +404,10 @@ static fabr_tree *rng(fabr_input *i, char *rx, size_t rxn)
   printf("rng() i>%s< >%s<%zu\n", i->string, rx, rxn);
 
   fabr_tree *r = fabr_tree_malloc(NULL, "rng", i);
+  r->rexlen = rxn;
 
   char c = (i->string + i->offset)[0];
-  char irc = rxn > 0 ? rx[0] : 0;
+  char irc = rx_at(rx, rxn, 0);
 
   if (irc == '$') { r->result = (c == '\0'); return r; }
   if (c == '\0') { r->result = 0; return r; }
@@ -457,25 +458,25 @@ static fabr_tree *ferr(fabr_input *i, char *parter, char *format, ...)
   return r;
 }
 
-//static size_t quantify(char *rx, size_t rxn, size_t *reps)
-//{
-//  if (reps == NULL) reps = (size_t []){ 0, 0 };
-//
-//  char c = rx_at(rx, rxn, 0);
-//
-//  if (c == '?') { reps[0] = 0; reps[1] = 1; return 1; }
-//  if (c == '*') { reps[0] = 0; reps[1] = 0; return 1; }
-//  if (c == '+') { reps[0] = 1; reps[1] = 0; return 1; }
-//
-//  char *end = rx_chr(rx, rxn, '}'); if (end == NULL) return 0; // error
-//
-//  reps[0] = strtol(rx + 1, NULL, 10);
-//
-//  char *comma = rx_chr(rx, rxn, ',');
-//
-//  reps[1] = comma == NULL ? reps[0] : strtol(comma + 1, NULL, 10);
-//  return end - rx;
-//}
+static size_t quantify(char *rx, size_t rxn, size_t *reps)
+{
+  if (reps == NULL) reps = (size_t []){ 0, 0 };
+
+  char c = rx_at(rx, rxn, 0);
+
+  if (c == '?') { reps[0] = 0; reps[1] = 1; return 1; }
+  if (c == '*') { reps[0] = 0; reps[1] = 0; return 1; }
+  if (c == '+') { reps[0] = 1; reps[1] = 0; return 1; }
+
+  char *end = rx_chr(rx, rxn, '}'); if (end == NULL) return 0; // error
+
+  reps[0] = strtol(rx + 1, NULL, 10);
+
+  char *comma = rx_chr(rx, rxn, ',');
+
+  reps[1] = comma == NULL ? reps[0] : strtol(comma + 1, NULL, 10);
+  return end - rx;
+}
 
 static ssize_t find_quantifier_end(char *rx, size_t rxn)
 {
@@ -517,14 +518,6 @@ static size_t find_group_end(char *rx, size_t rxn)
   return 0;
 }
 
-//static char is_quantifier(char *rx, size_t rxn)
-//{
-//  char c = rx_at(rx, rxn, 0);
-//
-//  if (c == '?' || char == '*' || char == '+' || char == '{') return c;
-//  return 0;
-//}
-
 static size_t find_quantifier(char *rx, size_t rxn)
 {
   for (size_t i = 1; ; i++)
@@ -551,83 +544,13 @@ static size_t find_range_or_group_start(char *rx, size_t rxn)
   return 0;
 }
 
-//static fabr_tree *rex_rep(
-//  fabr_input *i, char *rx, size_t rxn, size_t min, size_t max)
-//{
-//  printf("      rex_rep() >%s< %zu\n", rx, rxn);
-//
-//  // TODO
-//  return NULL;
-//}
-//
-//static fabr_tree *rex_elt(fabr_input *i, char *rx, size_t rxn)
-//{
-//  // determine repper
-//  // determine repped
-//  // call rex_rep
-//
-//  //printf("    rex_elt() i>%s< >%s< %zu\n", i->string, rx, rxn);
-//  printf("    rex_elt() >%s< %zu\n", rx, rxn);
-//
-//  // detect elt (and its quantifier)
-//
-//  char rc = *rx;
-//
-//  if (rc == '[')
-//  {
-//    size_t z = find_range_end(rx, rxn);
-//    if (z < 1) return ferr(i, "rex_elt", "range not closed >%s<%zu", rx, rxn);
-//
-//    size_t reps[] = { 0, 0 };
-//    size_t q = quantify(rx + z + 1, rxn - z -1, reps);
-//
-//    printf("z%zu q%zu\n", z, q);
-//
-//    *rxl = z + 1 + q;
-//
-//    if (q == 0) return rng(i, rx + 1, z - 1);
-//
-//    // TODO
-//  }
-//  else if (rc == '(')
-//  {
-//    size_t z = find_group_end(rx, rxn);
-//    // TODO
-//  }
-//  else
-//  {
-//    size_t q = find_quantifier(rx, rxn);
-//    size_t z = find_range_or_group_start(rx, rxn);
-//
-//    //printf("q%zu z%zu\n", q, z);
-//
-//    if (q == 0 && z == 0)
-//    {
-//      *rxl = rxn; return str(i, rx, rxn);
-//    }
-//    if ((q && z && q < z) || q)
-//    {
-//      if (q == 1 || (rc == '\\' && q == 2))
-//      {
-//        // char{quant
-//        // TODO
-//      }
-//      else
-//      {
-//        // str til char{quant
-//        // TODO
-//      }
-//    }
-//    if ((q && z && q > z) || z)
-//    {
-//      // parse str til z
-//      *rxl = z; return str(i, rx, z);
-//    }
-//  }
-//
-//  //return str(i, rx, rxn);
-//  return NULL;
-//}
+static size_t find_str_end(char *rx, size_t rxn)
+{
+  return 0;
+}
+
+static fabr_tree *rex_alt(fabr_input *i, char *rx, size_t rxn);
+  // forward declaration
 
 static fabr_tree *rex_elt(fabr_input *i, char *rx, size_t rxn)
 {
@@ -666,10 +589,35 @@ static fabr_tree *rex_elt(fabr_input *i, char *rx, size_t rxn)
 
   if (mml == 0) return p(i, rx, z);
 
+  // yes, the following code is a repetition of what comes in fabr_rep()
+
+  fabr_tree *r = fabr_tree_malloc(NULL, "rex_elt", i);
+  r->rexlen = z + mml;
+
+  fabr_tree **next = &r->child;
+  size_t count = 0;
+
   while (1)
   {
-    // TODO
+    if (*(i->string + i->offset) == 0) break; // EOS
+
+    fabr_tree *t = p(i, rx, z);
+    *next = t;
+
+    if (t->result == 0) { r->result = 0; break; }
+
+    i->offset += t->length;
+    r->length += t->length;
+
+    if (++count == mm[1]) break;
+
+    next = &(t->sibling);
   }
+
+  if (count < mm[0]) r->result = 0;
+  if (r->result != 1) r->length = 0;
+
+  return r;
 }
 
 static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
@@ -710,6 +658,7 @@ static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
 static fabr_tree *rex_alt(fabr_input *i, char *rx, size_t rxn)
 {
   fabr_tree *r = fabr_tree_malloc(NULL, "rex_alt", i);
+  r->rexlen = rxn;
 
   // TODO/WARNING: greedy, the wants to have the longest match...
 
