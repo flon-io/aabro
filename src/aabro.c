@@ -460,17 +460,16 @@ static fabr_tree *ferr(fabr_input *i, char *parter, char *format, ...)
   return r;
 }
 
-static size_t quantify(char *rx, size_t rxn, size_t *reps)
+static ssize_t quantify(char *rx, size_t rxn, size_t *reps)
 {
-  if (reps == NULL) reps = (size_t []){ 0, 0 };
-
   char c = rx_at(rx, rxn, 0);
 
   if (c == '?') { reps[0] = 0; reps[1] = 1; return 1; }
   if (c == '*') { reps[0] = 0; reps[1] = 0; return 1; }
   if (c == '+') { reps[0] = 1; reps[1] = 0; return 1; }
+  if (c != '{') return 0;
 
-  char *end = rx_chr(rx, rxn, '}'); if (end == NULL) return 0; // error
+  char *end = rx_chr(rx, rxn, '}'); if (end == NULL) return -1; // error
 
   reps[0] = strtol(rx + 1, NULL, 10);
 
@@ -552,11 +551,13 @@ static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
   }
 
   size_t mm[] = { 0, 0 };
-  size_t mml = quantify(rx + z + off, rxn - z - off, mm);
+  ssize_t mml = quantify(rx + z + off, rxn - z - off, mm);
 
   printf(
-    ">%s<%zu mml %zu mm[%zu, %zu]\n",
+    ">%s<%zu mml %zd mm[%zu, %zu]\n",
     rx + z + off, rxn - z - off, mml, mm[0], mm[1]);
+
+  if (mml == -1) return ferr(i, "rex_rep", "{} not closed >%s<%zu", rx, rxn);
 
   if (mml == 0)
   {

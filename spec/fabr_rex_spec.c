@@ -330,7 +330,30 @@ describe "fabr_rex()"
     }
 
     it "rejects \"a{1,2fda\""
+    {
+      i.string = "nada";
+      t = fabr_rex("x", &i, "a{1,2fda");
+
+      ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
+        "[ \"x\", -1, 0, 0, null, \"rex_alt\", 8, [\n"
+        "  [ null, -1, 0, 0, null, \"rex_seq\", 8, [\n"
+        "    [ null, -1, 0, 0, \"{} not closed >a{1,2fda<8\", \"rex_rep\", 0, [] ]\n"
+        "  ] ]\n"
+        "] ]");
+    }
+
     it "rejects \"a{1,2fda}nada\""
+    {
+      i.string = "nada";
+      t = fabr_rex("x", &i, "a{1,2fda}nada");
+
+      ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
+        "[ \"x\", -1, 0, 0, null, \"rex_alt\", 8, [\n"
+        "  [ null, -1, 0, 0, null, \"rex_seq\", 8, [\n"
+        "    [ null, -1, 0, 0, \"{} not closed >a{1,2fda<8\", \"rex_rep\", 0, [] ]\n"
+        "  ] ]\n"
+        "] ]");
+    }
   }
 }
 
