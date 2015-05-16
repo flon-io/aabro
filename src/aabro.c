@@ -469,14 +469,31 @@ static ssize_t quantify(char *rx, size_t rxn, size_t *reps)
   if (c == '+') { reps[0] = 1; reps[1] = 0; return 1; }
   if (c != '{') return 0;
 
-  char *end = rx_chr(rx, rxn, '}'); if (end == NULL) return -1; // error
+  // find the }
+
+  size_t z = 0;
+
+  for (size_t i = 1, comma = 0; ; i++) {
+
+    char cc = rx_at(rx, rxn, i);
+
+    if (cc == '\0') break;
+    if (cc == ',') comma++; if (comma > 1) break; else continue;
+    if (cc == '}') { z = i; break; }
+    if (cc < '0' || cc > '9') break;
+  }
+
+  if (z == 0) return -1; // error
+
+  // } found
 
   reps[0] = strtol(rx + 1, NULL, 10);
 
   char *comma = rx_chr(rx, rxn, ',');
 
   reps[1] = comma == NULL ? reps[0] : strtol(comma + 1, NULL, 10);
-  return end - rx;
+  //return end - rx;
+  return z;
 }
 
 static size_t find_range_end(char *rx, size_t rxn)
@@ -557,8 +574,10 @@ static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
     ">%s<%zu mml %zd mm[%zu, %zu]\n",
     rx + z + off, rxn - z - off, mml, mm[0], mm[1]);
 
-  if (mml == -1) return ferr(i, "rex_rep", "{} not closed >%s<%zu", rx, rxn);
-
+  if (mml == -1)
+  {
+    return ferr(i, "rex_rep", "invalid {min[,max]} >%s<%zu", rx, rxn);
+  }
   if (mml == 0)
   {
     fabr_tree *r = p(i, rx + off, z - off);

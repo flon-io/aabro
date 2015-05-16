@@ -337,7 +337,7 @@ describe "fabr_rex()"
       ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
         "[ \"x\", -1, 0, 0, null, \"rex_alt\", 8, [\n"
         "  [ null, -1, 0, 0, null, \"rex_seq\", 8, [\n"
-        "    [ null, -1, 0, 0, \"{} not closed >a{1,2fda<8\", \"rex_rep\", 0, [] ]\n"
+        "    [ null, -1, 0, 0, \"invalid {min[,max]} >a{1,2fda<8\", \"rex_rep\", 0, [] ]\n"
         "  ] ]\n"
         "] ]");
     }
@@ -348,9 +348,22 @@ describe "fabr_rex()"
       t = fabr_rex("x", &i, "a{1,2fda}nada");
 
       ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-        "[ \"x\", -1, 0, 0, null, \"rex_alt\", 8, [\n"
-        "  [ null, -1, 0, 0, null, \"rex_seq\", 8, [\n"
-        "    [ null, -1, 0, 0, \"{} not closed >a{1,2fda<8\", \"rex_rep\", 0, [] ]\n"
+        "[ \"x\", -1, 0, 0, null, \"rex_alt\", 13, [\n"
+        "  [ null, -1, 0, 0, null, \"rex_seq\", 13, [\n"
+        "    [ null, -1, 0, 0, \"invalid {min[,max]} >a{1,2fda}nada<13\", \"rex_rep\", 0, [] ]\n"
+        "  ] ]\n"
+        "] ]");
+    }
+
+    it "rejects \"a{1,2,3}nada\""
+    {
+      i.string = "nada";
+      t = fabr_rex("x", &i, "a{1,2,3}nada");
+
+      ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
+        "[ \"x\", -1, 0, 0, null, \"rex_alt\", 12, [\n"
+        "  [ null, -1, 0, 0, null, \"rex_seq\", 12, [\n"
+        "    [ null, -1, 0, 0, \"invalid {min[,max]} >a{1,2,3}nada<12\", \"rex_rep\", 0, [] ]\n"
         "  ] ]\n"
         "] ]");
     }
