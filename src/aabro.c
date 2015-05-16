@@ -556,7 +556,7 @@ static size_t find_str_end(char *rx, size_t rxn)
     if (c != '?' && c != '*' && c != '+' && c != '{') continue;
 
     if (i == 1) return i; // a*
-    if (i == 2 && rx_at(rx, rxn, i - 1) == '\\') return i; // \a*
+    if (i == 2 && rx_at(rx, rxn, 1) == '\\') return i; // \a*
     return i - 1; // abc* --> ab
   }
   return 0;
