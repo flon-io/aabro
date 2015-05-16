@@ -249,8 +249,10 @@ describe "fabr_rex()"
       t = fabr_rex("x", &i, "[ab");
 
       ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-        "[ \"x\", -1, 0, 0, null, \"rex\", [\n"
-        "  [ null, -1, 0, 0, \"range not closed >[ab<\", \"rng\", [] ]\n"
+        "[ \"x\", -1, 0, 0, null, \"rex_alt\", [\n"
+        "  [ null, -1, 0, 0, null, \"rex_seq\", [\n"
+        "    [ null, -1, 0, 0, \"range not closed >[ab<3\", \"rex_rep\", [] ]\n"
+        "  ] ]\n"
         "] ]");
     }
 

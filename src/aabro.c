@@ -451,6 +451,7 @@ fabr_tree *fabr_rng(
 static fabr_tree *ferr(fabr_input *i, char *parter, char *format, ...)
 {
   fabr_tree *r = fabr_tree_malloc(NULL, parter, i, 0);
+  r->result = -1;
 
   va_list ap; va_start(ap, format);
   r->note = flu_svprintf(format, ap);
@@ -479,24 +480,6 @@ static size_t quantify(char *rx, size_t rxn, size_t *reps)
   return end - rx;
 }
 
-//static ssize_t find_quantifier_end(char *rx, size_t rxn)
-//{
-//  char c = rx_at(rx, rxn, 0);
-//
-//  if (c == '?' || c == '*' || c == '+') return 1;
-//  if (c != '{') return 0;
-//
-//  for (size_t i = 1; ; i++)
-//  {
-//    c = rx_at(rx, rxn, i);
-//    if (c == '}') return i;
-//    if (c == ',' || c == ' ' || (c >= '0' && c <= '9')) continue;
-//    break;
-//  }
-//
-//  return -1;
-//}
-
 static size_t find_range_end(char *rx, size_t rxn)
 {
   for (size_t i = 1; ; i++)
@@ -518,19 +501,6 @@ static size_t find_group_end(char *rx, size_t rxn)
 
   return 0;
 }
-
-//static size_t find_quantifier(char *rx, size_t rxn)
-//{
-//  for (size_t i = 1; ; i++)
-//  {
-//    char c = rx_at(rx, rxn, i);
-//
-//    if (c == '\0') break;
-//    if (c == '\\') { i++; continue; }
-//    if (c == '?' || c == '*' || c == '+' || c == '{') return i;
-//  }
-//  return 0;
-//}
 
 static size_t find_str_end(char *rx, size_t rxn)
 {
@@ -597,7 +567,7 @@ static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
     fabr_tree *t = p(i, rx, z);
     *next = t;
 
-    if (t->result == 0) { r->result = 0; break; }
+    if (t->result != 1) { r->result = t->result; break; }
 
     i->offset += t->length;
     r->length += t->length;
