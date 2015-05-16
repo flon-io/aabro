@@ -546,13 +546,26 @@ static size_t find_range_or_group_start(char *rx, size_t rxn)
 
 static size_t find_str_end(char *rx, size_t rxn)
 {
+  for (size_t i = 1; ; i++)
+  {
+    char c = rx_at(rx, rxn, i);
+
+    if (c == '\0') return i;
+    if (c == '[' || c == '(') return i;
+    if (c == '\\') { i++; continue; }
+    if (c != '?' && c != '*' && c != '+' && c != '{') continue;
+
+    if (i == 1) return i; // a*
+    if (i == 2 && rx_at(rx, rxn, i - 1) == '\\') return i; // \a*
+    return i - 1; // abc* --> ab
+  }
   return 0;
 }
 
 static fabr_tree *rex_alt(fabr_input *i, char *rx, size_t rxn);
   // forward declaration
 
-static fabr_tree *rex_elt(fabr_input *i, char *rx, size_t rxn)
+static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
 {
   char c = rx_at(rx, rxn, 0);
 
@@ -563,13 +576,13 @@ static fabr_tree *rex_elt(fabr_input *i, char *rx, size_t rxn)
   {
     p = rng;
     z = find_range_end(rx, rxn);
-    if (z == 0) return ferr(i, "rex_elt", "range not closed >%s<%zu", rx, rxn);
+    if (z == 0) return ferr(i, "rex_rep", "range not closed >%s<%zu", rx, rxn);
   }
   else if (c == '(')
   {
     p = rex_alt;
     z = find_group_end(rx, rxn);
-    if (z == 0) return ferr(i, "rex_elt", "group not closed >%s<%zu", rx, rxn);
+    if (z == 0) return ferr(i, "rex_rep", "group not closed >%s<%zu", rx, rxn);
   }
   else
   {
@@ -578,20 +591,13 @@ static fabr_tree *rex_elt(fabr_input *i, char *rx, size_t rxn)
   }
 
   size_t mm[] = { 0, 0 };
-  size_t mml = 0;
-
-  if (p == str && (z == 1 || (c == '\\' && z == 2))) // char{quant
-    quantify(rx + z, rxn - z, mm);
-  else if (p == str)
-    {} // no quantifier
-  else
-    quantify(rx + z, rxn - z, mm);
+  size_t mml = quantify(rx + z, rxn - z, mm);
 
   if (mml == 0) return p(i, rx, z);
 
   // yes, the following code is a repetition of what comes in fabr_rep()
 
-  fabr_tree *r = fabr_tree_malloc(NULL, "rex_elt", i);
+  fabr_tree *r = fabr_tree_malloc(NULL, "rex_rep", i);
   r->rexlen = z + mml;
 
   fabr_tree **next = &r->child;
@@ -637,7 +643,7 @@ static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
     if (*(i->string + i->offset) == '\0') break;
     if (rx_at(crx, crxn, 0) == '\0') break;
 
-    *next = rex_elt(i, crx, crxn);
+    *next = rex_rep(i, crx, crxn);
     prev = *next;
     next = &(prev->sibling);
 
