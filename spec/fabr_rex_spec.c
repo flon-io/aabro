@@ -181,6 +181,18 @@ describe "fabr_rex()"
   }
 
   it "accepts \"[ab]cd\" (success)"
+  {
+    i.string = "acd";
+    t = fabr_rex("x", &i, "[ab]cd");
+
+    ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
+      "[ \"x\", 1, 0, 3, null, \"rex_alt\", 6, [\n"
+      "  [ null, 1, 0, 3, null, \"rex_seq\", 6, [\n"
+      "    [ null, 1, 0, 1, null, \"rng\", 4, [] ],\n"
+      "    [ null, 1, 1, 2, null, \"str\", 2, [] ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
 
   it "accepts \"ab[cd]+\" (failure)"
   {
@@ -197,6 +209,36 @@ describe "fabr_rex()"
   }
 
   it "accepts \"ab[cd]+\" (success)"
+  {
+    i.string = "abc";
+    t = fabr_rex("x", &i, "ab[cd]+");
+
+    ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
+      "[ \"x\", 1, 0, 3, null, \"rex_alt\", 7, [\n"
+      "  [ null, 1, 0, 3, null, \"rex_seq\", 7, [\n"
+      "    [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
+      "    [ null, 1, 2, 1, null, \"rng\", 4, [] ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
+
+  it "accepts \"ab[cd]+\" (success 2)"
+  {
+    i.string = "abcd";
+    t = fabr_rex("x", &i, "ab[cd]+");
+
+    ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
+      "[ \"x\", 1, 0, 3, null, \"rex_alt\", 7, [\n"
+      "  [ null, 1, 0, 3, null, \"rex_seq\", 7, [\n"
+      "    [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
+      "    [ null, 1, 2, 1, null, \"rng\", 4, [] ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
+
+  it "accepts \"ab[cd]*\" (failure)"
+  it "accepts \"ab[cd]*\" (success)"
+  it "accepts \"ab[cd]*\" (success 2)"
 
   it "accepts \"[ab]\" (failure)"
   {
@@ -238,6 +280,18 @@ describe "fabr_rex()"
   }
 
   it "accepts \"[ab]+\" (success)"
+  {
+    i.string = "aba";
+    t = fabr_rex("x", &i, "[ab]+");
+
+    ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
+      "[ \"x\", 0, 0, 0, null, \"rex_alt\", 5, [\n"
+      "  [ null, 0, 0, 0, null, \"rex_seq\", 5, [\n"
+      "    [ null, 0, 0, 0, null, \"rng\", 4, [] ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
+
   it "accepts \"[ab]?\" (failure)"
   it "accepts \"[ab]?\" (success)"
   it "accepts \"[ab]*\" (failure)"
