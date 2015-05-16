@@ -552,7 +552,11 @@ static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
   }
 
   size_t mm[] = { 0, 0 };
-  size_t mml = quantify(rx + z, rxn - z, mm);
+  size_t mml = quantify(rx + z + off, rxn - z - off, mm);
+
+  printf(
+    ">%s<%zu mml %zu mm[%zu, %zu]\n",
+    rx + z + off, rxn - z - off, mml, mm[0], mm[1]);
 
   if (mml == 0)
   {
@@ -572,7 +576,7 @@ static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
   {
     if (*(i->string + i->offset) == 0) break; // EOS
 
-    fabr_tree *t = p(i, rx, z);
+    fabr_tree *t = p(i, rx + off, z - off);
     *next = t;
 
     if (t->result != 1) { r->result = t->result; break; }
