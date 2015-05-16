@@ -191,7 +191,7 @@ describe "fabr_rex()"
       "[ \"x\", 0, 0, 0, null, \"rex_alt\", [\n"
       "  [ null, 0, 0, 0, null, \"rex_seq\", [\n"
       "    [ null, 1, 0, 2, null, \"str\", [] ],\n"
-      "    [ null, 0, 0, 0, null, \"rng\", [] ]\n"
+      "    [ null, 0, 2, 0, null, \"rng\", [] ]\n"
       "  ] ]\n"
       "] ]");
   }
@@ -204,8 +204,10 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "[ab]");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 0, 0, 0, null, \"rex\", [\n"
-      "  [ null, 0, 0, 0, null, \"rng\", [] ]\n"
+      "[ \"x\", 0, 0, 0, null, \"rex_alt\", [\n"
+      "  [ null, 0, 0, 0, null, \"rex_seq\", [\n"
+      "    [ null, 0, 0, 0, null, \"rng\", [] ]\n"
+      "  ] ]\n"
       "] ]");
   }
 
@@ -215,8 +217,10 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "[ab]");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 1, 0, 1, null, \"rex\", [\n"
-      "  [ null, 1, 0, 1, null, \"rng\", [] ]\n"
+      "[ \"x\", 1, 0, 1, null, \"rex_alt\", [\n"
+      "  [ null, 1, 0, 1, null, \"rex_seq\", [\n"
+      "    [ null, 1, 0, 1, null, \"rng\", [] ]\n"
+      "  ] ]\n"
       "] ]");
   }
 
@@ -226,8 +230,10 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "[ab]+");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 0, 0, 0, null, \"rex\", [\n"
-      "  [ null, 0, 0, 0, null, \"rng\", [] ]\n"
+      "[ \"x\", 0, 0, 0, null, \"rex_alt\", [\n"
+      "  [ null, 0, 0, 0, null, \"rex_seq\", [\n"
+      "    [ null, 0, 0, 0, null, \"rng\", [] ]\n"
+      "  ] ]\n"
       "] ]");
   }
 
