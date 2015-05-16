@@ -99,8 +99,8 @@ static void fabr_t_to_s(
   //
   flu_sbprintf(
     b,
-    "%s[ %s, %d, %d, %d, %s, \"%s\", ",
-    resultc, name, t->result, t->offset, t->length, note, t->parter);
+    "%s[ %s, %d, %d, %d, %s, \"%s\", %d, ",
+    resultc, name, t->result, t->offset, t->length, note, t->parter, t->rexlen);
   //
   if (t->name) free(name);
   if (t->note) free(note);

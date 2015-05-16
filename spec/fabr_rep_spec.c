@@ -31,8 +31,8 @@ describe "fabr_rep()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 0, 0, 0, null, \"rep\", [\n"
-      "  [ null, 0, 0, 0, null, \"str\", [] ]\n"
+      "[ \"x\", 0, 0, 0, null, \"rep\", 0, [\n"
+      "  [ null, 0, 0, 0, null, \"str\", 2, [] ]\n"
       "] ]");
   }
 
@@ -45,9 +45,9 @@ describe "fabr_rep()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 1, 0, 4, null, \"rep\", [\n"
-      "  [ null, 1, 0, 2, null, \"str\", [] ],\n"
-      "  [ null, 1, 2, 2, null, \"str\", [] ]\n"
+      "[ \"x\", 1, 0, 4, null, \"rep\", 0, [\n"
+      "  [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
+      "  [ null, 1, 2, 2, null, \"str\", 2, [] ]\n"
       "] ]");
   }
 
@@ -60,9 +60,9 @@ describe "fabr_rep()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 0, 0, 0, null, \"rep\", [\n"
-      "  [ null, 1, 0, 2, null, \"str\", [] ],\n"
-      "  [ null, 0, 2, 0, null, \"str\", [] ]\n"
+      "[ \"x\", 0, 0, 0, null, \"rep\", 0, [\n"
+      "  [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
+      "  [ null, 0, 2, 0, null, \"str\", 2, [] ]\n"
       "] ]");
   }
 
@@ -75,10 +75,10 @@ describe "fabr_rep()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 0, 0, 0, null, \"rep\", [\n"
-      "  [ null, 1, 0, 2, null, \"str\", [] ],\n"
-      "  [ null, 1, 2, 2, null, \"str\", [] ],\n"
-      "  [ null, 1, 4, 2, null, \"str\", [] ]\n"
+      "[ \"x\", 0, 0, 0, null, \"rep\", 0, [\n"
+      "  [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
+      "  [ null, 1, 2, 2, null, \"str\", 2, [] ],\n"
+      "  [ null, 1, 4, 2, null, \"str\", 2, [] ]\n"
       "] ]");
   }
 
@@ -91,10 +91,10 @@ describe "fabr_rep()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 1, 0, 6, null, \"rep\", [\n"
-      "  [ null, 1, 0, 2, null, \"str\", [] ],\n"
-      "  [ null, 1, 2, 2, null, \"str\", [] ],\n"
-      "  [ null, 1, 4, 2, null, \"str\", [] ]\n"
+      "[ \"x\", 1, 0, 6, null, \"rep\", 0, [\n"
+      "  [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
+      "  [ null, 1, 2, 2, null, \"str\", 2, [] ],\n"
+      "  [ null, 1, 4, 2, null, \"str\", 2, [] ]\n"
       "] ]");
   }
 }

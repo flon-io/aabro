@@ -28,7 +28,7 @@ describe "fabr_rng()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 0, 0, 0, null, \"rng\", [] ]");
+      "[ \"x\", 0, 0, 0, null, \"rng\", 3, [] ]");
   }
 
   it "accepts \"abc\" (success)"
@@ -39,7 +39,7 @@ describe "fabr_rng()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 1, 0, 1, null, \"rng\", [] ]");
+      "[ \"x\", 1, 0, 1, null, \"rng\", 3, [] ]");
   }
 
   it "accepts \"a-z\" (failure)"
@@ -50,7 +50,7 @@ describe "fabr_rng()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 0, 0, 0, null, \"rng\", [] ]");
+      "[ \"x\", 0, 0, 0, null, \"rng\", 3, [] ]");
   }
 
   it "accepts \"a-z\" (success)"
@@ -61,7 +61,7 @@ describe "fabr_rng()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 1, 0, 1, null, \"rng\", [] ]");
+      "[ \"x\", 1, 0, 1, null, \"rng\", 3, [] ]");
   }
 
   it "accepts \"a-z0-9X\" (failure)"
@@ -72,7 +72,7 @@ describe "fabr_rng()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 0, 0, 0, null, \"rng\", [] ]");
+      "[ \"x\", 0, 0, 0, null, \"rng\", 7, [] ]");
   }
 
   it "accepts \"a-z0-9X\" (success)"
@@ -83,7 +83,7 @@ describe "fabr_rng()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 1, 0, 1, null, \"rng\", [] ]");
+      "[ \"x\", 1, 0, 1, null, \"rng\", 7, [] ]");
   }
 
   it "accepts \"\\-\\[\" (failure)"
@@ -94,7 +94,7 @@ describe "fabr_rng()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 0, 0, 0, null, \"rng\", [] ]");
+      "[ \"x\", 0, 0, 0, null, \"rng\", 4, [] ]");
   }
 
   it "accepts \"\\-\\[\" (success)"
@@ -105,7 +105,7 @@ describe "fabr_rng()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 1, 0, 1, null, \"rng\", [] ]");
+      "[ \"x\", 1, 0, 1, null, \"rng\", 4, [] ]");
   }
 
   it "accepts \"\\-\\[\" (success 2)"
@@ -116,7 +116,7 @@ describe "fabr_rng()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 1, 0, 1, null, \"rng\", [] ]");
+      "[ \"x\", 1, 0, 1, null, \"rng\", 4, [] ]");
   }
 
   it "accepts \"\\--\\[\" (failure)"
@@ -127,7 +127,7 @@ describe "fabr_rng()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 0, 0, 0, null, \"rng\", [] ]");
+      "[ \"x\", 0, 0, 0, null, \"rng\", 5, [] ]");
   }
 
   it "accepts \"\\--\\[\" (success)"
@@ -138,7 +138,7 @@ describe "fabr_rng()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 1, 0, 1, null, \"rng\", [] ]");
+      "[ \"x\", 1, 0, 1, null, \"rng\", 5, [] ]");
   }
 
   it "accepts \"^a-z\" (failure)"
@@ -149,7 +149,7 @@ describe "fabr_rng()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 0, 0, 0, null, \"rng\", [] ]");
+      "[ \"x\", 0, 0, 0, null, \"rng\", 4, [] ]");
   }
 
   it "accepts \"^a-z\" (success)"
@@ -160,7 +160,7 @@ describe "fabr_rng()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 1, 0, 1, null, \"rng\", [] ]");
+      "[ \"x\", 1, 0, 1, null, \"rng\", 4, [] ]");
   }
 
   it "accepts \"\\^a-z\" (failure)"
@@ -171,7 +171,7 @@ describe "fabr_rng()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 0, 0, 0, null, \"rng\", [] ]");
+      "[ \"x\", 0, 0, 0, null, \"rng\", 5, [] ]");
   }
 
   it "accepts \"\\^a-z\" (success)"
@@ -182,7 +182,7 @@ describe "fabr_rng()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 1, 0, 1, null, \"rng\", [] ]");
+      "[ \"x\", 1, 0, 1, null, \"rng\", 5, [] ]");
   }
 
   it "accepts \"+-\" (failure)"
@@ -193,7 +193,7 @@ describe "fabr_rng()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 0, 0, 0, null, \"rng\", [] ]");
+      "[ \"x\", 0, 0, 0, null, \"rng\", 2, [] ]");
   }
 
   it "accepts \"+-\" (success)"
@@ -204,7 +204,7 @@ describe "fabr_rng()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 1, 0, 1, null, \"rng\", [] ]");
+      "[ \"x\", 1, 0, 1, null, \"rng\", 2, [] ]");
   }
 
   it "accepts \".\" (a dot on its own, any char except newline) (failure)"
@@ -215,7 +215,7 @@ describe "fabr_rng()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 0, 0, 0, null, \"rng\", [] ]");
+      "[ \"x\", 0, 0, 0, null, \"rng\", 1, [] ]");
   }
 
   it "accepts \".\" (a dot on its own, any char except newline) (success)"
@@ -226,7 +226,7 @@ describe "fabr_rng()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 1, 0, 1, null, \"rng\", [] ]");
+      "[ \"x\", 1, 0, 1, null, \"rng\", 1, [] ]");
   }
 
   it "accepts \"$\" (dollar on its own, the end of the input) (failure)"
@@ -237,7 +237,7 @@ describe "fabr_rng()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 0, 0, 0, null, \"rng\", [] ]");
+      "[ \"x\", 0, 0, 0, null, \"rng\", 1, [] ]");
   }
 
   it "accepts \"$\" (dollar on its own, the end of the input) (success)"
@@ -248,7 +248,7 @@ describe "fabr_rng()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 1, 0, 0, null, \"rng\", [] ]");
+      "[ \"x\", 1, 0, 0, null, \"rng\", 1, [] ]");
   }
 
   it "accepts \"\\\\\" (backslashing the backslash) (failure)"
@@ -259,7 +259,7 @@ describe "fabr_rng()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 0, 0, 0, null, \"rng\", [] ]");
+      "[ \"x\", 0, 0, 0, null, \"rng\", 2, [] ]");
   }
 
   it "accepts \"\\\\\" (backslashing the backslash) (success)"
@@ -270,7 +270,7 @@ describe "fabr_rng()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 1, 0, 1, null, \"rng\", [] ]");
+      "[ \"x\", 1, 0, 1, null, \"rng\", 2, [] ]");
   }
 }
 

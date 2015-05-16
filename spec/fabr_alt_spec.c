@@ -31,9 +31,9 @@ describe "fabr_alt()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 0, 0, 0, null, \"alt\", [\n"
-      "  [ null, 0, 0, 0, null, \"str\", [] ],\n"
-      "  [ null, 0, 0, 0, null, \"str\", [] ]\n"
+      "[ \"x\", 0, 0, 0, null, \"alt\", 0, [\n"
+      "  [ null, 0, 0, 0, null, \"str\", 2, [] ],\n"
+      "  [ null, 0, 0, 0, null, \"str\", 2, [] ]\n"
       "] ]");
   }
 
@@ -44,9 +44,9 @@ describe "fabr_alt()"
     char *s = fabr_tree_to_string(t, NULL, 0);
 
     ensure(s ===f ""
-      "[ \"x\", 1, 0, 2, null, \"alt\", [\n"
-      "  [ null, 0, 0, 0, null, \"str\", [] ],\n"
-      "  [ null, 1, 0, 2, null, \"str\", [] ]\n"
+      "[ \"x\", 1, 0, 2, null, \"alt\", 0, [\n"
+      "  [ null, 0, 0, 0, null, \"str\", 2, [] ],\n"
+      "  [ null, 1, 0, 2, null, \"str\", 2, [] ]\n"
       "] ]");
   }
 }
