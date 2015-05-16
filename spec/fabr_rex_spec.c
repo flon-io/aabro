@@ -100,12 +100,29 @@ describe "fabr_rex()"
       "[ \"x\", 0, 0, 0, null, \"rex_alt\", [\n"
       "  [ null, 0, 0, 0, null, \"rex_seq\", [\n"
       "    [ null, 1, 0, 2, null, \"str\", [] ],\n"
-      "    [ null, 0, 0, 0, null, \"str\", [] ]\n"
+      "    [ null, 0, 2, 0, null, \"rex_rep\", [\n"
+      "      [ null, 0, 2, 0, null, \"str\", [] ]\n"
+      "    ] ]\n"
       "  ] ]\n"
       "] ]");
   }
 
   it "accepts \"abc+\" (success)"
+  {
+    i.string = "abcc";
+    t = fabr_rex("x", &i, "abc+");
+
+    ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
+      "[ \"x\", 1, 0, 4, null, \"rex_alt\", [\n"
+      "  [ null, 1, 0, 4, null, \"rex_seq\", [\n"
+      "    [ null, 1, 0, 2, null, \"str\", [] ],\n"
+      "    [ null, 1, 2, 2, null, \"rex_rep\", [\n"
+      "      [ null, 1, 2, 1, null, \"str\", [] ],\n"
+      "      [ null, 1, 3, 1, null, \"str\", [] ]\n"
+      "    ] ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
 
   it "accepts \"ab[cd]\" (failure)"
   {
