@@ -267,7 +267,7 @@ fabr_tree *fabr_t_child(fabr_tree *t, size_t index)
 
 static fabr_tree *str(fabr_input *i, char *rx, size_t rxn)
 {
-  printf("str() i>%s< vs >%s<%zu\n", i->string, rx, rxn);
+  printf("str() i+o>%s< vs >%s<%zu\n", i->string + i->offset, rx, rxn);
 
   fabr_tree *r = fabr_tree_malloc(NULL, "str", i, rxn);
 
@@ -403,7 +403,7 @@ static void rng_next(char *rx, size_t rxn, char *next)
 
 static fabr_tree *rng(fabr_input *i, char *rx, size_t rxn)
 {
-  printf("rng() i>%s< >%s<%zu\n", i->string, rx, rxn);
+  printf("rng() i+o>%s< >%s<%zu\n", i->string + i->offset, rx, rxn);
 
   fabr_tree *r = fabr_tree_malloc(NULL, "rng", i, rxn);
 
@@ -529,18 +529,21 @@ static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
 
   fabr_rex_parser *p = NULL;
   size_t z = 0;
+  size_t off = 0;
 
   if (c == '[')
   {
     p = rng;
     z = find_range_end(rx, rxn);
     if (z == 0) return ferr(i, "rex_rep", "range not closed >%s<%zu", rx, rxn);
+    off = 1;
   }
   else if (c == '(')
   {
     p = rex_alt;
     z = find_group_end(rx, rxn);
     if (z == 0) return ferr(i, "rex_rep", "group not closed >%s<%zu", rx, rxn);
+    off = 1;
   }
   else
   {
@@ -551,11 +554,16 @@ static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
   size_t mm[] = { 0, 0 };
   size_t mml = quantify(rx + z, rxn - z, mm);
 
-  if (mml == 0) return p(i, rx, z);
+  if (mml == 0)
+  {
+    fabr_tree *r = p(i, rx + off, z - off);
+    r->rexlen = z + off + mml;
+    return r;
+  }
 
   // yes, the following code is a repetition of what comes in fabr_rep()
 
-  fabr_tree *r = fabr_tree_malloc(NULL, "rex_rep", i, z + mml);
+  fabr_tree *r = fabr_tree_malloc(NULL, "rex_rep", i, z + off + mml);
 
   fabr_tree **next = &r->child;
   size_t count = 0;
