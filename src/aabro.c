@@ -33,7 +33,8 @@
 #include "aabro.h"
 
 
-fabr_tree *fabr_tree_malloc(char *name, char *parter, fabr_input *i)
+fabr_tree *fabr_tree_malloc(
+  char *name, char *parter, fabr_input *i, size_t rexlen)
 {
   fabr_tree *t = calloc(1, sizeof(fabr_tree));
 
@@ -41,6 +42,7 @@ fabr_tree *fabr_tree_malloc(char *name, char *parter, fabr_input *i)
   t->result = 1;
   t->parter = parter;
   t->offset = i->offset;
+  t->rexlen = rexlen;
   t->length = 0;
   t->note = NULL;
   t->sibling = NULL;
@@ -267,7 +269,7 @@ static fabr_tree *str(fabr_input *i, char *rx, size_t rxn)
 {
   printf("str() i>%s< vs >%s<%zu\n", i->string, rx, rxn);
 
-  fabr_tree *r = fabr_tree_malloc(NULL, "str", i);
+  fabr_tree *r = fabr_tree_malloc(NULL, "str", i, rxn);
 
   if (strncmp(i->string + i->offset, rx, rxn) != 0)
     r->result = 0;
@@ -290,7 +292,7 @@ fabr_tree *fabr_str(
 fabr_tree *fabr_seq(
   char *name, fabr_input *i, fabr_parser *p, ...)
 {
-  fabr_tree *r = fabr_tree_malloc(name, "seq", i);
+  fabr_tree *r = fabr_tree_malloc(name, "seq", i, 0);
 
   fabr_tree **next = &r->child;
 
@@ -316,7 +318,7 @@ fabr_tree *fabr_seq(
 fabr_tree *fabr_alt(
   char *name, fabr_input *i, fabr_parser *p, ...)
 {
-  fabr_tree *r = fabr_tree_malloc(name, "alt", i);
+  fabr_tree *r = fabr_tree_malloc(name, "alt", i, 0);
   r->result = 0;
 
   fabr_tree **next = &r->child;
@@ -340,7 +342,7 @@ fabr_tree *fabr_alt(
 fabr_tree *fabr_rep(
   char *name, fabr_input *i, fabr_parser *p, size_t min, size_t max)
 {
-  fabr_tree *r = fabr_tree_malloc(name, "rep", i);
+  fabr_tree *r = fabr_tree_malloc(name, "rep", i, 0);
 
   fabr_tree **next = &r->child;
   size_t count = 0;
@@ -403,8 +405,7 @@ static fabr_tree *rng(fabr_input *i, char *rx, size_t rxn)
 {
   printf("rng() i>%s< >%s<%zu\n", i->string, rx, rxn);
 
-  fabr_tree *r = fabr_tree_malloc(NULL, "rng", i);
-  r->rexlen = rxn;
+  fabr_tree *r = fabr_tree_malloc(NULL, "rng", i, rxn);
 
   char c = (i->string + i->offset)[0];
   char irc = rx_at(rx, rxn, 0);
@@ -449,7 +450,7 @@ fabr_tree *fabr_rng(
 
 static fabr_tree *ferr(fabr_input *i, char *parter, char *format, ...)
 {
-  fabr_tree *r = fabr_tree_malloc(NULL, parter, i);
+  fabr_tree *r = fabr_tree_malloc(NULL, parter, i, 0);
 
   va_list ap; va_start(ap, format);
   r->note = flu_svprintf(format, ap);
@@ -478,23 +479,23 @@ static size_t quantify(char *rx, size_t rxn, size_t *reps)
   return end - rx;
 }
 
-static ssize_t find_quantifier_end(char *rx, size_t rxn)
-{
-  char c = rx_at(rx, rxn, 0);
-
-  if (c == '?' || c == '*' || c == '+') return 1;
-  if (c != '{') return 0;
-
-  for (size_t i = 1; ; i++)
-  {
-    c = rx_at(rx, rxn, i);
-    if (c == '}') return i;
-    if (c == ',' || c == ' ' || (c >= '0' && c <= '9')) continue;
-    break;
-  }
-
-  return -1;
-}
+//static ssize_t find_quantifier_end(char *rx, size_t rxn)
+//{
+//  char c = rx_at(rx, rxn, 0);
+//
+//  if (c == '?' || c == '*' || c == '+') return 1;
+//  if (c != '{') return 0;
+//
+//  for (size_t i = 1; ; i++)
+//  {
+//    c = rx_at(rx, rxn, i);
+//    if (c == '}') return i;
+//    if (c == ',' || c == ' ' || (c >= '0' && c <= '9')) continue;
+//    break;
+//  }
+//
+//  return -1;
+//}
 
 static size_t find_range_end(char *rx, size_t rxn)
 {
@@ -518,31 +519,18 @@ static size_t find_group_end(char *rx, size_t rxn)
   return 0;
 }
 
-static size_t find_quantifier(char *rx, size_t rxn)
-{
-  for (size_t i = 1; ; i++)
-  {
-    char c = rx_at(rx, rxn, i);
-
-    if (c == '\0') break;
-    if (c == '\\') { i++; continue; }
-    if (c == '?' || c == '*' || c == '+' || c == '{') return i;
-  }
-  return 0;
-}
-
-static size_t find_range_or_group_start(char *rx, size_t rxn)
-{
-  for (size_t i = 1; ; i++)
-  {
-    char c = rx_at(rx, rxn, i);
-
-    if (c == '\0') break;
-    if (c == '\\') { i++; continue; }
-    if (c == '[' || c == '(') return i;
-  }
-  return 0;
-}
+//static size_t find_quantifier(char *rx, size_t rxn)
+//{
+//  for (size_t i = 1; ; i++)
+//  {
+//    char c = rx_at(rx, rxn, i);
+//
+//    if (c == '\0') break;
+//    if (c == '\\') { i++; continue; }
+//    if (c == '?' || c == '*' || c == '+' || c == '{') return i;
+//  }
+//  return 0;
+//}
 
 static size_t find_str_end(char *rx, size_t rxn)
 {
@@ -597,8 +585,7 @@ static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
 
   // yes, the following code is a repetition of what comes in fabr_rep()
 
-  fabr_tree *r = fabr_tree_malloc(NULL, "rex_rep", i);
-  r->rexlen = z + mml;
+  fabr_tree *r = fabr_tree_malloc(NULL, "rex_rep", i, z + mml);
 
   fabr_tree **next = &r->child;
   size_t count = 0;
@@ -630,7 +617,7 @@ static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
 {
   printf("  rex_seq() >%s< %zu\n", rx, rxn);
 
-  fabr_tree *r = fabr_tree_malloc(NULL, "rex_seq", i);
+  fabr_tree *r = fabr_tree_malloc(NULL, "rex_seq", i, rxn);
 
   fabr_tree *prev = NULL;
   fabr_tree **next = &r->child;
@@ -663,8 +650,7 @@ static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
 
 static fabr_tree *rex_alt(fabr_input *i, char *rx, size_t rxn)
 {
-  fabr_tree *r = fabr_tree_malloc(NULL, "rex_alt", i);
-  r->rexlen = rxn;
+  fabr_tree *r = fabr_tree_malloc(NULL, "rex_alt", i, rxn);
 
   // TODO/WARNING: greedy, the wants to have the longest match...
 
