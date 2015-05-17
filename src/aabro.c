@@ -514,14 +514,19 @@ static size_t find_range_end(char *rx, size_t rxn)
 
 static size_t find_group_end(char *rx, size_t rxn)
 {
-  // TODO rework, eventually use the version found in rex_alt()
+  printf("fge >%s<%zu\n", rx, rxn);
 
-  for (size_t i = 1, groups = 0; ; i++)
+  for (size_t i = 1, range = 0, groups = 0; ; i++)
   {
     char c = rx_at(rx, rxn, i);
 
     if (c == '\0') break;
     if (c == '\\') { i++; continue; }
+
+    if (range == 0 && c == '[') { range = 1; continue; }
+    if (range == 1 && c == ']') { range = 0; continue; }
+    if (range == 1) continue;
+
     if (c == '(') { groups++; continue; }
     if (c != ')') continue;
     if (groups == 0) return i;
@@ -554,6 +559,8 @@ static fabr_tree *rex_alt(fabr_input *i, char *rx, size_t rxn);
 
 static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
 {
+  printf("    rex_rep >%s<%zu\n", rx, rxn);
+
   char c = rx_at(rx, rxn, 0);
 
   fabr_rex_parser *p = NULL;
@@ -631,7 +638,7 @@ static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
 
 static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
 {
-  printf("  rex_seq() >%s< %zu\n", rx, rxn);
+  printf("  rex_seq() >%s<%zu\n", rx, rxn);
 
   fabr_tree *r = fabr_tree_malloc(NULL, "rex_seq", i, rxn);
 
@@ -689,18 +696,17 @@ static fabr_tree *rex_alt(fabr_input *i, char *rx, size_t rxn)
       {
         *next = rex_seq(i, crx, j);
         prev = *next;
-        //next = &prev->sibling;
         break;
       }
 
       if (c == '\\') { i++; continue; }
 
-      if (c == '[') { range = 1; continue; }
-      if (range && c == ']') { range = 0; continue; }
-      if (range) continue;
+      if (range == 0 && c == '[') { range = 1; continue; }
+      if (range == 1 && c == ']') { range = 0; continue; }
+      if (range == 1) continue;
 
       if (c == '(') { groups++; continue; }
-      if (groups > 0 && c == ')') { groups--; continue; }
+      if (groups > 0) { if (c == ')') groups--; continue; }
 
       if (c == '|')
       {

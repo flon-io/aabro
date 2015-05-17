@@ -376,17 +376,42 @@ describe "fabr_rex()"
     i.string = "abgh";
     t = fabr_rex("x", &i, "ab(cd|ef)");
 
-    ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 0, 0, 0, null, \"rex_alt\", 5, [\n"
-      "  [ null, 1, 0, 0, null, \"rex_seq\", 5, [\n"
-      "    [ null, 1, 0, 0, null, \"rex_rep\", 5, [\n"
-      "      [ null, 0, 0, 0, null, \"rng\", 2, [] ]\n"
+    ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"x\", 0, 0, 0, null, \"rex_alt\", 9, [\n"
+      "  [ null, 0, 0, 0, null, \"rex_seq\", 9, [\n"
+      "    [ null, 1, 0, 2, null, \"str\", 2, \"ab\" ],\n"
+      "    [ null, 0, 2, 0, null, \"rex_alt\", 7, [\n"
+      "      [ null, 0, 2, 0, null, \"rex_seq\", 2, [\n"
+      "        [ null, 0, 2, 0, null, \"str\", 2, [] ]\n"
+      "      ] ],\n"
+      "      [ null, 0, 2, 0, null, \"rex_seq\", 2, [\n"
+      "        [ null, 0, 2, 0, null, \"str\", 2, [] ]\n"
+      "      ] ]\n"
       "    ] ]\n"
       "  ] ]\n"
       "] ]");
   }
 
   it "accepts \"ab(cd|ef)\" (success)"
+  {
+    i.string = "abef";
+    t = fabr_rex("x", &i, "ab(cd|ef)");
+
+    ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"x\", 1, 0, 4, null, \"rex_alt\", 9, [\n"
+      "  [ null, 1, 0, 4, null, \"rex_seq\", 9, [\n"
+      "    [ null, 1, 0, 2, null, \"str\", 2, \"ab\" ],\n"
+      "    [ null, 1, 2, 2, null, \"rex_alt\", 7, [\n"
+      "      [ null, 0, 2, 0, null, \"rex_seq\", 2, [\n"
+      "        [ null, 0, 2, 0, null, \"str\", 2, [] ]\n"
+      "      ] ],\n"
+      "      [ null, 1, 2, 2, null, \"rex_seq\", 2, [\n"
+      "        [ null, 1, 2, 2, null, \"str\", 2, \"ef\" ]\n"
+      "      ] ]\n"
+      "    ] ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
 
   context "errors"
   {
