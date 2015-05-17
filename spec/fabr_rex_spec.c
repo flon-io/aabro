@@ -264,10 +264,10 @@ describe "fabr_rex()"
     i.string = "ab";
     t = fabr_rex("x", &i, "ab[cd]*");
 
-    ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
+    ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
       "[ \"x\", 1, 0, 2, null, \"rex_alt\", 7, [\n"
       "  [ null, 1, 0, 2, null, \"rex_seq\", 7, [\n"
-      "    [ null, 1, 0, 2, null, \"str\", 2, [] ]\n"
+      "    [ null, 1, 0, 2, null, \"str\", 2, \"ab\" ]\n"
       "  ] ]\n"
       "] ]");
   }
