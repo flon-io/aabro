@@ -354,7 +354,8 @@ fabr_tree *fabr_rep(
     fabr_tree *t = p(i);
     *next = t;
 
-    if (t->result == 0) { r->result = 0; break; }
+    if (t->result == -1) { r->result = -1; break; }
+    if (t->result == 0) break;
 
     i->offset += t->length;
     r->length += t->length;
@@ -364,7 +365,7 @@ fabr_tree *fabr_rep(
     next = &(t->sibling);
   }
 
-  if (count < min) r->result = 0;
+  if (r->result == 1 && count < min) r->result = 0;
   if (r->result != 1) r->length = 0;
 
   return r;
@@ -599,7 +600,8 @@ static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
     fabr_tree *t = p(i, rx + off, z - off);
     *next = t;
 
-    if (t->result != 1) { r->result = t->result; break; }
+    if (t->result == -1) { r->result = -1; break; }
+    if (t->result == 0) break;
 
     i->offset += t->length;
     r->length += t->length;
@@ -609,7 +611,7 @@ static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
     next = &(t->sibling);
   }
 
-  if (count < mm[0]) r->result = 0;
+  if (r->result == 1 && count < mm[0]) r->result = 0;
   if (r->result != 1) r->length = 0;
 
   return r;

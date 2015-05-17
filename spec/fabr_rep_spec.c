@@ -20,7 +20,18 @@ describe "fabr_rep()"
     fabr_tree_free(t);
   }
 
-  fabr_tree *_t0(fabr_input *i) { return fabr_str(NULL, i, "t0"); }
+  static fabr_tree *_t0(fabr_input *i)
+  {
+    return fabr_str(NULL, i, "t0");
+  }
+
+  static fabr_tree *_terr(fabr_input *i)
+  {
+    fabr_tree *r = fabr_tree_malloc(NULL, "_terr", i, 0);
+    r->result = -1;
+
+    return r;
+  }
 
   it "returns a tree with result == 0 in case of failure"
   {
@@ -55,7 +66,7 @@ describe "fabr_rep()"
   {
     i.string = "t0t1t0";
 
-    t = fabr_rep("x", &i, _t0, 1, 2);
+    t = fabr_rep("x", &i, _t0, 2, 3);
 
     char *s = fabr_tree_to_string(t, NULL, 0);
 
@@ -95,6 +106,34 @@ describe "fabr_rep()"
       "  [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
       "  [ null, 1, 2, 2, null, \"str\", 2, [] ],\n"
       "  [ null, 1, 4, 2, null, \"str\", 2, [] ]\n"
+      "] ]");
+  }
+
+  it "succeeds when {0,1}"
+  {
+    i.string = "t1";
+
+    t = fabr_rep("x", &i, _t0, 0, 1);
+
+    char *s = fabr_tree_to_string(t, NULL, 0);
+
+    ensure(s ===f ""
+      "[ \"x\", 1, 0, 0, null, \"rep\", 0, [\n"
+      "  [ null, 0, 0, 0, null, \"str\", 2, [] ]\n"
+      "] ]");
+  }
+
+  it "propagates errors"
+  {
+    i.string = "t2";
+
+    t = fabr_rep("x", &i, _terr, 0, 1);
+
+    char *s = fabr_tree_to_string(t, NULL, 0);
+
+    ensure(s ===f ""
+      "[ \"x\", -1, 0, 0, null, \"rep\", 0, [\n"
+      "  [ null, -1, 0, 0, null, \"_terr\", 0, [] ]\n"
       "] ]");
   }
 }

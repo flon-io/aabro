@@ -249,10 +249,10 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "ab[cd]*");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 0, 0, 0, null, \"rex_alt\", 7, [\n"
-      "  [ null, 0, 0, 0, null, \"rex_seq\", 7, [\n"
+      "[ \"x\", 1, 0, 2, null, \"rex_alt\", 7, [\n"
+      "  [ null, 1, 0, 2, null, \"rex_seq\", 7, [\n"
       "    [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
-      "    [ null, 0, 2, 0, null, \"rex_rep\", 5, [\n"
+      "    [ null, 1, 2, 0, null, \"rex_rep\", 5, [\n"
       "      [ null, 0, 2, 0, null, \"rng\", 2, [] ]\n"
       "    ] ]\n"
       "  ] ]\n"
@@ -347,8 +347,23 @@ describe "fabr_rex()"
       "] ]");
   }
 
-  it "accepts \"[ab]?\" (failure)"
   it "accepts \"[ab]?\" (success)"
+  {
+    i.string = "c";
+    t = fabr_rex("x", &i, "[ab]?");
+
+    ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
+      "[ \"x\", 1, 0, 0, null, \"rex_alt\", 5, [\n"
+      "  [ null, 1, 0, 0, null, \"rex_seq\", 5, [\n"
+      "    [ null, 1, 0, 0, null, \"rex_rep\", 5, [\n"
+      "      [ null, 0, 0, 0, null, \"rng\", 2, [] ]\n"
+      "    ] ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
+
+  it "accepts \"[ab]?\" (success 2)"
+
   it "accepts \"[ab]*\" (failure)"
   it "accepts \"[ab]*\" (success)"
   it "accepts \"[ab]{2}\" (failure)"
