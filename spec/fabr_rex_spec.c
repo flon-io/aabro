@@ -371,6 +371,23 @@ describe "fabr_rex()"
   it "accepts \"[ab]{2,3}\" (failure)"
   it "accepts \"[ab]{2,3}\" (success)"
 
+  it "accepts \"ab(cd|ef)\" (failure)"
+  {
+    i.string = "abgh";
+    t = fabr_rex("x", &i, "ab(cd|ef)");
+
+    ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
+      "[ \"x\", 0, 0, 0, null, \"rex_alt\", 5, [\n"
+      "  [ null, 1, 0, 0, null, \"rex_seq\", 5, [\n"
+      "    [ null, 1, 0, 0, null, \"rex_rep\", 5, [\n"
+      "      [ null, 0, 0, 0, null, \"rng\", 2, [] ]\n"
+      "    ] ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
+
+  it "accepts \"ab(cd|ef)\" (success)"
+
   context "errors"
   {
     it "rejects \"[ab\""

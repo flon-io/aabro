@@ -514,7 +514,19 @@ static size_t find_range_end(char *rx, size_t rxn)
 
 static size_t find_group_end(char *rx, size_t rxn)
 {
-  // TODO and include quantifier end
+  // TODO rework, eventually use the version found in rex_alt()
+
+  for (size_t i = 1, groups = 0; ; i++)
+  {
+    char c = rx_at(rx, rxn, i);
+
+    if (c == '\0') break;
+    if (c == '\\') { i++; continue; }
+    if (c == '(') { groups++; continue; }
+    if (c != ')') continue;
+    if (groups == 0) return i;
+    groups--;
+  }
 
   return 0;
 }
