@@ -244,8 +244,50 @@ describe "fabr_rex()"
   }
 
   it "accepts \"ab[cd]*\" (failure)"
+  {
+    i.string = "abe";
+    t = fabr_rex("x", &i, "ab[cd]*");
+
+    ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
+      "[ \"x\", 0, 0, 0, null, \"rex_alt\", 7, [\n"
+      "  [ null, 0, 0, 0, null, \"rex_seq\", 7, [\n"
+      "    [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
+      "    [ null, 0, 2, 0, null, \"rex_rep\", 5, [\n"
+      "      [ null, 0, 2, 0, null, \"rng\", 2, [] ]\n"
+      "    ] ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
+
   it "accepts \"ab[cd]*\" (success)"
+  {
+    i.string = "ab";
+    t = fabr_rex("x", &i, "ab[cd]*");
+
+    ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
+      "[ \"x\", 1, 0, 2, null, \"rex_alt\", 7, [\n"
+      "  [ null, 1, 0, 2, null, \"rex_seq\", 7, [\n"
+      "    [ null, 1, 0, 2, null, \"str\", 2, [] ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
+
   it "accepts \"ab[cd]*\" (success 2)"
+  {
+    i.string = "abcd";
+    t = fabr_rex("x", &i, "ab[cd]*");
+
+    ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
+      "[ \"x\", 1, 0, 4, null, \"rex_alt\", 7, [\n"
+      "  [ null, 1, 0, 4, null, \"rex_seq\", 7, [\n"
+      "    [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
+      "    [ null, 1, 2, 2, null, \"rex_rep\", 5, [\n"
+      "      [ null, 1, 2, 1, null, \"rng\", 2, [] ],\n"
+      "      [ null, 1, 3, 1, null, \"rng\", 2, [] ]\n"
+      "    ] ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
 
   it "accepts \"[ab]\" (failure)"
   {
