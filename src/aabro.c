@@ -269,7 +269,7 @@ static size_t mm = 0;
 
 static fabr_tree *str(fabr_input *i, char *rx, size_t rxn)
 {
-  printf("str() i+o>%s< vs >%s<%zu\n", i->string + i->offset, rx, rxn);
+  printf("        str() i+o>%s< vs >%s<%zu\n", i->string + i->offset, rx, rxn);
 
   fabr_tree *r = fabr_tree_malloc(NULL, "str", i, rxn);
 
@@ -406,7 +406,7 @@ static void rng_next(char *rx, size_t rxn, char *next)
 
 static fabr_tree *rng(fabr_input *i, char *rx, size_t rxn)
 {
-  printf("rng() i+o>%s< >%s<%zu\n", i->string + i->offset, rx, rxn);
+  printf("        rng() i+o>%s< >%s<%zu\n", i->string + i->offset, rx, rxn);
 
   fabr_tree *r = fabr_tree_malloc(NULL, "rng", i, rxn);
 
@@ -660,7 +660,9 @@ static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
     prev = *next;
     next = &(prev->sibling);
 
-    //printf("    prev r%d rl%zu\n", prev->result, prev->rexlen);
+    printf(
+      "    %zu prev r%d l%zu rl%zu\n",
+      m, prev->result, prev->length, prev->rexlen);
 
     if (prev->result != 1) break;
 
@@ -668,6 +670,10 @@ static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
     r->length += prev->length;
 
     crx += prev->rexlen; crxn -= prev->rexlen;
+
+    printf(
+      "    %zu post i+o>%s< crx>%s<%zu\n",
+      m, i->string + i->offset, crx, crxn);
   }
 
   r->result = prev->result;
@@ -689,11 +695,11 @@ static fabr_tree *rex_alt(fabr_input *i, char *rx, size_t rxn)
   char *crx = rx;
   size_t crxn = rxn;
 
-  size_t m = mm++;
+  size_t m = mm++; size_t n = 0;
 
   do
   {
-    printf("* %zu rex_alt() >%s< %zu c%i\n", m, crx, crxn, c);
+    printf("* %zu.%zu rex_alt() >%s< %zu c%i\n", m, n++, crx, crxn, c);
 
     for (size_t j = 0, range = 0, groups = 0; ; j++)
     {
