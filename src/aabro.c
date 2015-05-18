@@ -689,9 +689,11 @@ static fabr_tree *rex_alt(fabr_input *i, char *rx, size_t rxn)
   char *crx = rx;
   size_t crxn = rxn;
 
+  size_t m = mm++;
+
   do
   {
-    size_t m = mm++; printf("* %zu rex_alt() >%s< %zu c%i\n", m, crx, crxn, c);
+    printf("* %zu rex_alt() >%s< %zu c%i\n", m, crx, crxn, c);
 
     for (size_t j = 0, range = 0, groups = 0; ; j++)
     {
