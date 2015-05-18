@@ -265,6 +265,8 @@ fabr_tree *fabr_t_child(fabr_tree *t, size_t index)
 //
 // parters (partial parsers)
 
+static size_t mm = 0;
+
 static fabr_tree *str(fabr_input *i, char *rx, size_t rxn)
 {
   printf("str() i+o>%s< vs >%s<%zu\n", i->string + i->offset, rx, rxn);
@@ -557,7 +559,7 @@ static fabr_tree *rex_alt(fabr_input *i, char *rx, size_t rxn);
 
 static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
 {
-  printf("    * rex_rep() >%s<%zu\n", rx, rxn);
+  size_t m = mm++; printf("    * %zu rex_rep() >%s<%zu\n", m, rx, rxn);
 
   char c = rx_at(rx, rxn, 0);
 
@@ -569,7 +571,7 @@ static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
   {
     p = rng;
     z = find_range_end(rx, rxn);
-    printf("      fre >%s<%zu --> %zu\n", rx, rxn, z);
+    printf("      %zu fre >%s<%zu --> %zu\n", m, rx, rxn, z);
     if (z == 0) return ferr(i, "rex_rep", "range not closed >%s<%zu", rx, rxn);
     off = 1;
   }
@@ -577,7 +579,7 @@ static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
   {
     p = rex_alt;
     z = find_group_end(rx, rxn);
-    printf("      fge >%s<%zu --> %zu\n", rx, rxn, z);
+    printf("      %zu fge >%s<%zu --> %zu\n", m, rx, rxn, z);
     if (z == 0) return ferr(i, "rex_rep", "group not closed >%s<%zu", rx, rxn);
     off = 1;
   }
@@ -585,15 +587,15 @@ static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
   {
     p = str;
     z = find_str_end(rx, rxn);
-    printf("      fse >%s<%zu --> %zu\n", rx, rxn, z);
+    printf("      %zu fse >%s<%zu --> %zu\n", m, rx, rxn, z);
   }
 
   size_t mm[] = { 0, 0 };
   ssize_t mml = quantify(rx + z + off, rxn - z - off, mm);
 
   printf(
-    "      qtf >%s<%zu mml %zd mm[%zu, %zu]\n",
-    rx + z + off, rxn - z - off, mml, mm[0], mm[1]);
+    "      %zu qtf >%s<%zu mml %zd mm[%zu, %zu]\n",
+    m, rx + z + off, rxn - z - off, mml, mm[0], mm[1]);
 
   if (mml == -1)
   {
@@ -639,7 +641,7 @@ static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
 
 static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
 {
-  printf("  * rex_seq() >%s<%zu\n", rx, rxn);
+  size_t m = mm++; printf("  * %zu rex_seq() >%s<%zu\n", m, rx, rxn);
 
   fabr_tree *r = fabr_tree_malloc(NULL, "rex_seq", i, rxn);
 
@@ -689,7 +691,7 @@ static fabr_tree *rex_alt(fabr_input *i, char *rx, size_t rxn)
 
   do
   {
-    printf("* rex_alt() >%s< %zu c%i\n", crx, crxn, c);
+    size_t m = mm++; printf("* %zu rex_alt() >%s< %zu c%i\n", m, crx, crxn, c);
 
     for (size_t j = 0, range = 0, groups = 0; ; j++)
     {
