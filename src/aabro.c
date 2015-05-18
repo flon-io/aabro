@@ -274,9 +274,14 @@ static fabr_tree *str(fabr_input *i, char *rx, size_t rxn)
   fabr_tree *r = fabr_tree_malloc(NULL, "str", i, rxn);
 
   if (strncmp(i->string + i->offset, rx, rxn) != 0)
+  {
     r->result = 0;
+  }
   else
+  {
+    i->offset += rxn;
     r->length = rxn;
+  }
 
   return r;
 }
@@ -307,7 +312,6 @@ fabr_tree *fabr_seq(
     if (t->result != 1) { r->result = 0; r->length = 0; break; }
 
     r->length += t->length;
-    i->offset += t->length;
 
     p = va_arg(ap, fabr_parser *); if (p == NULL) break;
     next = &(t->sibling);
@@ -359,7 +363,7 @@ fabr_tree *fabr_rep(
     if (t->result == -1) { r->result = -1; break; }
     if (t->result == 0) break;
 
-    i->offset += t->length;
+    //i->offset += t->length;
     r->length += t->length;
 
     if (++count == max) break;
@@ -436,7 +440,12 @@ static fabr_tree *rng(fabr_input *i, char *rx, size_t rxn)
   }
 
   if (not) r->result = ( ! r->result);
-  r->length = r->result ? 1 : 0;
+
+  if (r->result == 1)
+  {
+    r->length = 1;
+    i->offset += 1;
+  }
 
   return r;
 }
@@ -495,7 +504,6 @@ static ssize_t quantify(char *rx, size_t rxn, size_t *reps)
   char *comma = rx_chr(rx, rxn, ',');
 
   reps[1] = comma == NULL ? reps[0] : strtol(comma + 1, NULL, 10);
-  //return end - rx;
   return z;
 }
 
@@ -625,7 +633,6 @@ static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
     if (t->result == -1) { r->result = -1; break; }
     if (t->result == 0) break;
 
-    i->offset += t->length;
     r->length += t->length;
 
     if (++count == mm[1]) break;
@@ -660,20 +667,19 @@ static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
     prev = *next;
     next = &(prev->sibling);
 
-    printf(
-      "    %zu prev %s r%d l%zu rl%zu\n",
-      m, prev->parter, prev->result, prev->length, prev->rexlen);
+    //printf(
+    //  "    %zu prev %s r%d l%zu rl%zu\n",
+    //  m, prev->parter, prev->result, prev->length, prev->rexlen);
 
     if (prev->result != 1) break;
 
-    i->offset += prev->length;
     r->length += prev->length;
 
     crx += prev->rexlen; crxn -= prev->rexlen;
 
-    printf(
-      "    %zu post i+o>%s< crx>%s<%zu\n",
-      m, i->string + i->offset, crx, crxn);
+    //printf(
+    //  "    %zu post i+o>%s< crx>%s<%zu\n",
+    //  m, i->string + i->offset, crx, crxn);
   }
 
   r->result = prev->result;
