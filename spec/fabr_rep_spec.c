@@ -27,8 +27,11 @@ describe "fabr_rep()"
 
   static fabr_tree *_terr(fabr_input *i)
   {
-    fabr_tree *r = fabr_tree_malloc(NULL, "_terr", i, 0);
+    //fabr_tree *r = fabr_tree_malloc(NULL, "_terr", i, 0);
+    fabr_tree *r = calloc(1, sizeof(fabr_tree));
     r->result = -1;
+    r->parter = "_terr";
+    r->offset = i->offset;
 
     return r;
   }
