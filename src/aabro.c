@@ -661,8 +661,8 @@ static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
     next = &(prev->sibling);
 
     printf(
-      "    %zu prev r%d l%zu rl%zu\n",
-      m, prev->result, prev->length, prev->rexlen);
+      "    %zu prev %s r%d l%zu rl%zu\n",
+      m, prev->parter, prev->result, prev->length, prev->rexlen);
 
     if (prev->result != 1) break;
 
