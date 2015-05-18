@@ -760,3 +760,9 @@ fabr_tree *fabr_rex(
   return r;
 }
 
+fabr_tree *fabr_jseq(
+  char *name, fabr_input *i, fabr_parser *eltp, fabr_parser *sepp)
+{
+  return NULL;
+}
+

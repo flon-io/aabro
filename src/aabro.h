@@ -157,6 +157,9 @@ fabr_tree *fabr_rng(
 fabr_tree *fabr_rex(
   char *name, fabr_input *i, char *rex);
 
+fabr_tree *fabr_jseq(
+  char *name, fabr_input *i, fabr_parser *eltp, fabr_parser *sepp);
+
 
 //
 // helpers

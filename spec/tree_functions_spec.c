@@ -31,36 +31,38 @@ context "tree functions"
 //    return t->name && strcmp(t->name, "value") == 0;
 //  }
 
-//  static fabr_tree *_number(fabr_input *i)
-//  {
-//    return fabr_rex("number", i, "-?[0-9]+(\\.[0-9]+)?");
-//  }
-//  static fabr_tree *_string(fabr_input *i)
-//  {
-//    return fabr_rex(
-//      "string", i,
-//      "\"("
-//        "\\\\[\"\\/\\\\bfnrt]" "|"
-//        "\\\\u[0-9a-fA-F]{4}" "|"
-//        "[^\"\\\\]"
-//      ")*\"");
-//  }
-//  //static fabr_tree *_comma(fabr_input *i)
-//  //{
-//  //  return fabr_str(NULL, i, ",");
-//  //}
-//  //static fabr_tree *_values(fabr_input *i)
-//  //{
-//  //  return fabr_jseq("values", i, _value, _comma);
-//  //}
-//  static fabr_tree *_array(fabr_input *i)
-//  {
-//    return fabr_enc("array", i, "[", _value, ",", "]");
-//  }
-//  static fabr_tree *_value(fabr_input *i)
-//  {
-//    return fabr_alt("value", i, _number, _array, _string, NULL);
-//  }
+  static fabr_tree *_comma(fabr_input *i) { return fabr_str(NULL, i, ","); }
+  static fabr_tree *_osb(fabr_input *i) { return fabr_str(NULL, i, "["); }
+  static fabr_tree *_csb(fabr_input *i) { return fabr_str(NULL, i, "]"); }
+  //
+  static fabr_tree *_value(fabr_input *i); // forward
+  //
+  static fabr_tree *_number(fabr_input *i)
+  {
+    return fabr_rex("number", i, "-?[0-9]+(\\.[0-9]+)?");
+  }
+  static fabr_tree *_string(fabr_input *i)
+  {
+    return fabr_rex(
+      "string", i,
+      "\"("
+        "\\\\[\"\\/\\\\bfnrt]" "|"
+        "\\\\u[0-9a-fA-F]{4}" "|"
+        "[^\"\\\\]"
+      ")*\"");
+  }
+  static fabr_tree *_values(fabr_input *i)
+  {
+    return fabr_jseq("values", i, _value, _comma);
+  }
+  static fabr_tree *_array(fabr_input *i)
+  {
+    return fabr_seq("array", i, _osb, _values, _csb, NULL);
+  }
+  static fabr_tree *_value(fabr_input *i)
+  {
+    return fabr_alt("value", i, _number, _array, _string, NULL);
+  }
 
   describe "fabr_tree_to_string()"
   {
