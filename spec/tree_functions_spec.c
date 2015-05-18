@@ -10,6 +10,58 @@
 
 context "tree functions"
 {
+  before each
+  {
+    fabr_tree *t = NULL;
+  }
+  after each
+  {
+    fabr_tree_free(t);
+  }
+
+//  //typedef int fabr_tree_func(fabr_tree *);
+//  //
+//  static short is_value(const fabr_tree *t)
+//  {
+//    // -1: fail, do not continue
+//    //  0: fail, please check my children
+//    //  1: success
+//
+//    if (t->result != 1) return -1;
+//    return t->name && strcmp(t->name, "value") == 0;
+//  }
+
+//  static fabr_tree *_number(fabr_input *i)
+//  {
+//    return fabr_rex("number", i, "-?[0-9]+(\\.[0-9]+)?");
+//  }
+//  static fabr_tree *_string(fabr_input *i)
+//  {
+//    return fabr_rex(
+//      "string", i,
+//      "\"("
+//        "\\\\[\"\\/\\\\bfnrt]" "|"
+//        "\\\\u[0-9a-fA-F]{4}" "|"
+//        "[^\"\\\\]"
+//      ")*\"");
+//  }
+//  //static fabr_tree *_comma(fabr_input *i)
+//  //{
+//  //  return fabr_str(NULL, i, ",");
+//  //}
+//  //static fabr_tree *_values(fabr_input *i)
+//  //{
+//  //  return fabr_jseq("values", i, _value, _comma);
+//  //}
+//  static fabr_tree *_array(fabr_input *i)
+//  {
+//    return fabr_enc("array", i, "[", _value, ",", "]");
+//  }
+//  static fabr_tree *_value(fabr_input *i)
+//  {
+//    return fabr_alt("value", i, _number, _array, _string, NULL);
+//  }
+
   describe "fabr_tree_to_string()"
   {
     it "returns \"null\" if the tree is NULL"
@@ -19,73 +71,7 @@ context "tree functions"
       expect(s ===f "null");
     }
   }
-//  before each
-//  {
-//    fabr_tree *t = NULL;
-//
-//    fabr_parser *string =
-//      fabr_n_rex(
-//        "string",
-//        "\"("
-//          //"\\\\." "|"
-//          "\\\\[\"\\/\\\\bfnrt]" "|"
-//          "\\\\u[0-9a-fA-F]{4}" "|"
-//          "[^\"\\\\]"
-//        ")*\"");
-//    //fabr_parser *string =
-//    //  fabr_n_regex(
-//    //    "string",
-//    //    "^\"("
-//    //      //"\\\\." "|"
-//    //      "\\\\[\"\\/\\\\bfnrt]" "|"
-//    //      "\\\\u[0-9a-fA-F]{4}" "|"
-//    //      "[^\"\\]"
-//    //    ")*\"");
-//
-//    fabr_parser *values =
-//      fabr_n_rep(
-//        "values",
-//        fabr_seq(
-//          fabr_n("value"),
-//          fabr_rep(
-//            fabr_seq(fabr_string(","), fabr_n("value"), NULL),
-//            0, -1),
-//          NULL
-//        ),
-//        0, 1);
-//
-//    fabr_parser *array =
-//      fabr_n_seq("array", fabr_string("["), values, fabr_string("]"), NULL);
-//
-//    fabr_parser *number =
-//      fabr_n_rex("number", "-?[0-9]+(\\.[0-9]+)?");
-//
-//    fabr_parser *p=
-//      fabr_n_alt(
-//        "value",
-//        number,
-//        array,
-//        string,
-//        NULL);
-//  }
-//  after each
-//  {
-//    if (t != NULL) fabr_tree_free(t);
-//    if (p != NULL) fabr_parser_free(p);
-//  }
-//
-//  //typedef int fabr_tree_func(fabr_tree *);
-//  //
-//  short is_value(const fabr_tree *t)
-//  {
-//    // -1: fail, do not continue
-//    //  0: fail, please check my children
-//    //  1: success
-//
-//    if (t->result != 1) return -1;
-//    return t->name && strcmp(t->name, "value") == 0;
-//  }
-//
+
 //  describe "fabr_tree_list()"
 //  {
 //    it "collects the trees that match the given function"
