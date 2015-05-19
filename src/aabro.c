@@ -269,7 +269,7 @@ static size_t mm = 0;
 
 static fabr_tree *str(fabr_input *i, char *rx, size_t rxn)
 {
-  printf("        str() i+o>%s< vs >%s<%zu\n", i->string + i->offset, rx, rxn);
+  //printf("        str() i+o>%s< vs >%s<%zu\n", i->string + i->offset, rx, rxn);
 
   fabr_tree *r = fabr_tree_malloc(NULL, "str", i, rxn);
 
@@ -314,7 +314,7 @@ fabr_tree *fabr_seq(
     r->length += t->length;
 
     p = va_arg(ap, fabr_parser *); if (p == NULL) break;
-    next = &(t->sibling);
+    next = &t->sibling;
   }
   va_end(ap);
 
@@ -763,6 +763,26 @@ fabr_tree *fabr_rex(
 fabr_tree *fabr_jseq(
   char *name, fabr_input *i, fabr_parser *eltp, fabr_parser *sepp)
 {
-  return NULL;
+  fabr_parser *ps[] = { eltp, sepp };
+
+  fabr_tree *r = fabr_tree_malloc(name, "jseq", i, 0);
+
+  fabr_tree **next = &r->child;
+
+  for (int j = 0; ; j = j == 1 ? 0 : 1)
+  {
+    if (*(i->string + i->offset) == 0) break;
+
+    fabr_tree *t = ps[j](i);
+    *next = t;
+
+    if (t->result != 1) { r->result = 0; r->length = 0; break; }
+
+    r->length += t->length;
+
+    next = &t->sibling;
+  }
+
+  return r;
 }
 
