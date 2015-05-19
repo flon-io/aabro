@@ -786,3 +786,25 @@ fabr_tree *fabr_jseq(
   return r;
 }
 
+fabr_tree *fabr_all(
+  char *name, fabr_input *i, fabr_parser *p)
+{
+  fabr_tree *r = fabr_tree_malloc(name, "all", i, 0);
+
+  char *start = i->string + i->offset;
+
+  r->child = p(i);
+
+  if (r->child->result == 1)
+  {
+    r->result = r->child->length == strlen(start);
+    r->length = r->result == 1 ? r->child->length : 0;
+  }
+  else
+  {
+    r->result = r->child->result;
+  }
+
+  return r;
+}
+

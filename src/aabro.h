@@ -160,12 +160,15 @@ fabr_tree *fabr_rex(
 fabr_tree *fabr_jseq(
   char *name, fabr_input *i, fabr_parser *eltp, fabr_parser *sepp);
 
+fabr_tree *fabr_all(
+  char *name, fabr_input *i, fabr_parser *p);
+
 
 //
 // helpers
 
-//fabr_tree *fabr_parse_all(
-//  const char *input, size_t offset, fabr_parser *p);
+fabr_tree *fabr_parse(const char *input, fabr_parser *p);
+fabr_tree *fabr_parse_all(const char *input, fabr_parser *p);
 
 #endif // FLON_AABRO_H
 
