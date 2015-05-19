@@ -19,18 +19,6 @@ context "tree functions"
     fabr_tree_free(t);
   }
 
-//  //typedef int fabr_tree_func(fabr_tree *);
-//  //
-//  static short is_value(const fabr_tree *t)
-//  {
-//    // -1: fail, do not continue
-//    //  0: fail, please check my children
-//    //  1: success
-//
-//    if (t->result != 1) return -1;
-//    return t->name && strcmp(t->name, "value") == 0;
-//  }
-
   static fabr_tree *_comma(fabr_input *i) { return fabr_str(NULL, i, ","); }
   static fabr_tree *_osb(fabr_input *i) { return fabr_str(NULL, i, "["); }
   static fabr_tree *_csb(fabr_input *i) { return fabr_str(NULL, i, "]"); }
@@ -74,6 +62,18 @@ context "tree functions"
     }
   }
 
+//  //typedef int fabr_tree_func(fabr_tree *);
+//  //
+//  static short is_value(const fabr_tree *t)
+//  {
+//    // -1: fail, do not continue
+//    //  0: fail, please check my children
+//    //  1: success
+//
+//    if (t->result != 1) return -1;
+//    return t->name && strcmp(t->name, "value") == 0;
+//  }
+//
 //  describe "fabr_tree_list()"
 //  {
 //    it "collects the trees that match the given function"
@@ -108,7 +108,7 @@ context "tree functions"
 //        //     the trees themselves are freed in the "after each"
 //    }
 //  }
-//
+
 //  describe "fabr_tree_list_named()"
 //  {
 //    it "collects the trees that match the given name"
