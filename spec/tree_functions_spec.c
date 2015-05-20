@@ -62,52 +62,52 @@ context "tree functions"
     }
   }
 
-//  //typedef int fabr_tree_func(fabr_tree *);
-//  //
-//  static short is_value(const fabr_tree *t)
-//  {
-//    // -1: fail, do not continue
-//    //  0: fail, please check my children
-//    //  1: success
-//
-//    if (t->result != 1) return -1;
-//    return t->name && strcmp(t->name, "value") == 0;
-//  }
-//
-//  describe "fabr_tree_list()"
-//  {
-//    it "collects the trees that match the given function"
-//    {
-//      char *s = "[1,2,3]";
-//      t = fabr_parse_all(s, 0, p);
-//      //char *st = fabr_tree_to_string(t, NULL, 1); puts(st); free(st);
-//
-//      flu_list *l = fabr_tree_list(fabr_t_child(t, 0), is_value);
-//
-//      ensure(l->size == 3);
-//
-//      fabr_tree *t0 = (fabr_tree *)flu_list_at(l, 0);
-//      fabr_tree *t1 = (fabr_tree *)flu_list_at(l, 1);
-//      fabr_tree *t2 = (fabr_tree *)flu_list_at(l, 2);
-//
-//      ensure(t0->name === "value");
-//      ensure(fabr_tree_string(s, t0) ===f "1");
-//      ensure(t1->name === "value");
-//      ensure(fabr_tree_string(s, t1) ===f "2");
-//      ensure(t2->name === "value");
-//      ensure(fabr_tree_string(s, t2) ===f "3");
-//
-//      ensure(fabr_tree_to_string(t0, NULL, 0) ===f ""
-//        "[ \"value\", 1, 1, 1, null, \"alt-0\", [\n"
-//        "  [ \"number\", 1, 1, 1, null, \"rex-00\", [] ]\n"
-//        "] ]"
-//      );
-//
-//      flu_list_free(l);
-//        // NB: only freeing this list of pointers,
-//        //     the trees themselves are freed in the "after each"
-//    }
-//  }
+  //typedef int fabr_tree_func(fabr_tree *);
+  //
+  static short is_value(const fabr_tree *t)
+  {
+    // -1: fail, do not continue
+    //  0: fail, please check my children
+    //  1: success
+
+    if (t->result != 1) return -1;
+    return t->name && strcmp(t->name, "value") == 0;
+  }
+
+  describe "fabr_tree_list()"
+  {
+    it "collects the trees that match the given function"
+    {
+      char *s = "[1,2,3]";
+      t = fabr_parse_all(s, _value);
+      char *st = fabr_tree_to_string(t, s, 1); puts(st); free(st);
+
+      flu_list *l = fabr_tree_list(fabr_t_child(t, 0), is_value);
+
+      ensure(l->size == 3);
+
+      fabr_tree *t0 = (fabr_tree *)flu_list_at(l, 0);
+      fabr_tree *t1 = (fabr_tree *)flu_list_at(l, 1);
+      fabr_tree *t2 = (fabr_tree *)flu_list_at(l, 2);
+
+      ensure(t0->name === "value");
+      ensure(fabr_tree_string(s, t0) ===f "1");
+      ensure(t1->name === "value");
+      ensure(fabr_tree_string(s, t1) ===f "2");
+      ensure(t2->name === "value");
+      ensure(fabr_tree_string(s, t2) ===f "3");
+
+      ensure(fabr_tree_to_string(t0, NULL, 0) ===f ""
+        "[ \"value\", 1, 1, 1, null, \"alt-0\", [\n"
+        "  [ \"number\", 1, 1, 1, null, \"rex-00\", [] ]\n"
+        "] ]"
+      );
+
+      flu_list_free(l);
+        // NB: only freeing this list of pointers,
+        //     the trees themselves are freed in the "after each"
+    }
+  }
 
 //  describe "fabr_tree_list_named()"
 //  {
