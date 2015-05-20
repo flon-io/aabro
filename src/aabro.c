@@ -779,7 +779,16 @@ fabr_tree *fabr_jseq(
     fabr_tree *t = ps[j](i);
     *next = t;
 
-    if (t->result != 1) { r->result = 0; r->length = 0; break; }
+    if (t->result == -1)
+    {
+      r->result = -1; r->length = 0;
+      break;
+    }
+    if (t->result == 0)
+    {
+      if (j == 0) { r->result = 0; r->length = 0; }
+      break;
+    }
 
     r->length += t->length;
 
