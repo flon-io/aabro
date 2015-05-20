@@ -808,3 +808,21 @@ fabr_tree *fabr_all(
   return r;
 }
 
+
+//
+// helpers
+
+fabr_tree *fabr_parse(const char *input, fabr_parser *p)
+{
+  fabr_input i = { (char *)input, 0 };
+
+  return p(&i);
+}
+
+fabr_tree *fabr_parse_all(const char *input, fabr_parser *p)
+{
+  fabr_input i = { (char *)input, 0 };
+
+  return fabr_all(NULL, &i, p);
+}
+
