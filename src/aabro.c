@@ -776,7 +776,13 @@ fabr_tree *fabr_rex(
 {
   fabr_tree *r = rex_alt(i, regex, strlen(regex));
 
+  r->parter = "rex";
   r->name = name ? strdup(name) : NULL;
+
+  if ((i->flags & FABR_F_PRUNE) && r->result == 1)
+  {
+    // TODO prune
+  }
 
   return r;
 }

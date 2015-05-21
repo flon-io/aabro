@@ -26,7 +26,7 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "a");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 0, 0, 0, null, \"rex_alt\", 1, [\n"
+      "[ \"x\", 0, 0, 0, null, \"rex\", 1, [\n"
       "  [ null, 0, 0, 0, null, \"rex_seq\", 1, [\n"
       "    [ null, 0, 0, 0, null, \"str\", 1, [] ]\n"
       "  ] ]\n"
@@ -39,7 +39,7 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "a");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 1, 0, 1, null, \"rex_alt\", 1, [\n"
+      "[ \"x\", 1, 0, 1, null, \"rex\", 1, [\n"
       "  [ null, 1, 0, 1, null, \"rex_seq\", 1, [\n"
       "    [ null, 1, 0, 1, null, \"str\", 1, [] ]\n"
       "  ] ]\n"
@@ -52,7 +52,7 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "ab|cd");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 0, 0, 0, null, \"rex_alt\", 5, [\n"
+      "[ \"x\", 0, 0, 0, null, \"rex\", 5, [\n"
       "  [ null, 0, 0, 0, null, \"rex_seq\", 2, [\n"
       "    [ null, 0, 0, 0, null, \"str\", 2, [] ]\n"
       "  ] ],\n"
@@ -68,7 +68,7 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "ab|cd");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 1, 0, 2, null, \"rex_alt\", 5, [\n"
+      "[ \"x\", 1, 0, 2, null, \"rex\", 5, [\n"
       "  [ null, 1, 0, 2, null, \"rex_seq\", 2, [\n"
       "    [ null, 1, 0, 2, null, \"str\", 2, [] ]\n"
       "  ] ]\n"
@@ -81,7 +81,7 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "ab|cd");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 1, 0, 2, null, \"rex_alt\", 5, [\n"
+      "[ \"x\", 1, 0, 2, null, \"rex\", 5, [\n"
       "  [ null, 0, 0, 0, null, \"rex_seq\", 2, [\n"
       "    [ null, 0, 0, 0, null, \"str\", 2, [] ]\n"
       "  ] ],\n"
@@ -97,7 +97,7 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "abc+");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 0, 0, 0, null, \"rex_alt\", 4, [\n"
+      "[ \"x\", 0, 0, 0, null, \"rex\", 4, [\n"
       "  [ null, 0, 0, 0, null, \"rex_seq\", 4, [\n"
       "    [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
       "    [ null, 0, 2, 0, null, \"rex_rep\", 2, [\n"
@@ -113,7 +113,7 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "abc+");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 1, 0, 4, null, \"rex_alt\", 4, [\n"
+      "[ \"x\", 1, 0, 4, null, \"rex\", 4, [\n"
       "  [ null, 1, 0, 4, null, \"rex_seq\", 4, [\n"
       "    [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
       "    [ null, 1, 2, 2, null, \"rex_rep\", 2, [\n"
@@ -130,7 +130,7 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "ab[cd]");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 0, 0, 0, null, \"rex_alt\", 6, [\n"
+      "[ \"x\", 0, 0, 0, null, \"rex\", 6, [\n"
       "  [ null, 0, 0, 0, null, \"rex_seq\", 6, [\n"
       "    [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
       "    [ null, 0, 2, 0, null, \"rng\", 4, [] ]\n"
@@ -144,7 +144,7 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "ab[cd]");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 1, 0, 3, null, \"rex_alt\", 6, [\n"
+      "[ \"x\", 1, 0, 3, null, \"rex\", 6, [\n"
       "  [ null, 1, 0, 3, null, \"rex_seq\", 6, [\n"
       "    [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
       "    [ null, 1, 2, 1, null, \"rng\", 4, [] ]\n"
@@ -158,7 +158,7 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "ab[cd]ef");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 1, 0, 5, null, \"rex_alt\", 8, [\n"
+      "[ \"x\", 1, 0, 5, null, \"rex\", 8, [\n"
       "  [ null, 1, 0, 5, null, \"rex_seq\", 8, [\n"
       "    [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
       "    [ null, 1, 2, 1, null, \"rng\", 4, [] ],\n"
@@ -173,7 +173,7 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "[ab]cd");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 0, 0, 0, null, \"rex_alt\", 6, [\n"
+      "[ \"x\", 0, 0, 0, null, \"rex\", 6, [\n"
       "  [ null, 0, 0, 0, null, \"rex_seq\", 6, [\n"
       "    [ null, 0, 0, 0, null, \"rng\", 4, [] ]\n"
       "  ] ]\n"
@@ -186,7 +186,7 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "[ab]cd");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 1, 0, 3, null, \"rex_alt\", 6, [\n"
+      "[ \"x\", 1, 0, 3, null, \"rex\", 6, [\n"
       "  [ null, 1, 0, 3, null, \"rex_seq\", 6, [\n"
       "    [ null, 1, 0, 1, null, \"rng\", 4, [] ],\n"
       "    [ null, 1, 1, 2, null, \"str\", 2, [] ]\n"
@@ -200,7 +200,7 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "ab[cd]+");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 0, 0, 0, null, \"rex_alt\", 7, [\n"
+      "[ \"x\", 0, 0, 0, null, \"rex\", 7, [\n"
       "  [ null, 0, 0, 0, null, \"rex_seq\", 7, [\n"
       "    [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
       "    [ null, 0, 2, 0, null, \"rex_rep\", 5, [\n"
@@ -216,7 +216,7 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "ab[cd]+");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 1, 0, 3, null, \"rex_alt\", 7, [\n"
+      "[ \"x\", 1, 0, 3, null, \"rex\", 7, [\n"
       "  [ null, 1, 0, 3, null, \"rex_seq\", 7, [\n"
       "    [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
       "    [ null, 1, 2, 1, null, \"rex_rep\", 5, [\n"
@@ -232,7 +232,7 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "ab[cd]+");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 1, 0, 4, null, \"rex_alt\", 7, [\n"
+      "[ \"x\", 1, 0, 4, null, \"rex\", 7, [\n"
       "  [ null, 1, 0, 4, null, \"rex_seq\", 7, [\n"
       "    [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
       "    [ null, 1, 2, 2, null, \"rex_rep\", 5, [\n"
@@ -249,7 +249,7 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "ab[cd]*");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 1, 0, 2, null, \"rex_alt\", 7, [\n"
+      "[ \"x\", 1, 0, 2, null, \"rex\", 7, [\n"
       "  [ null, 1, 0, 2, null, \"rex_seq\", 7, [\n"
       "    [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
       "    [ null, 1, 2, 0, null, \"rex_rep\", 5, [\n"
@@ -265,7 +265,7 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "ab[cd]*");
 
     ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
-      "[ \"x\", 1, 0, 2, null, \"rex_alt\", 7, [\n"
+      "[ \"x\", 1, 0, 2, null, \"rex\", 7, [\n"
       "  [ null, 1, 0, 2, null, \"rex_seq\", 7, [\n"
       "    [ null, 1, 0, 2, null, \"str\", 2, \"ab\" ]\n"
       "  ] ]\n"
@@ -278,7 +278,7 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "ab[cd]*");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 1, 0, 4, null, \"rex_alt\", 7, [\n"
+      "[ \"x\", 1, 0, 4, null, \"rex\", 7, [\n"
       "  [ null, 1, 0, 4, null, \"rex_seq\", 7, [\n"
       "    [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
       "    [ null, 1, 2, 2, null, \"rex_rep\", 5, [\n"
@@ -295,7 +295,7 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "[ab]");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 0, 0, 0, null, \"rex_alt\", 4, [\n"
+      "[ \"x\", 0, 0, 0, null, \"rex\", 4, [\n"
       "  [ null, 0, 0, 0, null, \"rex_seq\", 4, [\n"
       "    [ null, 0, 0, 0, null, \"rng\", 4, [] ]\n"
       "  ] ]\n"
@@ -308,7 +308,7 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "[ab]");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 1, 0, 1, null, \"rex_alt\", 4, [\n"
+      "[ \"x\", 1, 0, 1, null, \"rex\", 4, [\n"
       "  [ null, 1, 0, 1, null, \"rex_seq\", 4, [\n"
       "    [ null, 1, 0, 1, null, \"rng\", 4, [] ]\n"
       "  ] ]\n"
@@ -321,7 +321,7 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "[ab]+");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 0, 0, 0, null, \"rex_alt\", 5, [\n"
+      "[ \"x\", 0, 0, 0, null, \"rex\", 5, [\n"
       "  [ null, 0, 0, 0, null, \"rex_seq\", 5, [\n"
       "    [ null, 0, 0, 0, null, \"rex_rep\", 5, [\n"
       "      [ null, 0, 0, 0, null, \"rng\", 2, [] ]\n"
@@ -336,7 +336,7 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "[ab]+");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 1, 0, 3, null, \"rex_alt\", 5, [\n"
+      "[ \"x\", 1, 0, 3, null, \"rex\", 5, [\n"
       "  [ null, 1, 0, 3, null, \"rex_seq\", 5, [\n"
       "    [ null, 1, 0, 3, null, \"rex_rep\", 5, [\n"
       "      [ null, 1, 0, 1, null, \"rng\", 2, [] ],\n"
@@ -353,7 +353,7 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "[ab]?");
 
     ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-      "[ \"x\", 1, 0, 0, null, \"rex_alt\", 5, [\n"
+      "[ \"x\", 1, 0, 0, null, \"rex\", 5, [\n"
       "  [ null, 1, 0, 0, null, \"rex_seq\", 5, [\n"
       "    [ null, 1, 0, 0, null, \"rex_rep\", 5, [\n"
       "      [ null, 0, 0, 0, null, \"rng\", 2, [] ]\n"
@@ -377,7 +377,7 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "ab(cd|ef)");
 
     ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
-      "[ \"x\", 0, 0, 0, null, \"rex_alt\", 9, [\n"
+      "[ \"x\", 0, 0, 0, null, \"rex\", 9, [\n"
       "  [ null, 0, 0, 0, null, \"rex_seq\", 9, [\n"
       "    [ null, 1, 0, 2, null, \"str\", 2, \"ab\" ],\n"
       "    [ null, 0, 2, 0, null, \"rex_alt\", 7, [\n"
@@ -398,7 +398,7 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "ab(cd|ef)");
 
     ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
-      "[ \"x\", 1, 0, 4, null, \"rex_alt\", 9, [\n"
+      "[ \"x\", 1, 0, 4, null, \"rex\", 9, [\n"
       "  [ null, 1, 0, 4, null, \"rex_seq\", 9, [\n"
       "    [ null, 1, 0, 2, null, \"str\", 2, \"ab\" ],\n"
       "    [ null, 1, 2, 2, null, \"rex_alt\", 7, [\n"
@@ -419,7 +419,7 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "ab(cd)?ef");
 
     ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
-      "[ \"x\", 0, 0, 0, null, \"rex_alt\", 9, [\n"
+      "[ \"x\", 0, 0, 0, null, \"rex\", 9, [\n"
       "  [ null, 0, 0, 0, null, \"rex_seq\", 9, [\n"
       "    [ null, 1, 0, 2, null, \"str\", 2, \"ab\" ],\n"
       "    [ null, 1, 2, 0, null, \"rex_rep\", 5, [\n"
@@ -440,7 +440,7 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "ab(cd)?ef");
 
     ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
-      "[ \"x\", 1, 0, 6, null, \"rex_alt\", 9, [\n"
+      "[ \"x\", 1, 0, 6, null, \"rex\", 9, [\n"
       "  [ null, 1, 0, 6, null, \"rex_seq\", 9, [\n"
       "    [ null, 1, 0, 2, null, \"str\", 2, \"ab\" ],\n"
       "    [ null, 1, 2, 2, null, \"rex_rep\", 5, [\n"
@@ -461,7 +461,7 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "ab(cd)ef");
 
     ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
-      "[ \"x\", 1, 0, 6, null, \"rex_alt\", 8, [\n"
+      "[ \"x\", 1, 0, 6, null, \"rex\", 8, [\n"
       "  [ null, 1, 0, 6, null, \"rex_seq\", 8, [\n"
       "    [ null, 1, 0, 2, null, \"str\", 2, \"ab\" ],\n"
       "    [ null, 1, 2, 2, null, \"rex_alt\", 4, [\n"
@@ -480,7 +480,7 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "(ab)");
 
     ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
-      "[ \"x\", 1, 0, 2, null, \"rex_alt\", 4, [\n"
+      "[ \"x\", 1, 0, 2, null, \"rex\", 4, [\n"
       "  [ null, 1, 0, 2, null, \"rex_seq\", 4, [\n"
       "    [ null, 1, 0, 2, null, \"rex_alt\", 4, [\n"
       "      [ null, 1, 0, 2, null, \"rex_seq\", 2, [\n"
@@ -499,7 +499,7 @@ describe "fabr_rex()"
       t = fabr_rex("x", &i, "[ab");
 
       ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-        "[ \"x\", -1, 0, 0, null, \"rex_alt\", 3, [\n"
+        "[ \"x\", -1, 0, 0, null, \"rex\", 3, [\n"
         "  [ null, -1, 0, 0, null, \"rex_seq\", 3, [\n"
         "    [ null, -1, 0, 0, \"range not closed >[ab<3\", \"rex_rep\", 0, [] ]\n"
         "  ] ]\n"
@@ -512,7 +512,7 @@ describe "fabr_rex()"
       t = fabr_rex("x", &i, "a{1,2fda");
 
       ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-        "[ \"x\", -1, 0, 0, null, \"rex_alt\", 8, [\n"
+        "[ \"x\", -1, 0, 0, null, \"rex\", 8, [\n"
         "  [ null, -1, 0, 0, null, \"rex_seq\", 8, [\n"
         "    [ null, -1, 0, 0, \"invalid {min[,max]} >a{1,2fda<8\", \"rex_rep\", 0, [] ]\n"
         "  ] ]\n"
@@ -525,7 +525,7 @@ describe "fabr_rex()"
       t = fabr_rex("x", &i, "a{1,2fda}nada");
 
       ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-        "[ \"x\", -1, 0, 0, null, \"rex_alt\", 13, [\n"
+        "[ \"x\", -1, 0, 0, null, \"rex\", 13, [\n"
         "  [ null, -1, 0, 0, null, \"rex_seq\", 13, [\n"
         "    [ null, -1, 0, 0, \"invalid {min[,max]} >a{1,2fda}nada<13\", \"rex_rep\", 0, [] ]\n"
         "  ] ]\n"
@@ -538,7 +538,7 @@ describe "fabr_rex()"
       t = fabr_rex("x", &i, "a{1,2,3}nada");
 
       ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
-        "[ \"x\", -1, 0, 0, null, \"rex_alt\", 12, [\n"
+        "[ \"x\", -1, 0, 0, null, \"rex\", 12, [\n"
         "  [ null, -1, 0, 0, null, \"rex_seq\", 12, [\n"
         "    [ null, -1, 0, 0, \"invalid {min[,max]} >a{1,2,3}nada<12\", \"rex_rep\", 0, [] ]\n"
         "  ] ]\n"

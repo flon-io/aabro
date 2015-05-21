@@ -67,7 +67,7 @@ describe "fabr_all()"
 
     ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
       "[ \"x\", -1, 0, 0, null, \"all\", 0, [\n"
-      "  [ \"-\", -1, 0, 0, null, \"rex_alt\", 2, [\n"
+      "  [ \"-\", -1, 0, 0, null, \"rex\", 2, [\n"
       "    [ null, -1, 0, 0, null, \"rex_seq\", 2, [\n"
       "      [ null, -1, 0, 0, \"range not closed >[a<2\", \"rex_rep\", 0, [] ]\n"
       "    ] ]\n"

@@ -133,6 +133,7 @@ fabr_tree *fabr_t_path(fabr_tree *t, size_t index, ...);
 typedef struct {
   char *string;
   size_t offset;
+  int flags;
 } fabr_input;
 
 
