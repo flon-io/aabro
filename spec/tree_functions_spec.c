@@ -81,7 +81,7 @@ context "tree functions"
     {
       char *s = "[1,2,3]";
       t = fabr_parse_all(s, _value);
-      char *st = fabr_tree_to_string(t, s, 1); puts(st); free(st);
+      //char *st = fabr_tree_to_string(t, s, 1); puts(st); free(st);
 
       flu_list *l = fabr_tree_list(fabr_t_path(t, 0, 1, -1), is_value);
 
@@ -98,9 +98,9 @@ context "tree functions"
       ensure(t2->name === "value");
       ensure(fabr_tree_string(s, t2) ===f "3");
 
-      ensure(fabr_tree_to_string(t0, NULL, 0) ===f ""
-        "[ \"value\", 1, 1, 1, null, \"alt-0\", [\n"
-        "  [ \"number\", 1, 1, 1, null, \"rex-00\", [] ]\n"
+      ensure(fabr_tree_to_string(t0, s, 0) ===f ""
+        "[ \"value\", 1, 1, 1, null, \"alt\", 0, [\n"
+        "  [ \"number\", 1, 1, 1, null, \"rex\", 19, \"1\" ]\n"
         "] ]"
       );
 

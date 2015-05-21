@@ -151,6 +151,7 @@ char *fabr_tree_to_string(fabr_tree *t, const char *input, short color)
 {
   flu_sbuffer *b = flu_sbuffer_malloc();
   fabr_t_to_s(t, input, b, 0, 1, color);
+
   return flu_sbuffer_to_string(b);
 }
 
@@ -158,6 +159,7 @@ char *fabr_tree_to_str(fabr_tree *t, const char *input, short color)
 {
   flu_sbuffer *b = flu_sbuffer_malloc();
   fabr_t_to_s(t, input, b, 0, 0, color);
+
   return flu_sbuffer_to_string(b);
 }
 
