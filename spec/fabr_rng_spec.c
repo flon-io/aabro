@@ -12,7 +12,7 @@ describe "fabr_rng()"
 {
   before each
   {
-    fabr_input i = { "", 0 };
+    fabr_input i = { "", 0, 0 };
     fabr_tree *t = NULL;
   }
   after each

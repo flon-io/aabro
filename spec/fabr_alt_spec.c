@@ -12,7 +12,7 @@ describe "fabr_alt()"
 {
   before each
   {
-    fabr_input i = { "tz", 0 };
+    fabr_input i = { "tz", 0, 0 };
     fabr_tree *t = NULL;
   }
   after each

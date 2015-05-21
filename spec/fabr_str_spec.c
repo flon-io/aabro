@@ -12,7 +12,7 @@ describe "fabr_str()"
 {
   before each
   {
-    fabr_input i = { "toto", 0, };
+    fabr_input i = { "toto", 0, 0 };
     fabr_tree *t = NULL;
   }
   after each

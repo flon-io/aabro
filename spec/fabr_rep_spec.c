@@ -12,7 +12,7 @@ describe "fabr_rep()"
 {
   before each
   {
-    fabr_input i = { NULL, 0 };
+    fabr_input i = { NULL, 0, 0 };
     fabr_tree *t = NULL;
   }
   after each

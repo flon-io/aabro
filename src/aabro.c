@@ -51,6 +51,17 @@ fabr_tree *fabr_tree_malloc(
   return t;
 }
 
+static void fabr_prune(fabr_tree *t)
+{
+  for (fabr_tree *c = t->child; c != NULL; )
+  {
+    fabr_tree *s = c->sibling;
+    fabr_tree_free(c);
+    c = s;
+  }
+  t->child = NULL;
+}
+
 void fabr_tree_free(fabr_tree *t)
 {
   if (t == NULL) return;
@@ -58,12 +69,7 @@ void fabr_tree_free(fabr_tree *t)
   free(t->name);
   free(t->note);
 
-  for (fabr_tree *c = t->child; c != NULL; )
-  {
-    fabr_tree *s = c->sibling;
-    fabr_tree_free(c);
-    c = s;
-  }
+  fabr_prune(t);
 
   free(t);
 }
@@ -779,10 +785,7 @@ fabr_tree *fabr_rex(
   r->parter = "rex";
   r->name = name ? strdup(name) : NULL;
 
-  if ((i->flags & FABR_F_PRUNE) && r->result == 1)
-  {
-    // TODO prune
-  }
+  if ((i->flags & FABR_F_PRUNE) && r->result == 1) fabr_prune(r);
 
   return r;
 }
