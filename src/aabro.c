@@ -860,3 +860,15 @@ fabr_tree *fabr_parse_f(const char *input, fabr_parser *p, int flags)
   return p(&i);
 }
 
+int fabr_match(const char *input, fabr_parser *p)
+{
+  fabr_tree *t =
+    fabr_parse_f(input, p, FABR_F_ALL | FABR_F_PRUNE | FABR_F_MATCH);
+
+  int r = t->result;
+
+  fabr_tree_free(t);
+
+  return r;
+}
+

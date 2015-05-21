@@ -184,5 +184,10 @@ enum // flags for fabr_parse_f
 
 fabr_tree *fabr_parse_f(const char *input, fabr_parser *p, int flags);
 
+/* Returns 1 if the all the input is matched by the parser.
+ * Returns 0 if the match fails, returns -1 in case of error.
+ */
+int fabr_match(const char *input, fabr_parser *p);
+
 #endif // FLON_AABRO_H
 
