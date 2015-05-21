@@ -261,6 +261,24 @@ fabr_tree *fabr_t_child(fabr_tree *t, size_t index)
   return NULL;
 }
 
+fabr_tree *fabr_t_path(fabr_tree *t, size_t index, ...)
+{
+  t = fabr_t_child(t, index);
+
+  if (t == NULL) return NULL;
+
+  va_list ap; va_start(ap, index);
+  while (t)
+  {
+    int i = va_arg(ap, int);
+    if (i < 0) break;
+    t = fabr_t_child(t, i);
+  }
+  va_end(ap);
+
+  return t;
+}
+
 
 //
 // parters (partial parsers)

@@ -70,6 +70,7 @@ context "tree functions"
     //  0: fail, please check my children
     //  1: success
 
+    //if (t == NULL) return -1; // should not happen
     if (t->result != 1) return -1;
     return t->name && strcmp(t->name, "value") == 0;
   }
@@ -82,9 +83,9 @@ context "tree functions"
       t = fabr_parse_all(s, _value);
       char *st = fabr_tree_to_string(t, s, 1); puts(st); free(st);
 
-      flu_list *l = fabr_tree_list(fabr_t_child(t, 0), is_value);
+      flu_list *l = fabr_tree_list(fabr_t_path(t, 0, 1, -1), is_value);
 
-      ensure(l->size == 3);
+      ensure(l->size zu== 3);
 
       fabr_tree *t0 = (fabr_tree *)flu_list_at(l, 0);
       fabr_tree *t1 = (fabr_tree *)flu_list_at(l, 1);

@@ -121,6 +121,11 @@ fabr_tree **fabr_tree_collect(fabr_tree *t, fabr_tree_func *f);
  */
 fabr_tree *fabr_t_child(fabr_tree *t, size_t index);
 
+/* fabr_t_path(t, 0, 1, -1); returns the second subtree of the first subtree
+ * of t.
+ */
+fabr_tree *fabr_t_path(fabr_tree *t, size_t index, ...);
+
 
 //
 // fabr_input
