@@ -844,15 +844,19 @@ fabr_tree *fabr_all(
 
 fabr_tree *fabr_parse(const char *input, fabr_parser *p)
 {
-  fabr_input i = { (char *)input, 0 };
-
-  return p(&i);
+  return fabr_parse_f(input, p, FABR_F_PRUNE);
 }
 
 fabr_tree *fabr_parse_all(const char *input, fabr_parser *p)
 {
-  fabr_input i = { (char *)input, 0 };
+  return fabr_parse_f(input, p, FABR_F_PRUNE | FABR_F_ALL);
+}
 
-  return fabr_all(NULL, &i, p);
+fabr_tree *fabr_parse_f(const char *input, fabr_parser *p, int flags)
+{
+  fabr_input i = { (char *)input, 0, flags };
+
+  if (flags & FABR_F_ALL) return fabr_all(NULL, &i, p);
+  return p(&i);
 }
 

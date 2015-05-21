@@ -175,5 +175,14 @@ fabr_tree *fabr_all(
 fabr_tree *fabr_parse(const char *input, fabr_parser *p);
 fabr_tree *fabr_parse_all(const char *input, fabr_parser *p);
 
+enum // flags for fabr_parse_f
+{
+  FABR_F_PRUNE  = 1 << 0, // don't prune failed trees, defaults to true
+  FABR_F_ALL    = 1 << 1, // parse all, defaults to false
+  FABR_F_MATCH  = 1 << 2  // prune everything, leave only root and result
+};
+
+fabr_tree *fabr_parse_f(const char *input, fabr_parser *p, int flags);
+
 #endif // FLON_AABRO_H
 
