@@ -316,38 +316,36 @@ context "tree functions"
     }
   }
 
-//  describe "fabr_tree_to_str()"
-//  {
-//    it "returns a string representation of a fabr_tree (without children)"
-//    {
-//      char *in = "-1";
-//      t = fabr_parse_all(in, 0, p);
-//      char *s = fabr_tree_to_str(t, in, 0);
-//
-//      //puts(s);
-//      ensure(s ===f "[ \"value\", 1, 0, 2, null, \"alt-0\", 1 ]");
-//    }
-//
-//    it "says 0 if the input is not given and the tree has no children"
-//    {
-//      t = fabr_parse_all("-1", 0, p);
-//      fabr_tree *tt = t->child;
-//
-//      char *s = fabr_tree_to_str(tt, NULL, 0);
-//      ensure(s ===f "[ \"number\", 1, 0, 2, null, \"rex-00\", 0 ]");
-//    }
-//
-//    it "displays the text if the input is given and the tree is a leaf"
-//    {
-//      char *in = "-1";
-//      t = fabr_parse_all(in, 0, p);
-//      fabr_tree *tt = t->child;
-//
-//      char *s = fabr_tree_to_str(tt, in, 0);
-//      ensure(s ===f "[ \"number\", 1, 0, 2, null, \"rex-00\", \"-1\" ]");
-//    }
-//  }
-//
+  describe "fabr_tree_to_str()"
+  {
+    it "returns a string representation of a fabr_tree (without children)"
+    {
+      char *in = "-1";
+      t = fabr_parse_all(in, _value);
+
+      ensure(fabr_tree_to_str(t->child, in, 0) ===f ""
+        "[ \"value\", 1, 0, 2, null, \"alt\", 0, 1 ]");
+    }
+
+    it "says 0 if the input is not given and the tree has no children"
+    {
+      char *in = "-1";
+      t = fabr_parse_all(in, _value);
+
+      ensure(fabr_tree_to_str(t->child->child, NULL, 0) ===f ""
+        "[ \"number\", 1, 0, 2, null, \"rex\", 19, 0 ]");
+    }
+
+    it "displays the text if the input is given and the tree is a leaf"
+    {
+      char *in = "-1";
+      t = fabr_parse_all(in, _value);
+
+      ensure(fabr_tree_to_str(t->child->child, in, 0) ===f ""
+        "[ \"number\", 1, 0, 2, null, \"rex\", 19, \"-1\" ]");
+    }
+  }
+
 //  describe "fabr_tree_lookup()"
 //  {
 //    it "returns NULL if it finds nothing"
