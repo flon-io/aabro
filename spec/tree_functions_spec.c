@@ -406,55 +406,47 @@ context "tree functions"
     }
   }
 
-//  describe "fabr_tree_lookup(t, NULL)"
-//  {
-//  }
-//
-//  describe "fabr_subtree_lookup()"
-//  {
-//    it "returns NULL if it finds nothing"
-//    {
-//      char *s = "[1,2,3]";
-//      t = fabr_parse_all(s, 0, p);
-//
-//      //puts(fabr_tree_to_string(t, s, 1));
-//
-//      fabr_tree *r = fabr_subtree_lookup(t, "string");
-//
-//      expect(r == NULL);
-//    }
-//
-//    it "returns the first sub-tree with the given name"
-//    {
-//      char *s = "[1,2,3]";
-//      t = fabr_parse_all(s, 0, p);
-//
-//      //puts(fabr_tree_to_string(t, s, 1));
-//
-//      fabr_tree *tt = fabr_subtree_lookup(t, "value");
-//
-//      expect(tt != NULL);
-//
-//      expect(fabr_tree_to_str(tt, s, 0) ===f ""
-//        "[ \"value\", 1, 1, 1, null, \"alt-0\", 1 ]");
-//    }
-//
-//    it "returns the first sub-tree with a[ny] name when name=NULL"
-//    {
-//      char *s = "[1,2,3]";
-//      t = fabr_parse_all(s, 0, p);
-//
-//      //puts(fabr_tree_to_string(t, s, 1));
-//
-//      fabr_tree *tt = fabr_subtree_lookup(t, NULL);
-//
-//      expect(tt != NULL);
-//
-//      expect(fabr_tree_to_str(tt, s, 0) ===f ""
-//        "[ \"array\", 1, 0, 7, null, \"seq-01\", 3 ]");
-//    }
-//  }
-//
+  describe "fabr_subtree_lookup()"
+  {
+    it "returns NULL if it finds nothing"
+    {
+      char *s = "[1,2,3]";
+      t = fabr_parse_all(s, _value);
+
+      fabr_tree *r = fabr_subtree_lookup(t, "string");
+
+      expect(r == NULL);
+    }
+
+    it "returns the first sub-tree with the given name"
+    {
+      char *s = "[1,2,3]";
+      t = fabr_parse_all(s, _value);
+      //char *st = fabr_tree_to_string(t, s, 1); puts(st); free(st);
+
+      fabr_tree *tt = fabr_subtree_lookup(t->child, "value");
+
+      expect(tt != NULL);
+
+      expect(fabr_tree_to_str(tt, s, 0) ===f ""
+        "[ \"value\", 1, 1, 1, null, \"alt\", 0, 1 ]");
+    }
+
+    it "returns the first sub-tree with a[ny] name when name=NULL"
+    {
+      char *s = "[1,2,3]";
+      t = fabr_parse_all(s, _value);
+      //char *st = fabr_tree_to_string(t, s, 1); puts(st); free(st);
+
+      fabr_tree *tt = fabr_subtree_lookup(t->child->child, NULL);
+
+      expect(tt != NULL);
+
+      expect(fabr_tree_to_str(tt, s, 0) ===f ""
+        "[ \"values\", 1, 1, 5, null, \"jseq\", 0, 6 ]");
+    }
+  }
+
 //  describe "fabr_lookup_string()"
 //  {
 //    it "returns NULL if it finds nothing"
