@@ -186,36 +186,40 @@ context "tree functions"
     }
   }
 
-//  describe "fabr_tree_string()"
-//  {
-//    it "returns a string containing the parsed input for the tree"
-//    {
-//      char *in = "[-1,0,1]";
-//      t = fabr_parse_all(in, 0, p);
-//      fabr_tree *tt = fabr_tree_lookup(t, "number");
-//
-//      char *s = fabr_tree_string(in, tt);
-//
-//      ensure(s === "-1");
-//      ensure(s != in + tt->offset);
-//
-//      free(s);
-//    }
-//
-//    it "returns an empty string when the tree is not a successful one"
-//    {
-//      char *in = "[nada]";
-//      t = fabr_parse_all(in, 0, p);
-//
-//      char *s = fabr_tree_string(in, t);
-//
-//      ensure(s === "");
-//      ensure(s != in + t->offset);
-//
-//      free(s);
-//    }
-//  }
-//
+  describe "fabr_tree_string()"
+  {
+    it "returns a string containing the parsed input for the tree"
+    {
+      char *in = "[-1,0,1]";
+      t = fabr_parse_all(in, _value);
+      //char *st = fabr_tree_to_string(t, in, 1); puts(st); free(st);
+
+      fabr_tree *tt = fabr_tree_lookup(t, "number");
+      char *stt = fabr_tree_to_string(t, in, 1); puts(stt); free(stt);
+
+      char *s = fabr_tree_string(in, tt);
+
+      ensure(s === "-1");
+      ensure(s != in + tt->offset);
+
+      free(s);
+    }
+
+    it "returns an empty string when the tree is not a successful one"
+    {
+      char *in = "[nada]";
+      t = fabr_parse_all(in, _value);
+      //char *st = fabr_tree_to_string(t, in, 1); puts(st); free(st);
+
+      char *s = fabr_tree_string(in, t);
+
+      ensure(s === "");
+      ensure(s != in + t->offset);
+
+      free(s);
+    }
+  }
+
 //  describe "fabr_tree_str()"
 //  {
 //    it "returns a pointer to the beginning of the tree in the input"
