@@ -246,76 +246,76 @@ context "tree functions"
     }
   }
 
-//  describe "fabr_tree_to_string() input == NULL"
-//  {
-//    it "returns a string representation of a fabr_tree"
-//    {
-//      t = fabr_parse_all("-1", 0, p);
-//      char *s = fabr_tree_to_string(t, NULL, 0);
-//
-//      //puts(s);
-//      ensure(s ===f ""
-//        "[ \"value\", 1, 0, 2, null, \"alt-0\", [\n"
-//        "  [ \"number\", 1, 0, 2, null, \"rex-00\", [] ]\n"
-//        "] ]");
-//    }
-//  }
-//
-//  describe "fabr_tree_to_string() input != NULL"
-//  {
-//    it "returns a string representation of a fabr_tree with string leaves"
-//    {
-//      char *in = "[-1,0,1]";
-//      t = fabr_parse_all(in, 0, p);
-//      char *s = fabr_tree_to_string(t, in, 0);
-//
-//      //fabr_tree *tt = fabr_parse_f(in, 0, p, 0);
-//      //puts(fabr_tree_to_string(tt, in, 1));
-//      //fabr_tree_free(tt);
-//
-//      ensure(s ===f ""
-//        "[ \"value\", 1, 0, 8, null, \"alt-0\", [\n"
-//        "  [ \"array\", 1, 0, 8, null, \"seq-01\", [\n"
-//        "    [ null, 1, 0, 1, null, \"string-010\", \"[\" ],\n"
-//        "    [ \"values\", 1, 1, 6, null, \"rep-011\", [\n"
-//        "      [ null, 1, 1, 6, null, \"seq-0110\", [\n"
-//        "        [ \"value\", 1, 1, 2, null, \"alt-0\", [\n"
-//        "          [ \"number\", 1, 1, 2, null, \"rex-00\", \"-1\" ]\n"
-//        "        ] ],\n"
-//        "        [ null, 1, 3, 4, null, \"rep-01101\", [\n"
-//        "          [ null, 1, 3, 2, null, \"seq-011010\", [\n"
-//        "            [ null, 1, 3, 1, null, \"string-0110100\", \",\" ],\n"
-//        "            [ \"value\", 1, 4, 1, null, \"alt-0\", [\n"
-//        "              [ \"number\", 1, 4, 1, null, \"rex-00\", \"0\" ]\n"
-//        "            ] ]\n"
-//        "          ] ],\n"
-//        "          [ null, 1, 5, 2, null, \"seq-011010\", [\n"
-//        "            [ null, 1, 5, 1, null, \"string-0110100\", \",\" ],\n"
-//        "            [ \"value\", 1, 6, 1, null, \"alt-0\", [\n"
-//        "              [ \"number\", 1, 6, 1, null, \"rex-00\", \"1\" ]\n"
-//        "            ] ]\n"
-//        "          ] ]\n"
-//        "        ] ]\n"
-//        "      ] ]\n"
-//        "    ] ],\n"
-//        "    [ null, 1, 7, 1, null, \"string-012\", \"]\" ]\n"
-//        "  ] ]\n"
-//        "] ]");
-//    }
-//
-//    it "escapes the leave string"
-//    {
-//      char *in = "\"hello\nworld\"";
-//      t = fabr_parse_all(in, 0, p);
-//      char *s = fabr_tree_to_string(t, in, 0);
-//
-//      ensure(s ===f ""
-//        "[ \"value\", 1, 0, 13, null, \"alt-0\", [\n"
-//        "  [ \"string\", 1, 0, 13, null, \"rex-02\", \"\\\"hello\\nworld\\\"\" ]\n"
-//        "] ]");
-//    }
-//  }
-//
+  describe "fabr_tree_to_string()"
+  {
+    context "input == NULL"
+    {
+      it "returns a string representation of a fabr_tree"
+      {
+        char *in = "-1";
+
+        t = fabr_parse_all(in, _value);
+        char *s = fabr_tree_to_string(t, in, 0);
+
+        ensure(s ===f ""
+          "[ null, 1, 0, 2, null, \"all\", 0, [\n"
+          "  [ \"value\", 1, 0, 2, null, \"alt\", 0, [\n"
+          "    [ \"number\", 1, 0, 2, null, \"rex\", 19, \"-1\" ]\n"
+          "  ] ]\n"
+          "] ]");
+      }
+    }
+
+    context "input != NULL"
+    {
+      it "returns a string representation of a fabr_tree with string leaves"
+      {
+        char *in = "[-1,0,1]";
+        t = fabr_parse_all(in, _value);
+        char *s = fabr_tree_to_string(t, in, 0);
+
+        ensure(s ===f ""
+          "[ null, 1, 0, 8, null, \"all\", 0, [\n"
+          "  [ \"value\", 1, 0, 8, null, \"alt\", 0, [\n"
+          "    [ \"array\", 1, 0, 8, null, \"seq\", 0, [\n"
+          "      [ null, 1, 0, 1, null, \"str\", 1, \"[\" ],\n"
+          "      [ \"values\", 1, 1, 6, null, \"jseq\", 0, [\n"
+          "        [ \"value\", 1, 1, 2, null, \"alt\", 0, [\n"
+          "          [ \"number\", 1, 1, 2, null, \"rex\", 19, \"-1\" ]\n"
+          "        ] ],\n"
+          "        [ null, 1, 3, 1, null, \"str\", 1, \",\" ],\n"
+          "        [ \"value\", 1, 4, 1, null, \"alt\", 0, [\n"
+          "          [ \"number\", 1, 4, 1, null, \"rex\", 19, \"0\" ]\n"
+          "        ] ],\n"
+          "        [ null, 1, 5, 1, null, \"str\", 1, \",\" ],\n"
+          "        [ \"value\", 1, 6, 1, null, \"alt\", 0, [\n"
+          "          [ \"number\", 1, 6, 1, null, \"rex\", 19, \"1\" ]\n"
+          "        ] ],\n"
+          "        [ null, 0, 7, 0, null, \"str\", 1, [] ]\n"
+          "      ] ],\n"
+          "      [ null, 1, 7, 1, null, \"str\", 1, \"]\" ]\n"
+          "    ] ]\n"
+          "  ] ]\n"
+          "] ]");
+      }
+
+      it "escapes the leave string"
+      {
+        char *in = "\"hello\nworld\"";
+
+        t = fabr_parse_all(in, _value);
+        char *s = fabr_tree_to_string(t, in, 0);
+
+        ensure(s ===f ""
+          "[ null, 1, 0, 13, null, \"all\", 0, [\n"
+          "  [ \"value\", 1, 0, 13, null, \"alt\", 0, [\n"
+          "    [ \"string\", 1, 0, 13, null, \"rex\", 44, \"\\\"hello\\nworld\\\"\" ]\n"
+          "  ] ]\n"
+          "] ]");
+      }
+    }
+  }
+
 //  describe "fabr_tree_to_str()"
 //  {
 //    it "returns a string representation of a fabr_tree (without children)"
