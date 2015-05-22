@@ -74,6 +74,28 @@ void fabr_tree_free(fabr_tree *t)
   free(t);
 }
 
+static void fabr_prune(fabr_tree *t)
+{
+  fabr_tree **next = &t->child;
+
+  for (fabr_tree *c = t->child; c != NULL; )
+  {
+    if (c->result == 0)
+    {
+      *next = NULL;
+      fabr_tree *s = c->sibling;
+      fabr_tree_free(c);
+      c = s;
+    }
+    else // 1 (when -1 fabr_prune() is not called)
+    {
+      *next = c;
+      c = c->sibling;
+      next = &c->sibling;
+    }
+  }
+}
+
 char *fabr_tree_string(const char *input, fabr_tree *t)
 {
   return strndup(input + t->offset, t->length);
@@ -367,6 +389,8 @@ fabr_tree *fabr_alt(
     next = &(t->sibling);
   }
   va_end(ap);
+
+  if (r->result == 1 && (i->flags & FABR_F_PRUNE)) fabr_prune(r);
 
   return r;
 }

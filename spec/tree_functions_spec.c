@@ -83,7 +83,7 @@ context "tree functions"
       t = fabr_parse_all(s, _value);
       //char *st = fabr_tree_to_string(t, s, 1); puts(st); free(st);
 
-      flu_list *l = fabr_tree_list(fabr_t_path(t, 0, 1, -1), is_value);
+      flu_list *l = fabr_tree_list(fabr_t_path(t, 0, 0, -1), is_value);
 
       ensure(l->size zu== 3);
 
@@ -118,7 +118,7 @@ context "tree functions"
       t = fabr_parse_all(s, _value);
       //char *st = fabr_tree_to_string(t, NULL, 1); puts(st); free(st);
 
-      flu_list *l = fabr_tree_list_named(fabr_t_path(t, 0, 1, -1), "value");
+      flu_list *l = fabr_tree_list_named(fabr_t_path(t, 0, 0, -1), "value");
 
       ensure(l->size == 3);
 
@@ -144,7 +144,7 @@ context "tree functions"
       t = fabr_parse_all(s, _value);
       //char *st = fabr_tree_to_string(t, NULL, 1); puts(st); free(st);
 
-      flu_list *l = fabr_tree_list_named(fabr_t_path(t, 0, 1, -1), "nada");
+      flu_list *l = fabr_tree_list_named(fabr_t_path(t, 0, 0, -1), "nada");
 
       ensure(l->size == 0);
 
@@ -160,7 +160,7 @@ context "tree functions"
       t = fabr_parse_all(s, _value);
       //char *st = fabr_tree_to_string(t, NULL, 1); puts(st); free(st);
 
-      fabr_tree **ts = fabr_tree_collect(t->child->child->sibling, is_value);
+      fabr_tree **ts = fabr_tree_collect(fabr_t_path(t, 0, 0, 1, -1), is_value);
 
       ensure(ts[0] != NULL);
       ensure(ts[1] != NULL);
@@ -195,7 +195,7 @@ context "tree functions"
       //char *st = fabr_tree_to_string(t, in, 1); puts(st); free(st);
 
       fabr_tree *tt = fabr_tree_lookup(t, "number");
-      char *stt = fabr_tree_to_string(t, in, 1); puts(stt); free(stt);
+      //char *stt = fabr_tree_to_string(t, in, 1); puts(stt); free(stt);
 
       char *s = fabr_tree_string(in, tt);
 
