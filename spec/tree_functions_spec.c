@@ -346,72 +346,68 @@ context "tree functions"
     }
   }
 
-//  describe "fabr_tree_lookup()"
-//  {
-//    it "returns NULL if it finds nothing"
-//    {
-//      char *s = "[1,2,3]";
-//      t = fabr_parse_all(s, 0, p);
-//
-//      //puts(fabr_tree_to_string(t, s, 1));
-//
-//      fabr_tree *r = fabr_tree_lookup(t, "string");
-//
-//      ensure(r == NULL);
-//    }
-//
-//    it "returns the first tree with the given name"
-//    {
-//      char *s = "[1,\"deux\",3]";
-//      t = fabr_parse_all(s, 0, p);
-//
-//      //puts(fabr_tree_to_string(t, s, 1);
-//        //
-//      //fabr_tree *tt = fabr_parse_f(s, 0, p, 0);
-//      //puts(fabr_tree_to_string(tt, s, 1));
-//      //fabr_tree_free(tt);
-//
-//      fabr_tree *r = fabr_tree_lookup(t, "string");
-//
-//      ensure(r != NULL);
-//      ensure(r->name === "string");
-//      ensure(r->offset == 3);
-//      ensure(r->length == 6);
-//    }
-//  }
-//
+  describe "fabr_tree_lookup()"
+  {
+    context "(t, subTreeName)"
+    {
+      it "returns NULL if it finds nothing"
+      {
+        char *s = "[1,2,3]";
+        t = fabr_parse_all(s, _value);
+
+        fabr_tree *r = fabr_tree_lookup(t, "string");
+
+        ensure(r == NULL);
+      }
+
+      it "returns the first tree with the given name"
+      {
+        char *s = "[1,\"deux\",3]";
+        t = fabr_parse_all(s, _value);
+
+        fabr_tree *r = fabr_tree_lookup(t, "string");
+
+        ensure(r != NULL);
+        ensure(r->name === "string");
+        ensure(r->offset == 3);
+        ensure(r->length == 6);
+      }
+    }
+
+    context "(t, NULL)"
+    {
+      it "returns NULL if it finds nothing"
+      {
+        char *s = "yyy";
+        t = fabr_parse_all(s, _value);
+        //char *st = fabr_tree_to_string(t, s, 1); puts(st); free(st);
+
+        expect(fabr_tree_lookup(t->child->child->child, NULL) == NULL);
+      }
+
+      it "returns the first tree with a [non-NULL] name"
+      {
+        char *s = "[1,\"deux\",3]";
+        t = fabr_parse_all(s, _value);
+        //char *st = fabr_tree_to_string(t, s, 1); puts(st); free(st);
+
+        fabr_tree *tt = NULL;
+
+        tt = fabr_tree_lookup(t, NULL);
+
+        expect(fabr_tree_to_str(tt, s, 0) ===f ""
+          "[ \"value\", 1, 0, 12, null, \"alt\", 0, 1 ]");
+
+        tt = fabr_tree_lookup(t->child->child, NULL);
+
+        expect(fabr_tree_to_str(tt, s, 0) ===f ""
+          "[ \"array\", 1, 0, 12, null, \"seq\", 0, 3 ]");
+      }
+    }
+  }
+
 //  describe "fabr_tree_lookup(t, NULL)"
 //  {
-//    it "returns NULL if it finds nothing"
-//    {
-//      fabr_parser *pa = fabr_str("xxx");
-//      t = fabr_parse_all("yyy", 0, pa);
-//
-//      //puts(fabr_tree_to_string(t, s, 1));
-//
-//      expect(fabr_tree_lookup(t, NULL) == NULL);
-//
-//      fabr_parser_free(pa);
-//    }
-//
-//    it "returns the first tree with a [non-NULL] name"
-//    {
-//      char *s = "[1,\"deux\",3]";
-//      t = fabr_parse_all(s, 0, p);
-//
-//      //puts(fabr_tree_to_string(t, s, 1));
-//      //puts(fabr_tree_to_str(t, s, 1));
-//
-//      fabr_tree *tt = fabr_tree_lookup(t, NULL);
-//
-//      expect(fabr_tree_to_str(tt, s, 0) ===f ""
-//        "[ \"value\", 1, 0, 12, null, \"alt-0\", 1 ]");
-//
-//      tt = fabr_tree_lookup(t->child, NULL);
-//
-//      expect(fabr_tree_to_str(tt, s, 0) ===f ""
-//        "[ \"array\", 1, 0, 12, null, \"seq-01\", 3 ]");
-//    }
 //  }
 //
 //  describe "fabr_subtree_lookup()"
