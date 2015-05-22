@@ -220,32 +220,32 @@ context "tree functions"
     }
   }
 
-//  describe "fabr_tree_str()"
-//  {
-//    it "returns a pointer to the beginning of the tree in the input"
-//    {
-//      char *in = "[-1,0,1]";
-//      t = fabr_parse_all(in, 0, p);
-//      fabr_tree *tt = fabr_tree_lookup(t, "number");
-//
-//      char *s = fabr_tree_str(in, tt);
-//
-//      ensure(s === "-1,0,1]");
-//      ensure(s == in + 1);
-//    }
-//
-//    it "returns the pointer anyway if the tree is not a successful one"
-//    {
-//      char *in = "[nada]";
-//      t = fabr_parse_all(in, 0, p);
-//
-//      char *s = fabr_tree_str(in, t);
-//
-//      ensure(s === "[nada]");
-//      ensure(s == in);
-//    }
-//  }
-//
+  describe "fabr_tree_str()"
+  {
+    it "returns a pointer to the beginning of the tree in the input"
+    {
+      char *in = "[-1,0,1]";
+      t = fabr_parse_all(in, _value);
+      fabr_tree *tt = fabr_tree_lookup(t, "number");
+
+      char *s = fabr_tree_str(in, tt);
+
+      ensure(s === "-1,0,1]");
+      ensure(s == in + 1);
+    }
+
+    it "returns the pointer anyway if the tree is not a successful one"
+    {
+      char *in = "[nada]";
+      t = fabr_parse_all(in, _value);
+
+      char *s = fabr_tree_str(in, t);
+
+      ensure(s === "[nada]");
+      ensure(s == in);
+    }
+  }
+
 //  describe "fabr_tree_to_string() input == NULL"
 //  {
 //    it "returns a string representation of a fabr_tree"
