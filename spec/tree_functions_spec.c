@@ -447,23 +447,23 @@ context "tree functions"
     }
   }
 
-//  describe "fabr_lookup_string()"
-//  {
-//    it "returns NULL if it finds nothing"
-//    {
-//      char *in = "[-1,0,1]";
-//      t = fabr_parse_all(in, 0, p);
-//
-//      expect(fabr_lookup_string(in, t, "nada") == NULL);
-//    }
-//
-//    it "returns the [malloc'ed] string value for the given name"
-//    {
-//      char *in = "[-1,0,1]";
-//      t = fabr_parse_all(in, 0, p);
-//
-//      expect(fabr_lookup_string(in, t, "values") ===f "-1,0,1");
-//    }
-//  }
+  describe "fabr_lookup_string()"
+  {
+    it "returns NULL if it finds nothing"
+    {
+      char *in = "[-1,0,1]";
+      t = fabr_parse_all(in, _value);
+
+      expect(fabr_lookup_string(in, t, "nada") == NULL);
+    }
+
+    it "returns the [malloc'ed] string value for the given name"
+    {
+      char *in = "[-1,0,1]";
+      t = fabr_parse_all(in, _value);
+
+      expect(fabr_lookup_string(in, t, "values") ===f "-1,0,1");
+    }
+  }
 }
 
