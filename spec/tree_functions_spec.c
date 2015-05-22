@@ -160,7 +160,7 @@ context "tree functions"
       t = fabr_parse_all(s, _value);
       //char *st = fabr_tree_to_string(t, NULL, 1); puts(st); free(st);
 
-      fabr_tree **ts = fabr_tree_collect(t->child, is_value);
+      fabr_tree **ts = fabr_tree_collect(t->child->child->sibling, is_value);
 
       ensure(ts[0] != NULL);
       ensure(ts[1] != NULL);
@@ -174,9 +174,9 @@ context "tree functions"
       ensure(ts[2]->name === "value");
       ensure(fabr_tree_string(s, ts[2]) ===f "3");
 
-      ensure(fabr_tree_to_string(ts[0], NULL, 0) ===f ""
-        "[ \"value\", 1, 1, 1, null, \"alt-0\", [\n"
-        "  [ \"number\", 1, 1, 1, null, \"rex-00\", [] ]\n"
+      ensure(fabr_tree_to_string(ts[0], s, 0) ===f ""
+        "[ \"value\", 1, 1, 1, null, \"alt\", 0, [\n"
+        "  [ \"number\", 1, 1, 1, null, \"rex\", 19, \"1\" ]\n"
         "] ]"
       );
 
