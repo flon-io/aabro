@@ -126,6 +126,23 @@ describe "fabr_rep()"
       "] ]");
   }
 
+  it "prunes the last unsuccessful try (when the prune flag is on)"
+  {
+    i.string = "t0t0t0t1t1";
+    i.flags = FABR_F_PRUNE;
+
+    t = fabr_rep("x", &i, _t0, 2, 0);
+
+    char *s = fabr_tree_to_string(t, NULL, 0);
+
+    ensure(s ===f ""
+      "[ \"x\", 1, 0, 6, null, \"rep\", 0, [\n"
+      "  [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
+      "  [ null, 1, 2, 2, null, \"str\", 2, [] ],\n"
+      "  [ null, 1, 4, 2, null, \"str\", 2, [] ]\n"
+      "] ]");
+  }
+
   it "propagates errors"
   {
     i.string = "t2";
