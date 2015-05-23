@@ -57,6 +57,10 @@ void fabr_tree_free(fabr_tree *t);
  */
 char *fabr_tree_to_string(fabr_tree *t, const char *input, short color);
 
+/* Short for `char *st = fabr_tree_to_string(t, i, c); puts(st); free(st);`
+ */
+void fabr_puts_tree(fabr_tree *t, const char *input, short color);
+
 /* Returns a string representation (JSON) of the fabr_tree.
  * The children are not displayed. If the tree is a leaf and the input
  * is not NULL, the parsed string is displayed, else the children count

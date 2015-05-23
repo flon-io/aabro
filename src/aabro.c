@@ -177,6 +177,11 @@ char *fabr_tree_to_string(fabr_tree *t, const char *input, short color)
   return flu_sbuffer_to_string(b);
 }
 
+void fabr_puts_tree(fabr_tree *t, const char *input, short color)
+{
+  char *s = fabr_tree_to_string(t, input, color); puts(s); free(s);
+}
+
 char *fabr_tree_to_str(fabr_tree *t, const char *input, short color)
 {
   flu_sbuffer *b = flu_sbuffer_malloc();
