@@ -313,7 +313,7 @@ fabr_tree *fabr_t_path(fabr_tree *t, size_t index, ...)
 //
 // parters (partial parsers)
 
-static size_t mm = 0;
+//static size_t mm = 0;
 
 static fabr_tree *str(fabr_input *i, char *rx, size_t rxn)
 {
@@ -752,7 +752,7 @@ static fabr_tree *rex_alt(fabr_input *i, char *rx, size_t rxn)
   char *crx = rx;
   size_t crxn = rxn;
 
-  size_t m = mm++; size_t n = 0;
+  //size_t m = mm++; size_t n = 0;
 
   do
   {
