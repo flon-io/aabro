@@ -31,6 +31,9 @@
 #include "flutil.h"
 
 
+
+#define FABR_VERSION "2.0.0"
+
 //
 // fabr_tree
 
