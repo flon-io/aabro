@@ -52,6 +52,24 @@ context "tree functions"
     return fabr_alt("value", i, _number, _array, _string, NULL);
   }
 
+  describe "the sample _value parser"
+  {
+
+    it "accepts \"deux\""
+    {
+      char *s = "\"deux\"";
+      t = fabr_parse_all(s, _value);
+      fabr_puts_tree(t, s, 1);
+
+      expect(fabr_tree_to_string(t, s, 0) ===f ""
+        "[ null, 1, 0, 6, null, \"all\", 0, [\n"
+        "  [ \"value\", 1, 0, 6, null, \"alt\", 0, [\n"
+        "    [ \"string\", 1, 0, 6, null, \"rex\", 43, \"\\\"deux\\\"\" ]\n"
+        "  ] ]\n"
+        "] ]");
+    }
+  }
+
   describe "fabr_tree_to_string()"
   {
     it "returns \"null\" if the tree is NULL"
@@ -358,13 +376,6 @@ context "tree functions"
         fabr_tree *r = fabr_tree_lookup(t, "string");
 
         ensure(r == NULL);
-      }
-
-      it "flips burgers"
-      {
-        char *s = "\"deux\"";
-        t = fabr_parse_all(s, _value);
-        fabr_puts_tree(t, s, 1);
       }
 
       it "returns the first tree with the given name"
