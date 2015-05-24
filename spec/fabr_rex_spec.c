@@ -491,6 +491,15 @@ describe "fabr_rex()"
       "] ]");
   }
 
+  it "accepts \"\\\\|\\\\|?\" (success)"
+  {
+    i.string = "||";
+    t = fabr_rex("p", &i, "\\|\\|?");
+
+    ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "x";
+  }
+
   context "errors"
   {
     it "rejects \"[ab\""
@@ -541,6 +550,22 @@ describe "fabr_rex()"
         "[ \"x\", -1, 0, 0, null, \"rex\", 12, [\n"
         "  [ null, -1, 0, 0, null, \"rex_seq\", 12, [\n"
         "    [ null, -1, 0, 0, \"invalid {min[,max]} >a{1,2,3}nada<12\", \"rex_rep\", 0, [] ]\n"
+        "  ] ]\n"
+        "] ]");
+    }
+
+    it "rejects \"1**\""
+    {
+      i.string = "nada";
+      t = fabr_rex("x", &i, "1**");
+
+      ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
+        "[ \"x\", -1, 0, 0, null, \"rex\", 3, [\n"
+        "  [ null, -1, 0, 0, null, \"rex_seq\", 3, [\n"
+        "    [ null, 1, 0, 0, null, \"rex_rep\", 2, [\n"
+        "      [ null, 0, 0, 0, null, \"str\", 1, [] ]\n"
+        "    ] ],\n"
+        "    [ null, -1, 0, 0, \"lone quantifier >*<1\", \"rex_rep\", 0, [] ]\n"
         "  ] ]\n"
         "] ]");
     }
