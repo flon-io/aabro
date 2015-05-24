@@ -34,7 +34,7 @@ context "tree functions"
     return fabr_rex(
       "string", i,
       "\"("
-        "\\\\[\"\\/\\\\bfnrt]" "|"
+        "\\\\[\"/\\\\bfnrt]" "|"
         "\\\\u[0-9a-fA-F]{4}" "|"
         "[^\"\\\\]"
       ")*\"");
@@ -192,7 +192,7 @@ context "tree functions"
     {
       char *in = "[-1,0,1]";
       t = fabr_parse_all(in, _value);
-      fabr_puts_tree(t, in, 1);
+      //fabr_puts_tree(t, in, 1);
 
       fabr_tree *tt = fabr_tree_lookup(t, "number");
       //fabr_puts_tree(t, in, 1);
@@ -309,7 +309,7 @@ context "tree functions"
         ensure(s ===f ""
           "[ null, 1, 0, 13, null, \"all\", 0, [\n"
           "  [ \"value\", 1, 0, 13, null, \"alt\", 0, [\n"
-          "    [ \"string\", 1, 0, 13, null, \"rex\", 44, \"\\\"hello\\nworld\\\"\" ]\n"
+          "    [ \"string\", 1, 0, 13, null, \"rex\", 43, \"\\\"hello\\nworld\\\"\" ]\n"
           "  ] ]\n"
           "] ]");
       }
@@ -360,10 +360,18 @@ context "tree functions"
         ensure(r == NULL);
       }
 
+      it "flips burgers"
+      {
+        char *s = "\"deux\"";
+        t = fabr_parse_all(s, _value);
+        fabr_puts_tree(t, s, 1);
+      }
+
       it "returns the first tree with the given name"
       {
         char *s = "[1,\"deux\",3]";
         t = fabr_parse_all(s, _value);
+        //fabr_puts_tree(t, s, 1);
 
         fabr_tree *r = fabr_tree_lookup(t, "string");
 
