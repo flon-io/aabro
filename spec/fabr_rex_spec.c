@@ -497,7 +497,14 @@ describe "fabr_rex()"
     t = fabr_rex("p", &i, "\\|\\|?");
 
     ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
-      "x";
+      "[ \"p\", 1, 0, 2, null, \"rex\", 5, [\n"
+      "  [ null, 1, 0, 2, null, \"rex_seq\", 5, [\n"
+      "    [ null, 1, 0, 1, null, \"rex_str\", 3, \"|\" ],\n"
+      "    [ null, 1, 1, 1, null, \"rex_rep\", 2, [\n"
+      "      [ null, 1, 1, 1, null, \"rex_str\", 1, \"|\" ]\n"
+      "    ] ]\n"
+      "  ] ]\n"
+      "] ]");
   }
 
   context "errors"

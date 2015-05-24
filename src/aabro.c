@@ -602,7 +602,7 @@ static size_t find_group_end(char *rx, size_t rxn)
   return 0;
 }
 
-static size_t find_str_end(char *rx, size_t rxn)
+static ssize_t find_str_end(char *rx, size_t rxn)
 {
   //printf("fse >%s<%zu\n", rx, rxn);
 
@@ -610,17 +610,25 @@ static size_t find_str_end(char *rx, size_t rxn)
   {
     char c = rx_at(rx, rxn, i);
 
+    printf("fse c'%c'\n", c);
+
     if (c == '\0') return i;
     if (c == '[' || c == '(') return i;
     if (c == '\\') { i++; continue; }
+
     if (c != '?' && c != '*' && c != '+' && c != '{') continue;
 
     if (i == 0) break;
+
     if (i == 1) return i; // a*
-    if (rx_at(rx, rxn, i - 2) == '\\') return i - 2;
-    return i - 1;
+    //if (i == 2 && rx_at(rx, rxn, 0) == '\\') return 0; // \a*
+
+    //if (rx_at(rx, rxn, i - 2) == '\\') return i - 2;
+    if (rx_at(rx, rxn, i - 2) == '\\') return i - 1;
+    return i - 1; // \a\a*
   }
-  return 0;
+
+  return -1; // error
 }
 
 static size_t mm = 0;
@@ -631,8 +639,6 @@ static fabr_tree *rex_str(fabr_input *i, char *rx, size_t rxn)
     "      * rex_str() i+o>%s< rx>%s<%zu\n", i->string + i->offset, rx, rxn);
 
   fabr_tree *r = fabr_tree_malloc(NULL, "rex_str", i, rxn);
-
-  char *in = i->string + i->offset;
 
   size_t ii = 0;
   size_t ri = 0;
@@ -669,7 +675,7 @@ static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
   char c = rx_at(rx, rxn, 0);
 
   fabr_rex_parser *p = NULL;
-  size_t z = 0;
+  ssize_t z = 0;
   size_t off = 0;
 
   if (c == '[')
@@ -692,8 +698,8 @@ static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
   {
     p = rex_str;
     z = find_str_end(rx, rxn);
-    printf("      %zu fse >%s<%zu --> %zu\n", m, rx, rxn, z);
-    if (z == 0) return ferr(i, "rex_rep", "lone quantifier >%s<%zu", rx, rxn);
+    printf("      %zu fse >%s<%zu --> %zd\n", m, rx, rxn, z);
+    if (z == -1) return ferr(i, "rex_rep", "lone quantifier >%s<%zu", rx, rxn);
   }
 
   size_t mm[] = { 0, 0 };
