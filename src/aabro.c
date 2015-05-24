@@ -468,7 +468,7 @@ static void rng_next(char *rx, size_t rxn, char *next)
 
 static fabr_tree *rng(fabr_input *i, char *rx, size_t rxn)
 {
-  //printf("        rng() i+o>%s< >%s<%zu\n", i->string + i->offset, rx, rxn);
+  printf("        rng() i+o>%s< >%s<%zu\n", i->string + i->offset, rx, rxn);
 
   fabr_tree *r = fabr_tree_malloc(NULL, "rng", i, rxn);
 
@@ -604,7 +604,7 @@ static size_t find_group_end(char *rx, size_t rxn)
 
 static size_t find_str_end(char *rx, size_t rxn)
 {
-  printf("fse >%s<%zu\n", rx, rxn);
+  //printf("fse >%s<%zu\n", rx, rxn);
 
   for (size_t i = 0; ; i++)
   {
@@ -623,14 +623,48 @@ static size_t find_str_end(char *rx, size_t rxn)
   return 0;
 }
 
+static size_t mm = 0;
+
+static fabr_tree *rex_str(fabr_input *i, char *rx, size_t rxn)
+{
+  printf(
+    "      * rex_str() i+o>%s< rx>%s<%zu\n", i->string + i->offset, rx, rxn);
+
+  fabr_tree *r = fabr_tree_malloc(NULL, "rex_str", i, rxn);
+
+  char *in = i->string + i->offset;
+
+  size_t ii = 0;
+  size_t ri = 0;
+
+  while (1)
+  {
+    char rc = rx_at(rx, rxn, ri++);
+    //printf("rc >%c<\n", rc);
+    if (rc == '\0') break;
+    if (rc == '\\') continue;
+
+    char ic = *(i->string + i->offset + ii++);
+    //printf("ic >%c<\n", ic);
+    if (ic == '\0') { r->result = 0; break; }
+
+    if (ic != rc) { r->result = 0; break; }
+  }
+
+  if (r->result == 1) {
+    i->offset += ii;
+    r->length = ii;
+  }
+
+  return r;
+}
+
 static fabr_tree *rex_alt(fabr_input *i, char *rx, size_t rxn);
   // forward declaration
 
-//static size_t mm = 0;
-
 static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
 {
-  //size_t m = mm++; printf("    * %zu rex_rep() >%s<%zu\n", m, rx, rxn);
+  size_t m = mm++; printf("    * %zu rex_rep() >%s<%zu\n", m, rx, rxn);
 
   char c = rx_at(rx, rxn, 0);
 
@@ -656,9 +690,9 @@ static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
   }
   else
   {
-    p = str;
+    p = rex_str;
     z = find_str_end(rx, rxn);
-    //printf("      %zu fse >%s<%zu --> %zu\n", m, rx, rxn, z);
+    printf("      %zu fse >%s<%zu --> %zu\n", m, rx, rxn, z);
     if (z == 0) return ferr(i, "rex_rep", "lone quantifier >%s<%zu", rx, rxn);
   }
 

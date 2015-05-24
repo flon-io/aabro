@@ -192,10 +192,10 @@ context "tree functions"
     {
       char *in = "[-1,0,1]";
       t = fabr_parse_all(in, _value);
-      //char *st = fabr_tree_to_string(t, in, 1); puts(st); free(st);
+      fabr_puts_tree(t, in, 1);
 
       fabr_tree *tt = fabr_tree_lookup(t, "number");
-      //char *stt = fabr_tree_to_string(t, in, 1); puts(stt); free(stt);
+      //fabr_puts_tree(t, in, 1);
 
       char *s = fabr_tree_string(in, tt);
 
