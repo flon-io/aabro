@@ -638,10 +638,10 @@ static ssize_t find_str_end(char *rx, size_t rxn)
 
 static fabr_tree *rex_str(fabr_input *i, char *rx, size_t rxn)
 {
-  //printf(
-  //  "      * rex_str() >[0;34m%s[0;0m<%zu\n", rx, rxn);
-  //printf(
-  //  "      * i+o       >[1;33m%s[0;0m<\n", i->string + i->offset);
+  printf(
+    "      * rex_str() >[0;34m%s[0;0m<%zu\n", rx, rxn);
+  printf(
+    "        i+o       >[1;33m%s[0;0m<\n", i->string + i->offset);
 
   fabr_tree *r = fabr_tree_malloc(NULL, "rex_str", i, rxn);
   //r->result = 0;
@@ -668,7 +668,7 @@ static fabr_tree *rex_str(fabr_input *i, char *rx, size_t rxn)
     r->length = ii;
   }
 
-  //printf("        result: %d\n", r->result);
+  printf("        result: %d\n", r->result);
 
   return r;
 }
