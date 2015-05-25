@@ -576,6 +576,42 @@ describe "fabr_rex()"
         "  ] ]\n"
         "] ]");
     }
+
+    it "rejects \"ab|cd**\""
+    {
+      i.string = "ca";
+      t = fabr_rex("y", &i, "ab|cd**");
+
+      ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
+        "[ \"y\", -1, 0, 0, null, \"rex\", 7, [\n"
+        "  [ null, 0, 0, 0, null, \"rex_seq\", 2, [\n"
+        "    [ null, 0, 0, 0, null, \"rex_str\", 2, [] ]\n"
+        "  ] ],\n"
+        "  [ null, -1, 0, 0, null, \"rex_seq\", 4, [\n"
+        "    [ null, 1, 0, 1, null, \"rex_str\", 1, \"c\" ],\n"
+        "    [ null, 1, 1, 0, null, \"rex_rep\", 2, [\n"
+        "      [ null, 0, 1, 0, null, \"rex_str\", 1, [] ]\n"
+        "    ] ],\n"
+        "    [ null, -1, 1, 0, \"lone quantifier >*<1\", \"rex_rep\", 0, [] ]\n"
+        "  ] ]\n"
+        "] ]");
+    }
+
+    it "does not reject \"ab|cd**\" (not reaching *)"
+    {
+      i.string = "nada";
+      t = fabr_rex("y", &i, "ab|cd**");
+
+      ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
+        "[ \"y\", 0, 0, 0, null, \"rex\", 7, [\n"
+        "  [ null, 0, 0, 0, null, \"rex_seq\", 2, [\n"
+        "    [ null, 0, 0, 0, null, \"rex_str\", 2, [] ]\n"
+        "  ] ],\n"
+        "  [ null, 0, 0, 0, null, \"rex_seq\", 4, [\n"
+        "    [ null, 0, 0, 0, null, \"rex_str\", 1, [] ]\n"
+        "  ] ]\n"
+        "] ]");
+    }
   }
 }
 

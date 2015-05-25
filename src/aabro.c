@@ -805,6 +805,8 @@ static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
   r->result = prev->result;
   if (r->result != 1) r->length = 0;
 
+  printf("    %zu rex_seq() result: %d %zu\n", m, r->result, r->length);
+
   return r;
 }
 
