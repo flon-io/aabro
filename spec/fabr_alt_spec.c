@@ -20,9 +20,19 @@ describe "fabr_alt()"
     fabr_tree_free(t);
   }
 
-  fabr_tree *_tx(fabr_input *i) { return fabr_str(NULL, i, "tx"); }
-  fabr_tree *_ty(fabr_input *i) { return fabr_str(NULL, i, "ty"); }
-  fabr_tree *_tz(fabr_input *i) { return fabr_str(NULL, i, "tz"); }
+  static fabr_tree *_tx(fabr_input *i) { return fabr_str(NULL, i, "tx"); }
+  static fabr_tree *_ty(fabr_input *i) { return fabr_str(NULL, i, "ty"); }
+  static fabr_tree *_tz(fabr_input *i) { return fabr_str(NULL, i, "tz"); }
+
+  static fabr_tree *_talterr(fabr_input *i)
+  {
+    fabr_tree *r = calloc(1, sizeof(fabr_tree));
+    r->result = -1;
+    r->parter = "_talterr";
+    r->offset = i->offset;
+
+    return r;
+  }
 
   it "returns a tree with result == 0 in case of failure"
   {
@@ -47,6 +57,17 @@ describe "fabr_alt()"
       "[ \"x\", 1, 0, 2, null, \"alt\", 0, [\n"
       "  [ null, 0, 0, 0, null, \"str\", 2, [] ],\n"
       "  [ null, 1, 0, 2, null, \"str\", 2, [] ]\n"
+      "] ]");
+  }
+
+  it "propagates -1 (error)"
+  {
+    t = fabr_alt("x", &i, _tx, _talterr, NULL);
+
+    ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"x\", -1, 0, 0, null, \"alt\", 0, [\n"
+      "  [ null, 0, 0, 0, null, \"str\", 2, [] ],\n"
+      "  [ null, -1, 0, 0, null, \"_talterr\", 0, [] ]\n"
       "] ]");
   }
 }
