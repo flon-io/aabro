@@ -608,6 +608,7 @@ static size_t find_group_end(char *rx, size_t rxn)
 static ssize_t find_str_end(char *rx, size_t rxn)
 {
   //printf("fse >%s<%zu\n", rx, rxn);
+  //printf("fse >%.*s<%zu\n", (int)rxn, rx, rxn);
 
   for (size_t i = 0; ; i++)
   {
@@ -634,12 +635,12 @@ static ssize_t find_str_end(char *rx, size_t rxn)
   return -1; // error
 }
 
-//static size_t mm = 0;
+static size_t mm = 0;
 
 static fabr_tree *rex_str(fabr_input *i, char *rx, size_t rxn)
 {
   printf(
-    "      * rex_str() >[0;34m%s[0;0m<%zu\n", rx, rxn);
+    "      * rex_str() >[0;34m%.*s[0;0m<\n", (int)rxn, rx);
   printf(
     "        i+o       >[1;33m%s[0;0m<\n", i->string + i->offset);
 
@@ -678,31 +679,31 @@ static fabr_tree *rex_alt(fabr_input *i, char *rx, size_t rxn);
 
 static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
 {
-  //size_t m = mm++;
+  size_t m = mm++;
   //printf(
   //  "    * %zu rex_rep() >[0;34m%s[0;0m<%zu\n", m, rx, rxn);
   //printf(
   //  "    * %zu i+o       >[1;33m%s[0;0m<\n", m, i->string + i->offset);
 
-  char c = rx_at(rx, rxn, 0);
+  char rc = rx_at(rx, rxn, 0);
 
   fabr_rex_parser *p = NULL;
   ssize_t z = 0;
   size_t off = 0;
 
-  if (c == '[')
+  if (rc == '[')
   {
     p = rng;
     z = find_range_end(rx, rxn);
-    //printf("      %zu fre >%s<%zu --> %zu\n", m, rx, rxn, z);
+    //printf("      %zu fre >[0;34m%s[0;0m< --> %zu\n", m, (int)rxn, rx, z);
     if (z == 0) return ferr(i, "rex_rep", "range not closed >%s<%zu", rx, rxn);
     off = 1;
   }
-  else if (c == '(')
+  else if (rc == '(')
   {
     p = rex_alt;
     z = find_group_end(rx, rxn);
-    //printf("      %zu fge >%s<%zu --> %zu\n", m, rx, rxn, z);
+    //printf("      %zu fge >[0;34m%s[0;0m< --> %zu\n", m, (int)rxn, rx, z);
     if (z == 0) return ferr(i, "rex_rep", "group not closed >%s<%zu", rx, rxn);
     off = 1;
   }
@@ -710,7 +711,7 @@ static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
   {
     p = rex_str;
     z = find_str_end(rx, rxn);
-    //printf("      %zu fse >%s<%zu --> %zd\n", m, rx, rxn, z);
+    printf("      %zu fse >[0;34m%.*s[0;0m< --> %zd\n", m, (int)rxn, rx, z);
     if (z == -1) return ferr(i, "rex_rep", "lone quantifier >%s<%zu", rx, rxn);
   }
 
