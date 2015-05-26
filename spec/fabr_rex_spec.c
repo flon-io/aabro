@@ -507,6 +507,19 @@ describe "fabr_rex()"
       "] ]");
   }
 
+  it "accepts \\ escapes"
+  {
+    i.string = "de\\ux";
+    t = fabr_rex("y", &i, "de\\u[x-z]");
+
+    ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"y\", 1, 0, 5, null, \"rex\", 9, [\n"
+      "  [ null, 0, 0, 0, null, \"rex_seq\", 1, [\n"
+      "    [ null, 0, 0, 0, null, \"rex_str\", 1, [] ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
+
   context "errors"
   {
     it "rejects \"[ab\""
