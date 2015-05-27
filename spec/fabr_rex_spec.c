@@ -507,15 +507,30 @@ describe "fabr_rex()"
       "] ]");
   }
 
-  it "accepts \\ escapes"
+  it "accepts lone \\ escapes"
   {
-    i.string = "de\\ux";
+    i.string = "deux";
     t = fabr_rex("y", &i, "de\\u[x-z]");
 
     ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
-      "[ \"y\", 1, 0, 5, null, \"rex\", 9, [\n"
-      "  [ null, 0, 0, 0, null, \"rex_seq\", 1, [\n"
-      "    [ null, 0, 0, 0, null, \"rex_str\", 1, [] ]\n"
+      "[ \"y\", 1, 0, 4, null, \"rex\", 9, [\n"
+      "  [ null, 1, 0, 4, null, \"rex_seq\", 9, [\n"
+      "    [ null, 1, 0, 3, null, \"rex_str\", 4, \"deu\" ],\n"
+      "    [ null, 1, 3, 1, null, \"rng\", 5, \"x\" ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
+
+  it "accepts \\\\ escapes"
+  {
+    i.string = "de\\ux";
+    t = fabr_rex("y", &i, "de\\\\u[x-z]");
+
+    ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"y\", 1, 0, 4, null, \"rex\", 9, [\n"
+      "  [ null, 1, 0, 4, null, \"rex_seq\", 9, [\n"
+      "    [ null, 1, 0, 3, null, \"rex_str\", 4, \"deu\" ],\n"
+      "    [ null, 1, 3, 1, null, \"rng\", 5, \"x\" ]\n"
       "  ] ]\n"
       "] ]");
   }
