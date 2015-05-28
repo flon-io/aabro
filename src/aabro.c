@@ -645,7 +645,6 @@ static fabr_tree *rex_str(fabr_input *i, char *rx, size_t rxn)
     "        i+o       >[1;33m%s[0;0m<\n", i->string + i->offset);
 
   fabr_tree *r = fabr_tree_malloc(NULL, "rex_str", i, rxn);
-  //r->result = 0;
 
   size_t ii = 0;
   size_t ri = 0;
@@ -653,12 +652,12 @@ static fabr_tree *rex_str(fabr_input *i, char *rx, size_t rxn)
   while (1)
   {
     char rc = rx_at(rx, rxn, ri++);
-    //printf("rc >%c<\n", rc);
+    if (rc == '\\') rc = rx_at(rx, rxn, ri++);
+    //printf(". rc >%c<\n", rc);
     if (rc == '\0') break;
-    if (rc == '\\') continue;
 
     char ic = *(i->string + i->offset + ii++);
-    //printf("ic >%c<\n", ic);
+    //printf("  ic >%c<\n", ic);
     if (ic == '\0') { r->result = 0; break; }
 
     if (ic != rc) { r->result = 0; break; }
