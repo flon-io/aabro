@@ -468,8 +468,8 @@ static void rng_next(char *rx, size_t rxn, char *next)
 
 static fabr_tree *rng(fabr_input *i, char *rx, size_t rxn)
 {
-  printf("        rng() >[0;34m%.*s[0;0m<\n", (int)rxn, rx);
-  printf("        i+o   >[1;33m%s[0;0m<\n", i->string + i->offset);
+  //printf("        rng() >[0;34m%.*s[0;0m<\n", (int)rxn, rx);
+  //printf("        i+o   >[1;33m%s[0;0m<\n", i->string + i->offset);
 
   fabr_tree *r = fabr_tree_malloc(NULL, "rng", i, rxn);
 
@@ -506,7 +506,7 @@ static fabr_tree *rng(fabr_input *i, char *rx, size_t rxn)
     i->offset += 1;
   }
 
-  printf("        result: %d %zu\n", r->result, r->length);
+  //printf("        rng result: %d %zu\n", r->result, r->length);
 
   return r;
 }
@@ -635,14 +635,14 @@ static ssize_t find_str_end(char *rx, size_t rxn)
   return -1; // error
 }
 
-static size_t mm = 0;
+//static size_t mm = 0;
 
 static fabr_tree *rex_str(fabr_input *i, char *rx, size_t rxn)
 {
-  printf(
-    "      * rex_str() >[0;34m%.*s[0;0m<\n", (int)rxn, rx);
-  printf(
-    "        i+o       >[1;33m%s[0;0m<\n", i->string + i->offset);
+  //printf(
+  //  "      * rex_str() >[0;34m%.*s[0;0m<\n", (int)rxn, rx);
+  //printf(
+  //  "        i+o       >[1;33m%s[0;0m<\n", i->string + i->offset);
 
   fabr_tree *r = fabr_tree_malloc(NULL, "rex_str", i, rxn);
 
@@ -669,7 +669,7 @@ static fabr_tree *rex_str(fabr_input *i, char *rx, size_t rxn)
   }
   if (r->length == 0) r->result = 0; // ...
 
-  printf("        result: %d %zu\n", r->result, r->length);
+  //printf("        rex_str() result: %d %zu\n", r->result, r->length);
 
   return r;
 }
@@ -679,11 +679,11 @@ static fabr_tree *rex_alt(fabr_input *i, char *rx, size_t rxn);
 
 static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
 {
-  size_t m = mm++;
-  printf(
-    "    * %zu rex_rep() >[0;34m%.*s[0;0m<\n", m, (int)rxn, rx);
-  printf(
-    "    * %zu i+o       >[1;33m%s[0;0m<\n", m, i->string + i->offset);
+  //size_t m = mm++;
+  //printf(
+  //  "    * %zu rex_rep() >[0;34m%.*s[0;0m<\n", m, (int)rxn, rx);
+  //printf(
+  //  "    * %zu i+o       >[1;33m%s[0;0m<\n", m, i->string + i->offset);
 
   char rc = rx_at(rx, rxn, 0);
 
@@ -711,7 +711,7 @@ static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
   {
     p = rex_str;
     z = find_str_end(rx, rxn);
-    printf("      %zu fse >[0;34m%.*s[0;0m< --> %zd\n", m, (int)rxn, rx, z);
+    //printf("      %zu fse >[0;34m%.*s[0;0m< --> %zd\n", m, (int)rxn, rx, z);
     if (z == -1) return ferr(i, "rex_rep", "lone quantifier >%s<%zu", rx, rxn);
   }
 
@@ -765,9 +765,9 @@ static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
 
 static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
 {
-  size_t m = mm++;
-  printf("  * %zu rex_seq() >[0;34m%.*s[0;0m<\n", m, (int)rxn, rx);
-  printf("  * %zu i+o       >[1;33m%s[0;0m<\n", m, i->string + i->offset);
+  //size_t m = mm++;
+  //printf("  * %zu rex_seq() >[0;34m%.*s[0;0m<\n", m, (int)rxn, rx);
+  //printf("  * %zu i+o       >[1;33m%s[0;0m<\n", m, i->string + i->offset);
 
   fabr_tree *r = fabr_tree_malloc(NULL, "rex_seq", i, rxn);
 
@@ -804,7 +804,7 @@ static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
   r->result = prev->result;
   if (r->result != 1) r->length = 0;
 
-  printf("    %zu rex_seq() result: %d %zu\n", m, r->result, r->length);
+  //printf("    %zu rex_seq() result: %d %zu\n", m, r->result, r->length);
 
   return r;
 }
@@ -822,17 +822,17 @@ static fabr_tree *rex_alt(fabr_input *i, char *rx, size_t rxn)
   char *crx = rx;
   size_t crxn = rxn;
 
-  size_t m = mm++; size_t n = 0;
+  //size_t m = mm++; size_t n = 0;
 
   do
   {
-    printf(
-      "* %zu.%zu rex_alt() >[0;34m%.*s[0;0m< c%i\n",
-      m, n, (int)crxn, crx, c);
-    printf(
-      "  %zu.%zu i+o       >[1;33m%s[0;0m<\n",
-      m, n, i->string + i->offset);
-    n++;
+    //printf(
+    //  "* %zu.%zu rex_alt() >[0;34m%.*s[0;0m< c%i\n",
+    //  m, n, (int)crxn, crx, c);
+    //printf(
+    //  "  %zu.%zu i+o       >[1;33m%s[0;0m<\n",
+    //  m, n, i->string + i->offset);
+    //n++;
 
     for (size_t j = 0, range = 0, groups = 0; ; j++)
     {
