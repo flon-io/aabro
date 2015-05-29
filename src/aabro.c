@@ -340,9 +340,14 @@ static fabr_tree *str(fabr_input *i, char *rx, size_t rxn)
 fabr_tree *fabr_str(
   char *name, fabr_input *i, char *s)
 {
+  //printf("str()  >[0;34m%s[0;0m<\n", s);
+  //printf("i+o    >[1;33m%s[0;0m<\n", i->string + i->offset);
+
   fabr_tree *r = str(i, s, strlen(s));
 
   r->name = name ? strdup(name) : NULL;
+
+  //printf("str()  result %d %zu\n", r->result, r->length);
 
   return r;
 }
