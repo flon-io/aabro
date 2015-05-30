@@ -641,6 +641,8 @@ describe "fabr_rex()"
         "] ]");
     }
   }
+
+  it "resets the input offset in case of failure"
 }
 
 //  context "parsing"

@@ -355,6 +355,8 @@ fabr_tree *fabr_str(
 fabr_tree *fabr_seq(
   char *name, fabr_input *i, fabr_parser *p, ...)
 {
+  size_t off = i->offset;
+
   fabr_tree *r = fabr_tree_malloc(name, "seq", i, 0);
 
   fabr_tree **next = &r->child;
@@ -365,7 +367,7 @@ fabr_tree *fabr_seq(
     fabr_tree *t = p(i);
     *next = t;
 
-    if (t->result != 1) { r->result = 0; r->length = 0; break; }
+    if (t->result != 1) { r->result = 0; break; }
 
     r->length += t->length;
 
@@ -373,6 +375,12 @@ fabr_tree *fabr_seq(
     next = &t->sibling;
   }
   va_end(ap);
+
+  if (r->result != 1)
+  {
+    r->length = 0;
+    i->offset = off;
+  }
 
   return r;
 }

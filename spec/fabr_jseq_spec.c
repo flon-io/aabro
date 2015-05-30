@@ -91,5 +91,7 @@ describe "fabr_jseq()"
       "  [ null, 1, 6, 1, null, \"str\", 1, \"|\" ]\n"
       "] ]");
   }
+
+  it "resets the input offset in case of failure"
 }
 
