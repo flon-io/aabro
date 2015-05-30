@@ -38,7 +38,7 @@ describe "fabr_jseq()"
     i.string = "b";
     t = fabr_jseq("x", &i, _a, _com);
 
-    ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
       "[ \"x\", 0, 0, 0, null, \"jseq\", 0, [\n"
       "  [ \"a\", 0, 0, 0, null, \"str\", 1, [] ]\n"
       "] ]");
@@ -49,7 +49,7 @@ describe "fabr_jseq()"
     i.string = "a,ba";
     t = fabr_jseq("x", &i, _a, _com);
 
-    ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
       "[ \"x\", 0, 0, 0, null, \"jseq\", 0, [\n"
       "  [ \"a\", 1, 0, 1, null, \"str\", 1, \"a\" ],\n"
       "  [ null, 1, 1, 1, null, \"str\", 1, \",\" ],\n"
@@ -62,7 +62,7 @@ describe "fabr_jseq()"
     i.string = "a,a,a";
     t = fabr_jseq("x", &i, _a, _com);
 
-    ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
       "[ \"x\", 1, 0, 5, null, \"jseq\", 0, [\n"
       "  [ \"a\", 1, 0, 1, null, \"str\", 1, \"a\" ],\n"
       "  [ null, 1, 1, 1, null, \"str\", 1, \",\" ],\n"
@@ -77,7 +77,7 @@ describe "fabr_jseq()"
     i.string = "|a,a,a|";
     t = _ar(&i);
 
-    ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
       "[ \"ar\", 1, 0, 7, null, \"seq\", 0, [\n"
       "  [ null, 1, 0, 1, null, \"str\", 1, \"|\" ],\n"
       "  [ \"as\", 1, 1, 5, null, \"jseq\", 0, [\n"
@@ -93,5 +93,13 @@ describe "fabr_jseq()"
   }
 
   it "resets the input offset in case of failure"
+  {
+    i.string = "a,ba";
+    t = fabr_jseq("x", &i, _a, _com);
+
+    expect(t->result i== 0);
+    expect(t->length zu== 0);
+    expect(i.offset zu== 0);
+  }
 }
 

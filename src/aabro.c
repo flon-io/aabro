@@ -906,6 +906,8 @@ fabr_tree *fabr_rex(
 fabr_tree *fabr_jseq(
   char *name, fabr_input *i, fabr_parser *eltp, fabr_parser *sepp)
 {
+  size_t off = i->offset;
+
   fabr_parser *ps[] = { eltp, sepp };
 
   fabr_tree *r = fabr_tree_malloc(name, "jseq", i, 0);
@@ -919,20 +921,23 @@ fabr_tree *fabr_jseq(
     fabr_tree *t = ps[j](i);
     *next = t;
 
-    if (t->result == -1)
-    {
-      r->result = -1; r->length = 0;
-      break;
-    }
+    if (t->result == -1) { r->result = -1; break; }
+
     if (t->result == 0)
     {
-      if (j == 0) { r->result = 0; r->length = 0; }
+      if (j == 0) r->result = 0;
       break;
     }
 
     r->length += t->length;
 
     next = &t->sibling;
+  }
+
+  if (r->result != 1)
+  {
+    r->length = 0;
+    i->offset = off;
   }
 
   return r;
