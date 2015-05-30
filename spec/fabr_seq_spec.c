@@ -91,12 +91,8 @@ describe "fabr_seq()"
     i.string = "totita";
     t = fabr_seq("x", &i, _to, _ta, NULL);
 
-    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
-      "[ \"x\", 0, 0, 0, null, \"seq\", 0, [\n"
-      "  [ null, 1, 0, 2, null, \"str\", 2, \"to\" ],\n"
-      "  [ null, 0, 2, 0, null, \"str\", 2, [] ]\n"
-      "] ]");
-
+    expect(t->result i== 0);
+    expect(t->length zu== 0);
     expect(i.offset zu== 0)
   }
 }
