@@ -368,15 +368,58 @@ fabr_tree *fabr_seq(
   va_list ap; va_start(ap, p);
   while (1)
   {
-    fabr_tree *t = p(i);
-    *next = t;
+    if (r->result != 1) break;
 
-    if (t->result != 1) { r->result = 0; break; }
+    if (p == NULL) break;
 
-    r->length += t->length;
+    if (p == fabr_qmark || p == fabr_star || p == fabr_plus)
+    {
+      r->result = -1;
+      r->note = strdup("bad position for fabr_qmark, _star or _plus");
+      break;
+    }
 
-    p = va_arg(ap, fabr_parser *); if (p == NULL) break;
-    next = &t->sibling;
+    fabr_parser *np = va_arg(ap, fabr_parser *);
+
+    for (size_t count = 0; ; count++)
+    {
+      fabr_tree *t = p(i);
+      *next = t;
+      next = &t->sibling; // TODO don't add if PRUNE
+      r->length += t->length;
+
+      if (t->result == -1) { r->result = -1; break; }
+
+      if (np == fabr_qmark)
+      {
+        if (count > 1) { r->result = 0; break; }
+        if (t->result == 0) break;
+      }
+      else if (np == fabr_star)
+      {
+        if (t->result == 0) break;
+      }
+      else if (np == fabr_plus)
+      {
+        if (t->result == 0)
+        {
+          if (count == 0) r->result = 0;
+          break;
+        }
+      }
+      else
+      {
+        if (t->result == 0) r->result = 0;
+        break;
+      }
+    }
+
+    p = np; // well...
+
+    if (p == fabr_qmark || p == fabr_star || p == fabr_plus)
+    {
+      p = va_arg(ap, fabr_parser *);
+    }
   }
   va_end(ap);
 
@@ -920,7 +963,7 @@ fabr_tree *fabr_jseq(
 
   for (int j = 0; ; j = j == 1 ? 0 : 1)
   {
-    if (*(i->string + i->offset) == 0) break;
+    if (*(i->string + i->offset) == 0) break; // EOS
 
     fabr_tree *t = ps[j](i);
     *next = t;

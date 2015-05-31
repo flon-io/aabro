@@ -39,11 +39,9 @@ describe "fabr_seq()"
   {
     t = fabr_seq(NULL, &i, _ta, _ta, NULL);
 
-    char *s = fabr_tree_to_string(t, NULL, 0);
-
-    expect(s ===f ""
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
       "[ null, 0, 0, 0, null, \"seq\", 0, [\n"
-      "  [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
+      "  [ null, 1, 0, 2, null, \"str\", 2, \"ta\" ],\n"
       "  [ null, 0, 2, 0, null, \"str\", 2, [] ]\n"
       "] ]");
   }
@@ -108,31 +106,60 @@ describe "fabr_seq()"
 
   context "quantifiers"
   {
+    describe "a lonely quantifier"
+    {
+      it "triggers an error"
+      {
+        i.string = "tatota";
+        t = fabr_seq("y", &i, fabr_qmark, NULL);
+
+        expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+          "[ \"y\", -1, 0, 0, \"bad position for fabr_qmark, _star or _plus\", \"seq\", 0, [] ]");
+      }
+    }
+
     describe "fabr_qmark"
     {
       it "succeeds"
+      {
+        i.string = "tata";
+        t = fabr_seq("y", &i, _ta, _to, fabr_qmark, _ta, NULL);
+
+        expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+          "[ \"y\", 1, 0, 4, null, \"seq\", 0, [\n"
+          "  [ null, 1, 0, 2, null, \"str\", 2, \"ta\" ],\n"
+          "  [ null, 0, 2, 0, null, \"str\", 2, [] ],\n"
+          "  [ null, 1, 2, 2, null, \"str\", 2, \"ta\" ]\n"
+          "] ]");
+      }
 
       it "succeeds (2)"
-//      {
-//        i.string = "tatota";
-//        t = fabr_seq("y", &i, _ta, _to, fabr_qmark, _ta, NULL);
-//
-//
-//        expect(fabr_tree_to_string(t, i.string, 0) ===f ""
-//          "[ \"x\", 1, 0, 6, null, \"seq\", 0, [\n"
-//          "  [ null, 1, 0, 2, null, \"str\", 2, \"ta\" ],\n"
-//          "  [ null, 1, 2, 2, null, \"str\", 2, \"to\" ],\n"
-//          "  [ null, 1, 4, 2, null, \"str\", 2, \"ta\" ]\n"
-//          "] ]");
-//      }
+      {
+        i.string = "tatota";
+        t = fabr_seq("z", &i, _ta, _to, fabr_qmark, _ta, NULL);
+
+        expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+          "[ \"z\", 1, 0, 6, null, \"seq\", 0, [\n"
+          "  [ null, 1, 0, 2, null, \"str\", 2, \"ta\" ],\n"
+          "  [ null, 1, 2, 2, null, \"str\", 2, \"to\" ],\n"
+          "  [ null, 1, 4, 2, null, \"str\", 2, \"ta\" ]\n"
+          "] ]");
+      }
     }
 
     describe "fabr_star"
     {
+      it "succeeds"
     }
 
     describe "fabr_plus"
     {
+      it "succeeds"
+    }
+
+    context "when pruning"
+    {
+      it "prunes 0 results"
     }
   }
 }
