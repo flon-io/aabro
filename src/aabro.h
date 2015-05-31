@@ -176,6 +176,10 @@ fabr_tree *fabr_jseq(
 fabr_tree *fabr_all(
   char *name, fabr_input *i, fabr_parser *p);
 
+fabr_tree *fabr_qmark(fabr_input *);
+fabr_tree *fabr_star(fabr_input *);
+fabr_tree *fabr_plus(fabr_input *);
+
 
 //
 // helpers

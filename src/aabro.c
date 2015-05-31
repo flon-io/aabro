@@ -352,6 +352,10 @@ fabr_tree *fabr_str(
   return r;
 }
 
+fabr_tree *fabr_qmark(fabr_input *i) { return NULL; }
+fabr_tree *fabr_star(fabr_input *i) { return NULL; }
+fabr_tree *fabr_plus(fabr_input *i) { return NULL; }
+
 fabr_tree *fabr_seq(
   char *name, fabr_input *i, fabr_parser *p, ...)
 {

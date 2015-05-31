@@ -96,31 +96,34 @@ describe "fabr_seq()"
     expect(i.offset zu== 0);
   }
 
-  context "fabr_qmark()"
+  context "quantifiers"
   {
-    it "succeeds"
-
-    it "succeeds (2)"
+    describe "fabr_qmark"
     {
-      i.string = "tatota";
-      t = fabr_seq("y", &i, _ta, _to, _ta, NULL);
+      it "succeeds"
 
-      char *s = fabr_tree_to_string(t, NULL, 0);
-
-      expect(s ===f ""
-        "[ \"x\", 1, 0, 4, null, \"seq\", 0, [\n"
-        "  [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
-        "  [ null, 1, 2, 2, null, \"str\", 2, [] ]\n"
-        "] ]");
+      it "succeeds (2)"
+//      {
+//        i.string = "tatota";
+//        t = fabr_seq("y", &i, _ta, _to, fabr_qmark, _ta, NULL);
+//
+//
+//        expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+//          "[ \"x\", 1, 0, 6, null, \"seq\", 0, [\n"
+//          "  [ null, 1, 0, 2, null, \"str\", 2, \"ta\" ],\n"
+//          "  [ null, 1, 2, 2, null, \"str\", 2, \"to\" ],\n"
+//          "  [ null, 1, 4, 2, null, \"str\", 2, \"ta\" ]\n"
+//          "] ]");
+//      }
     }
-  }
 
-  context "fabr_star()"
-  {
-  }
+    describe "fabr_star"
+    {
+    }
 
-  context "fabr_plus()"
-  {
+    describe "fabr_plus"
+    {
+    }
   }
 }
 
