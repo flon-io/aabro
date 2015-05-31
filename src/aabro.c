@@ -320,7 +320,7 @@ fabr_tree *fabr_t_path(fabr_tree *t, size_t index, ...)
 
 static fabr_tree *str(fabr_input *i, char *rx, size_t rxn)
 {
-  //printf("str() i+o>%s< vs >%s<%zu\n", i->string + i->offset, rx, rxn);
+  //printf("str() i+o>%s< vs >%.*s<\n", i->string + i->offset, (int)rxn, rx);
 
   fabr_tree *r = fabr_tree_malloc(NULL, "str", i, rxn);
 
