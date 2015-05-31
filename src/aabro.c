@@ -410,6 +410,8 @@ fabr_tree *fabr_alt(
 fabr_tree *fabr_rep(
   char *name, fabr_input *i, fabr_parser *p, size_t min, size_t max)
 {
+  size_t off = i->offset;
+
   fabr_tree *r = fabr_tree_malloc(name, "rep", i, 0);
 
   fabr_tree **next = &r->child;
@@ -439,7 +441,7 @@ fabr_tree *fabr_rep(
   }
 
   if (r->result == 1 && count < min) r->result = 0;
-  if (r->result != 1) r->length = 0;
+  if (r->result != 1) { r->length = 0; i->offset = off; }
 
   return r;
 }
