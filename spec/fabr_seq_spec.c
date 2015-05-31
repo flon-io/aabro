@@ -93,7 +93,34 @@ describe "fabr_seq()"
 
     expect(t->result i== 0);
     expect(t->length zu== 0);
-    expect(i.offset zu== 0)
+    expect(i.offset zu== 0);
+  }
+
+  context "fabr_qmark()"
+  {
+    it "succeeds"
+
+    it "succeeds (2)"
+    {
+      i.string = "tatota";
+      t = fabr_seq("y", &i, _ta, _to, _ta, NULL);
+
+      char *s = fabr_tree_to_string(t, NULL, 0);
+
+      expect(s ===f ""
+        "[ \"x\", 1, 0, 4, null, \"seq\", 0, [\n"
+        "  [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
+        "  [ null, 1, 2, 2, null, \"str\", 2, [] ]\n"
+        "] ]");
+    }
+  }
+
+  context "fabr_star()"
+  {
+  }
+
+  context "fabr_plus()"
+  {
   }
 }
 
