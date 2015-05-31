@@ -156,5 +156,7 @@ describe "fabr_rep()"
       "  [ null, -1, 0, 0, null, \"_terr\", 0, [] ]\n"
       "] ]");
   }
+
+  it "resets the input offset in case of failure"
 }
 
