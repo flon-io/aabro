@@ -58,9 +58,11 @@ context "tree functions"
     it "accepts \"deux\""
     {
       char *s = "\"deux\"";
+
       t = fabr_parse_all(s, _value);
       //t = fabr_parse_f(s, _value, 0);
-      fabr_puts_tree(t, s, 1);
+
+      //fabr_puts_tree(t, s, 1);
 
       expect(fabr_tree_to_string(t, s, 0) ===f ""
         "[ null, 1, 0, 6, null, \"all\", 0, [\n"
