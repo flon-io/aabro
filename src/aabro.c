@@ -385,19 +385,19 @@ fabr_tree *fabr_seq(
     {
       fabr_tree *t = p(i);
 
+      if (t->result == -1) { r->result = -1; break; }
+
       if (t->result == 0 && i->flags & FABR_F_PRUNE)
       {
         fabr_tree_free(t);
+        t = NULL;
       }
       else
       {
         *next = t;
         next = &t->sibling;
+        r->length += t->length;
       }
-
-      r->length += t->length;
-
-      if (t->result == -1) { r->result = -1; break; }
 
       if (np == fabr_qmark)
       {
@@ -405,11 +405,11 @@ fabr_tree *fabr_seq(
       }
       /* else */ if (np == fabr_star)
       {
-        if (t->result == 0) break;
+        if (t == NULL || t->result == 0) break;
       }
       else if (np == fabr_plus)
       {
-        if (t->result == 0)
+        if (t == NULL || t->result == 0)
         {
           if (count == 0) r->result = 0;
           break;
@@ -417,7 +417,7 @@ fabr_tree *fabr_seq(
       }
       else
       {
-        if (t->result == 0) r->result = 0;
+        if (t == NULL || t->result == 0) r->result = 0;
         break;
       }
     }
