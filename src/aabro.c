@@ -384,8 +384,17 @@ fabr_tree *fabr_seq(
     for (size_t count = 0; ; count++)
     {
       fabr_tree *t = p(i);
-      *next = t;
-      next = &t->sibling; // TODO don't add if PRUNE
+
+      if (t->result == 0 && i->flags & FABR_F_PRUNE)
+      {
+        fabr_tree_free(t);
+      }
+      else
+      {
+        *next = t;
+        next = &t->sibling;
+      }
+
       r->length += t->length;
 
       if (t->result == -1) { r->result = -1; break; }

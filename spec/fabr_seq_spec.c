@@ -142,6 +142,22 @@ describe "fabr_seq()"
           "[ \"z\", 1, 0, 6, null, \"seq\", 0, [\n"
           "  [ null, 1, 0, 2, null, \"str\", 2, \"ta\" ],\n"
           "  [ null, 1, 2, 2, null, \"str\", 2, \"to\" ],\n"
+          "  [ null, 0, 4, 0, null, \"str\", 2, [] ],\n"
+          "  [ null, 1, 4, 2, null, \"str\", 2, \"ta\" ]\n"
+          "] ]");
+      }
+
+      it "prunes when input->flags & FABR_F_PRUNE"
+      {
+        i.string = "tatota";
+        i.flags = FABR_F_PRUNE;
+
+        t = fabr_seq("z", &i, _ta, _to, fabr_qmark, _ta, NULL);
+
+        expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+          "[ \"z\", 1, 0, 6, null, \"seq\", 0, [\n"
+          "  [ null, 1, 0, 2, null, \"str\", 2, \"ta\" ],\n"
+          "  [ null, 1, 2, 2, null, \"str\", 2, \"to\" ],\n"
           "  [ null, 1, 4, 2, null, \"str\", 2, \"ta\" ]\n"
           "] ]");
       }
@@ -155,11 +171,6 @@ describe "fabr_seq()"
     describe "fabr_plus"
     {
       it "succeeds"
-    }
-
-    context "when pruning"
-    {
-      it "prunes 0 results"
     }
   }
 }
