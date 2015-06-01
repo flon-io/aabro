@@ -120,6 +120,19 @@ describe "fabr_seq()"
 
     describe "fabr_qmark"
     {
+      it "fails"
+      {
+        i.string = "tatotota";
+        t = fabr_seq("x", &i, _ta, _to, fabr_qmark, _ta, NULL);
+
+        expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+          "[ \"x\", 0, 0, 0, null, \"seq\", 0, [\n"
+          "  [ null, 1, 0, 2, null, \"str\", 2, \"ta\" ],\n"
+          "  [ null, 1, 2, 2, null, \"str\", 2, \"to\" ],\n"
+          "  [ null, 0, 4, 0, null, \"str\", 2, [] ]\n"
+          "] ]");
+      }
+
       it "succeeds"
       {
         i.string = "tata";
@@ -146,19 +159,6 @@ describe "fabr_seq()"
           "] ]");
       }
 
-      it "fails"
-      {
-        i.string = "tatotota";
-        t = fabr_seq("x", &i, _ta, _to, fabr_qmark, _ta, NULL);
-
-        expect(fabr_tree_to_string(t, i.string, 0) ===f ""
-          "[ \"x\", 0, 0, 0, null, \"seq\", 0, [\n"
-          "  [ null, 1, 0, 2, null, \"str\", 2, \"ta\" ],\n"
-          "  [ null, 1, 2, 2, null, \"str\", 2, \"to\" ],\n"
-          "  [ null, 0, 4, 0, null, \"str\", 2, [] ]\n"
-          "] ]");
-      }
-
       it "prunes when input->flags & FABR_F_PRUNE"
       {
         i.string = "tatota";
@@ -178,11 +178,55 @@ describe "fabr_seq()"
     describe "fabr_star"
     {
       it "succeeds"
+      {
+        i.string = "tata";
+        t = fabr_seq("x", &i, _ta, _to, fabr_star, _ta, NULL);
+
+        expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+          "[ \"x\", 1, 0, 4, null, \"seq\", 0, [\n"
+          "  [ null, 1, 0, 2, null, \"str\", 2, \"ta\" ],\n"
+          "  [ null, 0, 2, 0, null, \"str\", 2, [] ],\n"
+          "  [ null, 1, 2, 2, null, \"str\", 2, \"ta\" ]\n"
+          "] ]");
+      }
+
+      it "succeeds (2)"
+      {
+        i.string = "tatotota";
+        t = fabr_seq("x", &i, _ta, _to, fabr_star, _ta, NULL);
+
+        expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+          "[ \"x\", 1, 0, 8, null, \"seq\", 0, [\n"
+          "  [ null, 1, 0, 2, null, \"str\", 2, \"ta\" ],\n"
+          "  [ null, 1, 2, 2, null, \"str\", 2, \"to\" ],\n"
+          "  [ null, 1, 4, 2, null, \"str\", 2, \"to\" ],\n"
+          "  [ null, 0, 6, 0, null, \"str\", 2, [] ],\n"
+          "  [ null, 1, 6, 2, null, \"str\", 2, \"ta\" ]\n"
+          "] ]");
+      }
+
+      it "prunes when input->flags & FABR_F_PRUNE"
+      {
+        i.string = "tatotota";
+        i.flags = FABR_F_PRUNE;
+
+        t = fabr_seq("x", &i, _ta, _to, fabr_star, _ta, NULL);
+
+        expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+          "[ \"x\", 1, 0, 8, null, \"seq\", 0, [\n"
+          "  [ null, 1, 0, 2, null, \"str\", 2, \"ta\" ],\n"
+          "  [ null, 1, 2, 2, null, \"str\", 2, \"to\" ],\n"
+          "  [ null, 1, 4, 2, null, \"str\", 2, \"to\" ],\n"
+          "  [ null, 1, 6, 2, null, \"str\", 2, \"ta\" ]\n"
+          "] ]");
+      }
     }
 
     describe "fabr_plus"
     {
+      it "fails"
       it "succeeds"
+      it "prunes when input->flags & FABR_F_PRUNE"
     }
   }
 }
