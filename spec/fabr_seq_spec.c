@@ -142,8 +142,20 @@ describe "fabr_seq()"
           "[ \"z\", 1, 0, 6, null, \"seq\", 0, [\n"
           "  [ null, 1, 0, 2, null, \"str\", 2, \"ta\" ],\n"
           "  [ null, 1, 2, 2, null, \"str\", 2, \"to\" ],\n"
-          "  [ null, 0, 4, 0, null, \"str\", 2, [] ],\n"
           "  [ null, 1, 4, 2, null, \"str\", 2, \"ta\" ]\n"
+          "] ]");
+      }
+
+      it "fails"
+      {
+        i.string = "tatotota";
+        t = fabr_seq("x", &i, _ta, _to, fabr_qmark, _ta, NULL);
+
+        expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+          "[ \"x\", 0, 0, 0, null, \"seq\", 0, [\n"
+          "  [ null, 1, 0, 2, null, \"str\", 2, \"ta\" ],\n"
+          "  [ null, 1, 2, 2, null, \"str\", 2, \"to\" ],\n"
+          "  [ null, 0, 4, 0, null, \"str\", 2, [] ]\n"
           "] ]");
       }
 

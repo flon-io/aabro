@@ -401,10 +401,9 @@ fabr_tree *fabr_seq(
 
       if (np == fabr_qmark)
       {
-        if (count > 1) { r->result = 0; break; }
-        if (t->result == 0) break;
+        break;
       }
-      else if (np == fabr_star)
+      /* else */ if (np == fabr_star)
       {
         if (t->result == 0) break;
       }
