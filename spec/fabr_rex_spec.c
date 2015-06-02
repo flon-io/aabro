@@ -491,6 +491,34 @@ describe "fabr_rex()"
       "] ]");
   }
 
+  it "accepts \"[ab][cd]\" (failure)"
+  {
+    i.string = "aa";
+    t = fabr_rex("y", &i, "[ab][cd]");
+
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"y\", 0, 0, 0, null, \"rex\", 8, [\n"
+      "  [ null, 0, 0, 0, null, \"rex_seq\", 8, [\n"
+      "    [ null, 1, 0, 1, null, \"rng\", 4, \"a\" ],\n"
+      "    [ null, 0, 1, 0, null, \"rng\", 4, [] ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
+
+  it "accepts \"[ab][cd]\" (success)"
+  {
+    i.string = "ac";
+    t = fabr_rex("y", &i, "[ab][cd]");
+
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"y\", 1, 0, 2, null, \"rex\", 8, [\n"
+      "  [ null, 1, 0, 2, null, \"rex_seq\", 8, [\n"
+      "    [ null, 1, 0, 1, null, \"rng\", 4, \"a\" ],\n"
+      "    [ null, 1, 1, 1, null, \"rng\", 4, \"c\" ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
+
   it "accepts \"\\\\|\\\\|?\" (success)"
   {
     i.string = "||";
