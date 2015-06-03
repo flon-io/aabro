@@ -170,8 +170,13 @@ fabr_tree *fabr_rng(
 fabr_tree *fabr_rex(
   char *name, fabr_input *i, char *rex);
 
+fabr_tree *fabr_eseq(
+  char *name, fabr_input *i,
+  fabr_parser *startp, fabr_parser *eltp, fabr_parser *sepp, fabr_parser *endp);
+
 fabr_tree *fabr_jseq(
-  char *name, fabr_input *i, fabr_parser *eltp, fabr_parser *sepp);
+  char *name, fabr_input *i,
+  fabr_parser *eltp, fabr_parser *sepp);
 
 fabr_tree *fabr_all(
   char *name, fabr_input *i, fabr_parser *p);

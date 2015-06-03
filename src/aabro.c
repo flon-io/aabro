@@ -958,40 +958,49 @@ fabr_tree *fabr_rex(
   return r;
 }
 
+fabr_tree *fabr_eseq(
+  char *name, fabr_input *i,
+  fabr_parser *startp, fabr_parser *eltp, fabr_parser *sepp, fabr_parser *endp)
+{
+  return NULL;
+}
+
 fabr_tree *fabr_jseq(
   char *name, fabr_input *i, fabr_parser *eltp, fabr_parser *sepp)
 {
-  size_t off = i->offset;
+  return fabr_eseq(name, i, NULL, eltp, sepp, NULL);
 
-  fabr_parser *ps[] = { eltp, sepp };
-
-  fabr_tree *r = fabr_tree_malloc(name, "jseq", i, 0);
-
-  fabr_tree **next = &r->child;
-
-  for (int j = 0; ; j = j == 1 ? 0 : 1)
-  {
-    if (*(i->string + i->offset) == 0) break; // EOS
-
-    fabr_tree *t = ps[j](i);
-    *next = t;
-
-    if (t->result == -1) { r->result = -1; break; }
-
-    if (t->result == 0)
-    {
-      if (j == 0) r->result = 0;
-      break;
-    }
-
-    r->length += t->length;
-
-    next = &t->sibling;
-  }
-
-  if (r->result != 1) { r->length = 0; i->offset = off; }
-
-  return r;
+//  size_t off = i->offset;
+//
+//  fabr_parser *ps[] = { eltp, sepp };
+//
+//  fabr_tree *r = fabr_tree_malloc(name, "jseq", i, 0);
+//
+//  fabr_tree **next = &r->child;
+//
+//  for (int j = 0; ; j = j == 1 ? 0 : 1)
+//  {
+//    if (*(i->string + i->offset) == 0) break; // EOS
+//
+//    fabr_tree *t = ps[j](i);
+//    *next = t;
+//
+//    if (t->result == -1) { r->result = -1; break; }
+//
+//    if (t->result == 0)
+//    {
+//      if (j == 0) r->result = 0;
+//      break;
+//    }
+//
+//    r->length += t->length;
+//
+//    next = &t->sibling;
+//  }
+//
+//  if (r->result != 1) { r->length = 0; i->offset = off; }
+//
+//  return r;
 }
 
 fabr_tree *fabr_all(
