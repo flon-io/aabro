@@ -31,63 +31,52 @@ describe "fabr_eseq()"
     t = fabr_eseq("z", &i, _es_sta, _es_elt, _es_sep, _es_end);
 
     expect(fabr_tree_to_string(t, i.string, 0) ===f ""
-      "[ \"x\", 0, 0, 0, null, \"jseq\", 0, [\n"
-      "  [ \"a\", 0, 0, 0, null, \"str\", 1, [] ]\n"
+      "[ \"z\", 0, 0, 0, null, \"eseq\", 0, [\n"
+      "  [ null, 0, 0, 0, null, \"str\", 1, [] ]\n"
       "] ]");
   }
 
   it "fails (2)"
-  //{
-  //  i.string = "a,ba";
-  //  t = fabr_jseq("x", &i, _a, _com);
-  //  expect(fabr_tree_to_string(t, i.string, 0) ===f ""
-  //    "[ \"x\", 0, 0, 0, null, \"jseq\", 0, [\n"
-  //    "  [ \"a\", 1, 0, 1, null, \"str\", 1, \"a\" ],\n"
-  //    "  [ null, 1, 1, 1, null, \"str\", 1, \",\" ],\n"
-  //    "  [ \"a\", 0, 2, 0, null, \"str\", 1, [] ]\n"
-  //    "] ]");
-  //}
+  {
+    i.string = "<b,>";
+    t = fabr_eseq("z", &i, _es_sta, _es_elt, _es_sep, _es_end);
+
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"z\", 0, 0, 0, null, \"eseq\", 0, [\n"
+      "  [ null, 1, 0, 1, null, \"str\", 1, \"<\" ],\n"
+      "  [ \"e\", 1, 1, 1, null, \"rng\", 3, \"b\" ],\n"
+      "  [ null, 1, 2, 1, null, \"str\", 1, \",\" ],\n"
+      "  [ \"e\", 0, 3, 0, null, \"rng\", 3, [] ]\n"
+      "] ]");
+  }
 
   it "succeeds"
-  //{
-  //  i.string = "a,a,a";
-  //  t = fabr_jseq("x", &i, _a, _com);
-  //  expect(fabr_tree_to_string(t, i.string, 0) ===f ""
-  //    "[ \"x\", 1, 0, 5, null, \"jseq\", 0, [\n"
-  //    "  [ \"a\", 1, 0, 1, null, \"str\", 1, \"a\" ],\n"
-  //    "  [ null, 1, 1, 1, null, \"str\", 1, \",\" ],\n"
-  //    "  [ \"a\", 1, 2, 1, null, \"str\", 1, \"a\" ],\n"
-  //    "  [ null, 1, 3, 1, null, \"str\", 1, \",\" ],\n"
-  //    "  [ \"a\", 1, 4, 1, null, \"str\", 1, \"a\" ]\n"
-  //    "] ]");
-  //}
+  {
+    i.string = "<a,b,c>";
+    t = fabr_eseq("z", &i, _es_sta, _es_elt, _es_sep, _es_end);
 
-  it "succeeds (bigger context)"
-  //{
-  //  i.string = "|a,a,a|";
-  //  t = _ar(&i);
-  //  expect(fabr_tree_to_string(t, i.string, 0) ===f ""
-  //    "[ \"ar\", 1, 0, 7, null, \"seq\", 0, [\n"
-  //    "  [ null, 1, 0, 1, null, \"str\", 1, \"|\" ],\n"
-  //    "  [ \"as\", 1, 1, 5, null, \"jseq\", 0, [\n"
-  //    "    [ \"a\", 1, 1, 1, null, \"str\", 1, \"a\" ],\n"
-  //    "    [ null, 1, 2, 1, null, \"str\", 1, \",\" ],\n"
-  //    "    [ \"a\", 1, 3, 1, null, \"str\", 1, \"a\" ],\n"
-  //    "    [ null, 1, 4, 1, null, \"str\", 1, \",\" ],\n"
-  //    "    [ \"a\", 1, 5, 1, null, \"str\", 1, \"a\" ],\n"
-  //    "    [ null, 0, 6, 0, null, \"str\", 1, [] ]\n"
-  //    "  ] ],\n"
-  //    "  [ null, 1, 6, 1, null, \"str\", 1, \"|\" ]\n"
-  //    "] ]");
-  //}
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"z\", 1, 0, 7, null, \"eseq\", 0, [\n"
+      "  [ null, 1, 0, 1, null, \"str\", 1, \"<\" ],\n"
+      "  [ \"e\", 1, 1, 1, null, \"rng\", 3, \"a\" ],\n"
+      "  [ null, 1, 2, 1, null, \"str\", 1, \",\" ],\n"
+      "  [ \"e\", 1, 3, 1, null, \"rng\", 3, \"b\" ],\n"
+      "  [ null, 1, 4, 1, null, \"str\", 1, \",\" ],\n"
+      "  [ \"e\", 1, 5, 1, null, \"rng\", 3, \"c\" ],\n"
+      "  [ null, 1, 6, 1, null, \"str\", 1, \">\" ]\n"
+      "] ]");
+  }
 
   it "resets the input offset in case of failure"
-  //{
-  //  i.string = "a,ba";
-  //  t = fabr_jseq("x", &i, _a, _com);
-  //  expect(t->result i== 0);
-  //  expect(t->length zu== 0);
-  //  expect(i.offset zu== 0);
-  //}
+  {
+    i.string = "<b,>";
+    t = fabr_eseq("z", &i, _es_sta, _es_elt, _es_sep, _es_end);
+
+    expect(t->result i== 0);
+    expect(t->length zu== 0);
+    expect(i.offset zu== 0);
+  }
+
+  it "prunes"
 }
 

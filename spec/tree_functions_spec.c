@@ -300,7 +300,7 @@ context "tree functions"
           "  [ \"value\", 1, 0, 8, null, \"alt\", 0, [\n"
           "    [ \"array\", 1, 0, 8, null, \"seq\", 0, [\n"
           "      [ null, 1, 0, 1, null, \"str\", 1, \"[\" ],\n"
-          "      [ \"values\", 1, 1, 6, null, \"jseq\", 0, [\n"
+          "      [ \"values\", 1, 1, 6, null, \"eseq\", 0, [\n"
           "        [ \"value\", 1, 1, 2, null, \"alt\", 0, [\n"
           "          [ \"number\", 1, 1, 2, null, \"rex\", 19, \"-1\" ]\n"
           "        ] ],\n"
@@ -465,7 +465,7 @@ context "tree functions"
       expect(tt != NULL);
 
       expect(fabr_tree_to_str(tt, s, 0) ===f ""
-        "[ \"values\", 1, 1, 5, null, \"jseq\", 0, 6 ]");
+        "[ \"values\", 1, 1, 5, null, \"eseq\", 0, 6 ]");
     }
   }
 

@@ -39,7 +39,7 @@ describe "fabr_jseq()"
     t = fabr_jseq("x", &i, _a, _com);
 
     expect(fabr_tree_to_string(t, i.string, 0) ===f ""
-      "[ \"x\", 0, 0, 0, null, \"jseq\", 0, [\n"
+      "[ \"x\", 0, 0, 0, null, \"eseq\", 0, [\n"
       "  [ \"a\", 0, 0, 0, null, \"str\", 1, [] ]\n"
       "] ]");
   }
@@ -50,7 +50,7 @@ describe "fabr_jseq()"
     t = fabr_jseq("x", &i, _a, _com);
 
     expect(fabr_tree_to_string(t, i.string, 0) ===f ""
-      "[ \"x\", 0, 0, 0, null, \"jseq\", 0, [\n"
+      "[ \"x\", 0, 0, 0, null, \"eseq\", 0, [\n"
       "  [ \"a\", 1, 0, 1, null, \"str\", 1, \"a\" ],\n"
       "  [ null, 1, 1, 1, null, \"str\", 1, \",\" ],\n"
       "  [ \"a\", 0, 2, 0, null, \"str\", 1, [] ]\n"
@@ -63,7 +63,7 @@ describe "fabr_jseq()"
     t = fabr_jseq("x", &i, _a, _com);
 
     expect(fabr_tree_to_string(t, i.string, 0) ===f ""
-      "[ \"x\", 1, 0, 5, null, \"jseq\", 0, [\n"
+      "[ \"x\", 1, 0, 5, null, \"eseq\", 0, [\n"
       "  [ \"a\", 1, 0, 1, null, \"str\", 1, \"a\" ],\n"
       "  [ null, 1, 1, 1, null, \"str\", 1, \",\" ],\n"
       "  [ \"a\", 1, 2, 1, null, \"str\", 1, \"a\" ],\n"
@@ -80,7 +80,7 @@ describe "fabr_jseq()"
     expect(fabr_tree_to_string(t, i.string, 0) ===f ""
       "[ \"ar\", 1, 0, 7, null, \"seq\", 0, [\n"
       "  [ null, 1, 0, 1, null, \"str\", 1, \"|\" ],\n"
-      "  [ \"as\", 1, 1, 5, null, \"jseq\", 0, [\n"
+      "  [ \"as\", 1, 1, 5, null, \"eseq\", 0, [\n"
       "    [ \"a\", 1, 1, 1, null, \"str\", 1, \"a\" ],\n"
       "    [ null, 1, 2, 1, null, \"str\", 1, \",\" ],\n"
       "    [ \"a\", 1, 3, 1, null, \"str\", 1, \"a\" ],\n"
@@ -101,5 +101,7 @@ describe "fabr_jseq()"
     expect(t->length zu== 0);
     expect(i.offset zu== 0);
   }
+
+  it "prunes"
 }
 
