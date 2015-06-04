@@ -63,6 +63,7 @@ describe "fabr_eseq()"
       "  [ \"e\", 1, 3, 1, null, \"rng\", 3, \"b\" ],\n"
       "  [ null, 1, 4, 1, null, \"str\", 1, \",\" ],\n"
       "  [ \"e\", 1, 5, 1, null, \"rng\", 3, \"c\" ],\n"
+      "  [ null, 0, 6, 0, null, \"str\", 1, [] ],\n"
       "  [ null, 1, 6, 1, null, \"str\", 1, \">\" ]\n"
       "] ]");
   }

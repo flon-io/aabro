@@ -986,6 +986,7 @@ fabr_tree *fabr_eseq(
 
     fabr_tree *t = ps[j](i);
     *next = t;
+    next = &t->sibling;
 
     if (t->result == -1) { r->result = -1; break; }
 
@@ -996,8 +997,6 @@ fabr_tree *fabr_eseq(
     }
 
     r->length += t->length;
-
-    next = &t->sibling;
   }
 
   if (r->result == 1 && endp)
