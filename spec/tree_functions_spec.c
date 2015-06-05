@@ -39,13 +39,14 @@ context "tree functions"
         "[^\"\\\\]"
       ")*\"");
   }
-  static fabr_tree *_values(fabr_input *i)
-  {
-    return fabr_jseq("values", i, _value, _comma);
-  }
+  //static fabr_tree *_values(fabr_input *i)
+  //{
+  //  return fabr_jseq("values", i, _value, _comma);
+  //}
   static fabr_tree *_array(fabr_input *i)
   {
-    return fabr_seq("array", i, _osb, _values, _csb, NULL);
+    //return fabr_seq("array", i, _osb, _values, _csb, NULL);
+    return fabr_eseq("array", i, _osb, _value, _comma, _csb);
   }
   static fabr_tree *_value(fabr_input *i)
   {
@@ -102,7 +103,7 @@ context "tree functions"
     {
       char *s = "[1,2,3]";
       t = fabr_parse_all(s, _value);
-      //char *st = fabr_tree_to_string(t, s, 1); puts(st); free(st);
+      //fabr_puts_tree(t, s, 1);
 
       flu_list *l = fabr_tree_list(fabr_t_path(t, 0, 0, -1), is_value);
 
@@ -163,7 +164,7 @@ context "tree functions"
     {
       char *s = "[1,2,3]";
       t = fabr_parse_all(s, _value);
-      //char *st = fabr_tree_to_string(t, NULL, 1); puts(st); free(st);
+      //fabr_puts_tree(t, s, 1);
 
       flu_list *l = fabr_tree_list_named(fabr_t_path(t, 0, 0, -1), "nada");
 
@@ -179,9 +180,9 @@ context "tree functions"
     {
       char *s = "[1,2,3]";
       t = fabr_parse_all(s, _value);
-      //char *st = fabr_tree_to_string(t, NULL, 1); puts(st); free(st);
+      //fabr_puts_tree(t, s, 1);
 
-      fabr_tree **ts = fabr_tree_collect(fabr_t_path(t, 0, 0, 1, -1), is_value);
+      fabr_tree **ts = fabr_tree_collect(fabr_t_path(t, 0, 0, -1), is_value);
 
       ensure(ts[0] != NULL);
       ensure(ts[1] != NULL);
@@ -230,7 +231,7 @@ context "tree functions"
     {
       char *in = "[nada]";
       t = fabr_parse_all(in, _value);
-      //char *st = fabr_tree_to_string(t, in, 1); puts(st); free(st);
+      //fabr_puts_tree(t, in, 1);
 
       char *s = fabr_tree_string(in, t);
 
@@ -293,25 +294,22 @@ context "tree functions"
       {
         char *in = "[-1,0,1]";
         t = fabr_parse_all(in, _value);
-        char *s = fabr_tree_to_string(t, in, 0);
 
-        ensure(s ===f ""
+        ensure(fabr_tree_to_string(t, in, 0) ===f ""
           "[ null, 1, 0, 8, null, \"all\", 0, [\n"
           "  [ \"value\", 1, 0, 8, null, \"alt\", 0, [\n"
-          "    [ \"array\", 1, 0, 8, null, \"seq\", 0, [\n"
+          "    [ \"array\", 1, 0, 8, null, \"eseq\", 0, [\n"
           "      [ null, 1, 0, 1, null, \"str\", 1, \"[\" ],\n"
-          "      [ \"values\", 1, 1, 6, null, \"eseq\", 0, [\n"
-          "        [ \"value\", 1, 1, 2, null, \"alt\", 0, [\n"
-          "          [ \"number\", 1, 1, 2, null, \"rex\", 19, \"-1\" ]\n"
-          "        ] ],\n"
-          "        [ null, 1, 3, 1, null, \"str\", 1, \",\" ],\n"
-          "        [ \"value\", 1, 4, 1, null, \"alt\", 0, [\n"
-          "          [ \"number\", 1, 4, 1, null, \"rex\", 19, \"0\" ]\n"
-          "        ] ],\n"
-          "        [ null, 1, 5, 1, null, \"str\", 1, \",\" ],\n"
-          "        [ \"value\", 1, 6, 1, null, \"alt\", 0, [\n"
-          "          [ \"number\", 1, 6, 1, null, \"rex\", 19, \"1\" ]\n"
-          "        ] ]\n"
+          "      [ \"value\", 1, 1, 2, null, \"alt\", 0, [\n"
+          "        [ \"number\", 1, 1, 2, null, \"rex\", 19, \"-1\" ]\n"
+          "      ] ],\n"
+          "      [ null, 1, 3, 1, null, \"str\", 1, \",\" ],\n"
+          "      [ \"value\", 1, 4, 1, null, \"alt\", 0, [\n"
+          "        [ \"number\", 1, 4, 1, null, \"rex\", 19, \"0\" ]\n"
+          "      ] ],\n"
+          "      [ null, 1, 5, 1, null, \"str\", 1, \",\" ],\n"
+          "      [ \"value\", 1, 6, 1, null, \"alt\", 0, [\n"
+          "        [ \"number\", 1, 6, 1, null, \"rex\", 19, \"1\" ]\n"
           "      ] ],\n"
           "      [ null, 1, 7, 1, null, \"str\", 1, \"]\" ]\n"
           "    ] ]\n"
@@ -319,14 +317,13 @@ context "tree functions"
           "] ]");
       }
 
-      it "escapes the leave string"
+      it "escapes the leaf string"
       {
         char *in = "\"hello\nworld\"";
 
         t = fabr_parse_all(in, _value);
-        char *s = fabr_tree_to_string(t, in, 0);
 
-        ensure(s ===f ""
+        ensure(fabr_tree_to_string(t, in, 0) ===f ""
           "[ null, 1, 0, 13, null, \"all\", 0, [\n"
           "  [ \"value\", 1, 0, 13, null, \"alt\", 0, [\n"
           "    [ \"string\", 1, 0, 13, null, \"rex\", 43, \"\\\"hello\\nworld\\\"\" ]\n"
@@ -401,7 +398,7 @@ context "tree functions"
       {
         char *s = "yyy";
         t = fabr_parse_all(s, _value);
-        //char *st = fabr_tree_to_string(t, s, 1); puts(st); free(st);
+        //fabr_puts_tree(t, s, 1);
 
         expect(fabr_tree_lookup(t->child->child->child, NULL) == NULL);
       }
@@ -410,7 +407,7 @@ context "tree functions"
       {
         char *s = "[1,\"deux\",3]";
         t = fabr_parse_all(s, _value);
-        //char *st = fabr_tree_to_string(t, s, 1); puts(st); free(st);
+        //fabr_puts_tree(t, s, 1);
 
         fabr_tree *tt = NULL;
 
@@ -422,7 +419,7 @@ context "tree functions"
         tt = fabr_tree_lookup(t->child->child, NULL);
 
         expect(fabr_tree_to_str(tt, s, 0) ===f ""
-          "[ \"array\", 1, 0, 12, null, \"seq\", 0, 3 ]");
+          "[ \"array\", 1, 0, 12, null, \"eseq\", 0, 7 ]");
       }
     }
   }
@@ -443,7 +440,7 @@ context "tree functions"
     {
       char *s = "[1,2,3]";
       t = fabr_parse_all(s, _value);
-      //char *st = fabr_tree_to_string(t, s, 1); puts(st); free(st);
+      //fabr_puts_tree(t, s, 1);
 
       fabr_tree *tt = fabr_subtree_lookup(t->child, "value");
 
@@ -459,12 +456,13 @@ context "tree functions"
       t = fabr_parse_all(s, _value);
       //fabr_puts_tree(t, s, 1);
 
-      fabr_tree *tt = fabr_subtree_lookup(t->child->child, NULL);
+      fabr_tree *tt = fabr_subtree_lookup(t->child, NULL);
+      //fabr_puts_tree(tt, s, 1);
 
       expect(tt != NULL);
 
       expect(fabr_tree_to_str(tt, s, 0) ===f ""
-        "[ \"values\", 1, 1, 5, null, \"eseq\", 0, 5 ]");
+        "[ \"array\", 1, 0, 7, null, \"eseq\", 0, 7 ]");
     }
   }
 
@@ -472,18 +470,20 @@ context "tree functions"
   {
     it "returns NULL if it finds nothing"
     {
-      char *in = "[-1,0,1]";
-      t = fabr_parse_all(in, _value);
+      char *s = "[-1,0,1]";
+      t = fabr_parse_all(s, _value);
 
-      expect(fabr_lookup_string(in, t, "nada") == NULL);
+      expect(fabr_lookup_string(s, t, "nada") == NULL);
     }
 
     it "returns the [malloc'ed] string value for the given name"
     {
-      char *in = "[-1,0,1]";
-      t = fabr_parse_all(in, _value);
+      char *s = "[-1,0,1]";
+      t = fabr_parse_all(s, _value);
+      //fabr_puts_tree(t, s, 1);
 
-      expect(fabr_lookup_string(in, t, "values") ===f "-1,0,1");
+      expect(fabr_lookup_string(s, t, "array") ===f "[-1,0,1]");
+      expect(fabr_lookup_string(s, t, "number") ===f "-1");
     }
   }
 }
