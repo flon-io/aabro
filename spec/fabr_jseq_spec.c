@@ -70,6 +70,8 @@ describe "fabr_jseq()"
       "  [ null, 1, 3, 1, null, \"str\", 1, \",\" ],\n"
       "  [ \"a\", 1, 4, 1, null, \"str\", 1, \"a\" ]\n"
       "] ]");
+
+    // there is no "," miss subtree because it reached EOS
   }
 
   it "succeeds (bigger context)"
@@ -103,5 +105,22 @@ describe "fabr_jseq()"
   }
 
   it "prunes"
+  {
+    i.string = "|a,a|";
+    i.flags = FABR_F_PRUNE;
+
+    t = _ar(&i);
+
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"ar\", 1, 0, 5, null, \"seq\", 0, [\n"
+      "  [ null, 1, 0, 1, null, \"str\", 1, \"|\" ],\n"
+      "  [ \"as\", 1, 1, 3, null, \"eseq\", 0, [\n"
+      "    [ \"a\", 1, 1, 1, null, \"str\", 1, \"a\" ],\n"
+      "    [ null, 1, 2, 1, null, \"str\", 1, \",\" ],\n"
+      "    [ \"a\", 1, 3, 1, null, \"str\", 1, \"a\" ]\n"
+      "  ] ],\n"
+      "  [ null, 1, 4, 1, null, \"str\", 1, \"|\" ]\n"
+      "] ]");
+  }
 }
 
