@@ -985,6 +985,7 @@ fabr_tree *fabr_eseq(
     if (*(i->string + i->offset) == 0) break; // EOS
 
     fabr_tree *t = ps[j](i);
+    fabr_tree **n = next;
     *next = t;
     next = &t->sibling;
 
@@ -992,7 +993,16 @@ fabr_tree *fabr_eseq(
 
     if (t->result == 0)
     {
-      if (j == 0) r->result = 0;
+      if (j == 0) // no element
+      {
+        r->result = 0;
+      }
+      else if (i->flags & FABR_F_PRUNE) // no separator but prune
+      {
+        *n = NULL;
+        next = n;
+        fabr_tree_free(t);
+      }
       break;
     }
 

@@ -311,8 +311,7 @@ context "tree functions"
           "        [ null, 1, 5, 1, null, \"str\", 1, \",\" ],\n"
           "        [ \"value\", 1, 6, 1, null, \"alt\", 0, [\n"
           "          [ \"number\", 1, 6, 1, null, \"rex\", 19, \"1\" ]\n"
-          "        ] ],\n"
-          "        [ null, 0, 7, 0, null, \"str\", 1, [] ]\n"
+          "        ] ]\n"
           "      ] ],\n"
           "      [ null, 1, 7, 1, null, \"str\", 1, \"]\" ]\n"
           "    ] ]\n"
@@ -458,14 +457,14 @@ context "tree functions"
     {
       char *s = "[1,2,3]";
       t = fabr_parse_all(s, _value);
-      //char *st = fabr_tree_to_string(t, s, 1); puts(st); free(st);
+      //fabr_puts_tree(t, s, 1);
 
       fabr_tree *tt = fabr_subtree_lookup(t->child->child, NULL);
 
       expect(tt != NULL);
 
       expect(fabr_tree_to_str(tt, s, 0) ===f ""
-        "[ \"values\", 1, 1, 5, null, \"eseq\", 0, 6 ]");
+        "[ \"values\", 1, 1, 5, null, \"eseq\", 0, 5 ]");
     }
   }
 
