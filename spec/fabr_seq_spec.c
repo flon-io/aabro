@@ -12,7 +12,7 @@ describe "fabr_seq()"
 {
   before each
   {
-    fabr_input i = { "tato", 0, };
+    fabr_input i = { "tato", 0, 0 };
     fabr_tree *t = NULL;
   }
   after each
