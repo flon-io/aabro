@@ -24,9 +24,7 @@ describe "fabr_str()"
   {
     t = fabr_str(NULL, &i, "tutu");
 
-    char *s = fabr_tree_to_string(t, NULL, 0);
-
-    ensure(s ===f ""
+    ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
       "[ null, 0, 0, 0, null, \"str\", 4, [] ]");
   }
 
@@ -34,29 +32,23 @@ describe "fabr_str()"
   {
     t = fabr_str(NULL, &i, "toto");
 
-    char *s = fabr_tree_to_string(t, NULL, 0);
-
-    ensure(s ===f ""
-      "[ null, 1, 0, 4, null, \"str\", 4, [] ]");
+    ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ null, 1, 0, 4, null, \"str\", 4, \"toto\" ]");
   }
 
   it "names the result if there is a name"
   {
     t = fabr_str("x", &i, "toto");
 
-    char *s = fabr_tree_to_string(t, NULL, 0);
-
-    ensure(s ===f ""
-      "[ \"x\", 1, 0, 4, null, \"str\", 4, [] ]");
+    ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"x\", 1, 0, 4, null, \"str\", 4, \"toto\" ]");
   }
 
   it "names in case of failure as well"
   {
     t = fabr_str("x", &i, "tutu");
 
-    char *s = fabr_tree_to_string(t, NULL, 0);
-
-    ensure(s ===f ""
+    ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
       "[ \"x\", 0, 0, 0, null, \"str\", 4, [] ]");
   }
 

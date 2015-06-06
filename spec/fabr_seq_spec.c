@@ -27,9 +27,7 @@ describe "fabr_seq()"
   {
     t = fabr_seq(NULL, &i, _to, _ta, NULL);
 
-    char *s = fabr_tree_to_string(t, NULL, 0);
-
-    expect(s ===f ""
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
       "[ null, 0, 0, 0, null, \"seq\", 0, [\n"
       "  [ null, 0, 0, 0, null, \"str\", 2, [] ]\n"
       "] ]");
@@ -50,12 +48,10 @@ describe "fabr_seq()"
   {
     t = fabr_seq(NULL, &i, _ta, _to, NULL);
 
-    char *s = fabr_tree_to_string(t, NULL, 0);
-
-    expect(s ===f ""
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
       "[ null, 1, 0, 4, null, \"seq\", 0, [\n"
-      "  [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
-      "  [ null, 1, 2, 2, null, \"str\", 2, [] ]\n"
+      "  [ null, 1, 0, 2, null, \"str\", 2, \"ta\" ],\n"
+      "  [ null, 1, 2, 2, null, \"str\", 2, \"to\" ]\n"
       "] ]");
   }
 
@@ -63,12 +59,10 @@ describe "fabr_seq()"
   {
     t = fabr_seq("x", &i, _ta, _to, NULL);
 
-    char *s = fabr_tree_to_string(t, NULL, 0);
-
-    expect(s ===f ""
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
       "[ \"x\", 1, 0, 4, null, \"seq\", 0, [\n"
-      "  [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
-      "  [ null, 1, 2, 2, null, \"str\", 2, [] ]\n"
+      "  [ null, 1, 0, 2, null, \"str\", 2, \"ta\" ],\n"
+      "  [ null, 1, 2, 2, null, \"str\", 2, \"to\" ]\n"
       "] ]");
   }
 

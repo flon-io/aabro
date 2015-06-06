@@ -42,9 +42,7 @@ describe "fabr_rep()"
 
     t = fabr_rep("x", &i, _t0, 1, 2);
 
-    char *s = fabr_tree_to_string(t, NULL, 0);
-
-    expect(s ===f ""
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
       "[ \"x\", 0, 0, 0, null, \"rep\", 0, [\n"
       "  [ null, 0, 0, 0, null, \"str\", 2, [] ]\n"
       "] ]");
@@ -56,12 +54,10 @@ describe "fabr_rep()"
 
     t = fabr_rep("x", &i, _t0, 1, 2);
 
-    char *s = fabr_tree_to_string(t, NULL, 0);
-
-    expect(s ===f ""
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
       "[ \"x\", 1, 0, 4, null, \"rep\", 0, [\n"
-      "  [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
-      "  [ null, 1, 2, 2, null, \"str\", 2, [] ]\n"
+      "  [ null, 1, 0, 2, null, \"str\", 2, \"t0\" ],\n"
+      "  [ null, 1, 2, 2, null, \"str\", 2, \"t0\" ]\n"
       "] ]");
   }
 
@@ -71,11 +67,9 @@ describe "fabr_rep()"
 
     t = fabr_rep("x", &i, _t0, 2, 3);
 
-    char *s = fabr_tree_to_string(t, NULL, 0);
-
-    expect(s ===f ""
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
       "[ \"x\", 0, 0, 0, null, \"rep\", 0, [\n"
-      "  [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
+      "  [ null, 1, 0, 2, null, \"str\", 2, \"t0\" ],\n"
       "  [ null, 0, 2, 0, null, \"str\", 2, [] ]\n"
       "] ]");
   }
@@ -86,13 +80,11 @@ describe "fabr_rep()"
 
     t = fabr_rep("x", &i, _t0, 4, 0);
 
-    char *s = fabr_tree_to_string(t, NULL, 0);
-
-    expect(s ===f ""
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
       "[ \"x\", 0, 0, 0, null, \"rep\", 0, [\n"
-      "  [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
-      "  [ null, 1, 2, 2, null, \"str\", 2, [] ],\n"
-      "  [ null, 1, 4, 2, null, \"str\", 2, [] ]\n"
+      "  [ null, 1, 0, 2, null, \"str\", 2, \"t0\" ],\n"
+      "  [ null, 1, 2, 2, null, \"str\", 2, \"t0\" ],\n"
+      "  [ null, 1, 4, 2, null, \"str\", 2, \"t0\" ]\n"
       "] ]");
   }
 
@@ -102,13 +94,11 @@ describe "fabr_rep()"
 
     t = fabr_rep("x", &i, _t0, 2, 0);
 
-    char *s = fabr_tree_to_string(t, NULL, 0);
-
-    expect(s ===f ""
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
       "[ \"x\", 1, 0, 6, null, \"rep\", 0, [\n"
-      "  [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
-      "  [ null, 1, 2, 2, null, \"str\", 2, [] ],\n"
-      "  [ null, 1, 4, 2, null, \"str\", 2, [] ]\n"
+      "  [ null, 1, 0, 2, null, \"str\", 2, \"t0\" ],\n"
+      "  [ null, 1, 2, 2, null, \"str\", 2, \"t0\" ],\n"
+      "  [ null, 1, 4, 2, null, \"str\", 2, \"t0\" ]\n"
       "] ]");
   }
 
@@ -118,9 +108,7 @@ describe "fabr_rep()"
 
     t = fabr_rep("x", &i, _t0, 0, 1);
 
-    char *s = fabr_tree_to_string(t, NULL, 0);
-
-    expect(s ===f ""
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
       "[ \"x\", 1, 0, 0, null, \"rep\", 0, [\n"
       "  [ null, 0, 0, 0, null, \"str\", 2, [] ]\n"
       "] ]");
@@ -133,13 +121,11 @@ describe "fabr_rep()"
 
     t = fabr_rep("x", &i, _t0, 2, 0);
 
-    char *s = fabr_tree_to_string(t, NULL, 0);
-
-    expect(s ===f ""
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
       "[ \"x\", 1, 0, 6, null, \"rep\", 0, [\n"
-      "  [ null, 1, 0, 2, null, \"str\", 2, [] ],\n"
-      "  [ null, 1, 2, 2, null, \"str\", 2, [] ],\n"
-      "  [ null, 1, 4, 2, null, \"str\", 2, [] ]\n"
+      "  [ null, 1, 0, 2, null, \"str\", 2, \"t0\" ],\n"
+      "  [ null, 1, 2, 2, null, \"str\", 2, \"t0\" ],\n"
+      "  [ null, 1, 4, 2, null, \"str\", 2, \"t0\" ]\n"
       "] ]");
   }
 
@@ -149,9 +135,7 @@ describe "fabr_rep()"
 
     t = fabr_rep("x", &i, _terr, 0, 1);
 
-    char *s = fabr_tree_to_string(t, NULL, 0);
-
-    expect(s ===f ""
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
       "[ \"x\", -1, 0, 0, null, \"rep\", 0, [\n"
       "  [ null, -1, 0, 0, null, \"_terr\", 0, [] ]\n"
       "] ]");
