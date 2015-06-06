@@ -579,6 +579,19 @@ describe "fabr_rex()"
     expect(i.offset zu== 0);
   }
 
+  it "accepts an empty input"
+  {
+    i.string = "abc";
+    i.offset = 3;
+
+    t = fabr_rex("z", &i, "[a-z]+");
+
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"z\", 0, 3, 0, null, \"rex\", 6, [\n"
+      "  [ null, 0, 3, 0, null, \"rex_seq\", 6, [] ]\n"
+      "] ]");
+  }
+
   context "errors"
   {
     it "rejects \"[ab\""

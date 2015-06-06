@@ -869,7 +869,8 @@ static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
     //  m, i->string + i->offset, crx, crxn);
   }
 
-  r->result = prev->result;
+  r->result = prev ? prev->result : 0;
+
   if (r->result != 1) { r->length = 0; i->offset = off; }
 
   //printf("    %zu rex_seq() result: %d %zu\n", m, r->result, r->length);
