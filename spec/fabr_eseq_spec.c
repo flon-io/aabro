@@ -94,5 +94,18 @@ describe "fabr_eseq()"
       "  [ null, 1, 4, 1, null, \"str\", 1, \">\" ]\n"
       "] ]");
   }
+
+  it "accepts an empty input"
+  {
+    i.string = "ab";
+    i.offset = 2;
+
+    t = fabr_eseq("z", &i, _es_sta, _es_elt, _es_sep, _es_end);
+
+    ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"z\", 0, 2, 0, null, \"eseq\", 0, [\n"
+      "  [ null, 0, 2, 0, null, \"str\", 1, [] ]\n"
+      "] ]");
+  }
 }
 

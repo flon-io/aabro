@@ -104,6 +104,19 @@ describe "fabr_seq()"
     expect(i.offset zu== 0);
   }
 
+  it "accepts an empty input"
+  {
+    i.string = "t0t0";
+    i.offset = 4;
+
+    t = fabr_seq("z", &i, _to, _ta, NULL);
+
+    ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
+      "[ \"z\", 0, 4, 0, null, \"seq\", 0, [\n"
+      "  [ null, 0, 4, 0, null, \"str\", 2, [] ]\n"
+      "] ]");
+  }
+
   context "quantifiers"
   {
     describe "a lonely quantifier"

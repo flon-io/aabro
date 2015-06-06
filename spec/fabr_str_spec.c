@@ -59,5 +59,16 @@ describe "fabr_str()"
     ensure(s ===f ""
       "[ \"x\", 0, 0, 0, null, \"str\", 4, [] ]");
   }
+
+  it "accepts an empty input"
+  {
+    i.string = "t0t0";
+    i.offset = 4;
+
+    t = fabr_str("z", &i, "nada");
+
+    ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
+      "[ \"z\", 0, 4, 0, null, \"str\", 4, [] ]");
+  }
 }
 

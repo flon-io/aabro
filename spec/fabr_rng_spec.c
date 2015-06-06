@@ -267,10 +267,19 @@ describe "fabr_rng()"
     i.string = "\\";
     t = fabr_rng("x", &i, "\\\\");
 
-    char *s = fabr_tree_to_string(t, NULL, 0);
-
-    ensure(s ===f ""
+    ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
       "[ \"x\", 1, 0, 1, null, \"rng\", 2, [] ]");
+  }
+
+  it "accepts an empty input"
+  {
+    i.string = "t0t0";
+    i.offset = 4;
+
+    t = fabr_rng("z", &i, "a-b");
+
+    ensure(fabr_tree_to_string(t, NULL, 0) ===f ""
+      "[ \"z\", 0, 4, 0, null, \"rng\", 3, [] ]");
   }
 }
 

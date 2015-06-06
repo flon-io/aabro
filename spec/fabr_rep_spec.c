@@ -167,5 +167,16 @@ describe "fabr_rep()"
     expect(t->length zu== 0);
     expect(i.offset zu== 0);
   }
+
+  it "accepts an empty input"
+  {
+    i.string = "t0t0";
+    i.offset = 4;
+
+    t = fabr_rep("z", &i, _t0, 4, 0);
+
+    ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"z\", 0, 4, 0, null, \"rep\", 0, [] ]");
+  }
 }
 
