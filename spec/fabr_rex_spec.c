@@ -267,7 +267,8 @@ describe "fabr_rex()"
     expect(fabr_tree_to_string(t, i.string, 0) ===f ""
       "[ \"x\", 1, 0, 2, null, \"rex\", 7, [\n"
       "  [ null, 1, 0, 2, null, \"rex_seq\", 7, [\n"
-      "    [ null, 1, 0, 2, null, \"rex_str\", 2, \"ab\" ]\n"
+      "    [ null, 1, 0, 2, null, \"rex_str\", 2, \"ab\" ],\n"
+      "    [ null, 1, 2, 0, null, \"rex_rep\", 5, \"\" ]\n"
       "  ] ]\n"
       "] ]");
   }
@@ -601,7 +602,39 @@ describe "fabr_rex()"
 
     expect(fabr_tree_to_string(t, i.string, 0) ===f ""
       "[ \"z\", 0, 3, 0, null, \"rex\", 6, [\n"
-      "  [ null, 0, 3, 0, null, \"rex_seq\", 6, [] ]\n"
+      "  [ null, 0, 3, 0, null, \"rex_seq\", 6, [\n"
+      "    [ null, 0, 3, 0, null, \"rex_rep\", 6, [] ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
+
+  it "matches an empty input on \"a*\""
+  {
+    i.string = "ab";
+    i.offset = 2;
+
+    t = fabr_rex("x", &i, "a*");
+
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"x\", 1, 2, 0, null, \"rex\", 2, [\n"
+      "  [ null, 1, 2, 0, null, \"rex_seq\", 2, [\n"
+      "    [ null, 1, 2, 0, null, \"rex_rep\", 2, \"\" ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
+
+  it "matches an empty input on \"a?\""
+  {
+    i.string = "ab";
+    i.offset = 2;
+
+    t = fabr_rex("y", &i, "a?");
+
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"y\", 1, 2, 0, null, \"rex\", 2, [\n"
+      "  [ null, 1, 2, 0, null, \"rex_seq\", 2, [\n"
+      "    [ null, 1, 2, 0, null, \"rex_rep\", 2, \"\" ]\n"
+      "  ] ]\n"
       "] ]");
   }
 
