@@ -55,7 +55,6 @@ context "tree functions"
 
   describe "the sample _value parser"
   {
-
     it "accepts \"deux\""
     {
       char *s = "\"deux\"";
