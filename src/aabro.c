@@ -718,6 +718,7 @@ static fabr_tree *rex_str(fabr_input *i, char *rx, size_t rxn)
   while (1)
   {
     char rc = rx_at(rx, rxn, ri++);
+    char prc = rc;
     if (rc == '\\') rc = rx_at(rx, rxn, ri++);
     //printf(". rc >%c<\n", rc);
     if (rc == '\0') break;
@@ -725,6 +726,8 @@ static fabr_tree *rex_str(fabr_input *i, char *rx, size_t rxn)
     char ic = *(i->string + i->offset + ii++);
     //printf("  ic >%c<\n", ic);
     if (ic == '\0') { r->result = 0; break; }
+
+    if (rc == '.' && prc == rc && ic != '\n') continue;
 
     if (ic != rc) { r->result = 0; break; }
   }

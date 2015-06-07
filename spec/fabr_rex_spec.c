@@ -505,6 +505,19 @@ describe "fabr_rex()"
       "] ]");
   }
 
+  it "accepts \"a.c\" (success)"
+  {
+    i.string = "abc";
+    t = fabr_rex("y", &i, "a.c");
+
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"y\", 1, 0, 3, null, \"rex\", 3, [\n"
+      "  [ null, 1, 0, 3, null, \"rex_seq\", 3, [\n"
+      "    [ null, 1, 0, 3, null, \"rex_str\", 3, \"abc\" ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
+
   it "accepts \"[ab][cd]\" (success)"
   {
     i.string = "ac";
