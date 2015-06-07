@@ -850,6 +850,7 @@ static fabr_tree *rex_seq(fabr_input *i, char *rx, size_t rxn)
 
   while (1)
   {
+    //if (*(i->string + i->offset) == '\0') break; // EOS
     if (rx_at(crx, crxn, 0) == '\0') break;
 
     *next = rex_rep(i, crx, crxn);
