@@ -533,6 +533,24 @@ describe "fabr_rex()"
       "] ]");
   }
 
+  it "accepts \"=[^\\r\\n]*\" (success)"
+  {
+    i.string = "=ab";
+
+    t = fabr_rex("x", &i, "=[^\r\n]*");
+
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"x\", 1, 0, 3, null, \"rex\", 7, [\n"
+      "  [ null, 1, 0, 3, null, \"rex_seq\", 7, [\n"
+      "    [ null, 1, 0, 1, null, \"rex_str\", 1, \"=\" ],\n"
+      "    [ null, 1, 1, 2, null, \"rex_rep\", 6, [\n"
+      "      [ null, 1, 1, 1, null, \"rng\", 3, \"a\" ],\n"
+      "      [ null, 1, 2, 1, null, \"rng\", 3, \"b\" ]\n"
+      "    ] ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
+
   it "accepts \"\\\\|\\\\|?\" (success)"
   {
     i.string = "||";
