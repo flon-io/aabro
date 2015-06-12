@@ -442,6 +442,8 @@ fabr_tree *fabr_alt(
   fabr_tree *r = fabr_tree_malloc(name, "alt", i, 0);
   r->result = 0;
 
+  if (*(i->string + i->offset) == 0) return r; // EOS
+
   fabr_tree **next = &r->child;
 
   va_list ap; va_start(ap, p);
