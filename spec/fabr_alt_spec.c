@@ -75,7 +75,10 @@ describe "fabr_alt()"
     t = fabr_alt("z", &i, _tx, _ty, NULL);
 
     ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
-      "[ \"z\", 0, 2, 0, null, \"alt\", 0, [] ]");
+      "[ \"z\", 0, 2, 0, null, \"alt\", 0, [\n"
+      "  [ null, 0, 2, 0, null, \"str\", 2, [] ],\n"
+      "  [ null, 0, 2, 0, null, \"str\", 2, [] ]\n"
+      "] ]");
   }
 }
 
