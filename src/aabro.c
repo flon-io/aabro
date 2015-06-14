@@ -990,7 +990,7 @@ fabr_tree *fabr_eseq(
 
   for (int j = 0; ; j = j == 1 ? 0 : 1)
   {
-    if (*(i->string + i->offset) == 0) break; // EOS
+    //if (*(i->string + i->offset) == 0) break; // EOS
 
     fabr_tree *t = ps[j](i);
     fabr_tree **n = next;

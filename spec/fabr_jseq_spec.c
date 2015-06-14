@@ -68,10 +68,26 @@ describe "fabr_jseq()"
       "  [ null, 1, 1, 1, null, \"str\", 1, \",\" ],\n"
       "  [ \"a\", 1, 2, 1, null, \"str\", 1, \"a\" ],\n"
       "  [ null, 1, 3, 1, null, \"str\", 1, \",\" ],\n"
+      "  [ \"a\", 1, 4, 1, null, \"str\", 1, \"a\" ],\n"
+      "  [ null, 0, 5, 0, null, \"str\", 1, [] ]\n"
+      "] ]");
+  }
+
+  it "succeeds (prune)"
+  {
+    i.string = "a,a,a";
+    i.flags = FABR_F_PRUNE;
+
+    t = fabr_jseq("x", &i, _a, _com);
+
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"x\", 1, 0, 5, null, \"eseq\", 0, [\n"
+      "  [ \"a\", 1, 0, 1, null, \"str\", 1, \"a\" ],\n"
+      "  [ null, 1, 1, 1, null, \"str\", 1, \",\" ],\n"
+      "  [ \"a\", 1, 2, 1, null, \"str\", 1, \"a\" ],\n"
+      "  [ null, 1, 3, 1, null, \"str\", 1, \",\" ],\n"
       "  [ \"a\", 1, 4, 1, null, \"str\", 1, \"a\" ]\n"
       "] ]");
-
-    // there is no "," miss subtree because it reached EOS
   }
 
   it "succeeds (bigger context)"
