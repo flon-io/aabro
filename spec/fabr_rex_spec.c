@@ -118,10 +118,21 @@ describe "fabr_rex()"
       "    [ null, 1, 0, 2, null, \"rex_str\", 2, \"ab\" ],\n"
       "    [ null, 1, 2, 2, null, \"rex_rep\", 2, [\n"
       "      [ null, 1, 2, 1, null, \"rex_str\", 1, \"c\" ],\n"
-      "      [ null, 1, 3, 1, null, \"rex_str\", 1, \"c\" ]\n"
+      "      [ null, 1, 3, 1, null, \"rex_str\", 1, \"c\" ],\n"
+      "      [ null, 0, 4, 0, null, \"rex_str\", 1, [] ]\n"
       "    ] ]\n"
       "  ] ]\n"
       "] ]");
+  }
+
+  it "accepts \"abc+\" (success) (prune)"
+  {
+    i.string = "abcc";
+    i.flags = FABR_F_PRUNE;
+    t = fabr_rex("x", &i, "abc+");
+
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"x\", 1, 0, 4, null, \"rex\", 4, \"abcc\" ]");
   }
 
   it "accepts \"ab[cd]\" (failure)"
@@ -220,7 +231,8 @@ describe "fabr_rex()"
       "  [ null, 1, 0, 3, null, \"rex_seq\", 7, [\n"
       "    [ null, 1, 0, 2, null, \"rex_str\", 2, \"ab\" ],\n"
       "    [ null, 1, 2, 1, null, \"rex_rep\", 5, [\n"
-      "      [ null, 1, 2, 1, null, \"rng\", 2, \"c\" ]\n"
+      "      [ null, 1, 2, 1, null, \"rng\", 2, \"c\" ],\n"
+      "      [ null, 0, 3, 0, null, \"rng\", 2, [] ]\n"
       "    ] ]\n"
       "  ] ]\n"
       "] ]");
@@ -237,7 +249,8 @@ describe "fabr_rex()"
       "    [ null, 1, 0, 2, null, \"rex_str\", 2, \"ab\" ],\n"
       "    [ null, 1, 2, 2, null, \"rex_rep\", 5, [\n"
       "      [ null, 1, 2, 1, null, \"rng\", 2, \"c\" ],\n"
-      "      [ null, 1, 3, 1, null, \"rng\", 2, \"d\" ]\n"
+      "      [ null, 1, 3, 1, null, \"rng\", 2, \"d\" ],\n"
+      "      [ null, 0, 4, 0, null, \"rng\", 2, [] ]\n"
       "    ] ]\n"
       "  ] ]\n"
       "] ]");
@@ -268,7 +281,9 @@ describe "fabr_rex()"
       "[ \"x\", 1, 0, 2, null, \"rex\", 7, [\n"
       "  [ null, 1, 0, 2, null, \"rex_seq\", 7, [\n"
       "    [ null, 1, 0, 2, null, \"rex_str\", 2, \"ab\" ],\n"
-      "    [ null, 1, 2, 0, null, \"rex_rep\", 5, \"\" ]\n"
+      "    [ null, 1, 2, 0, null, \"rex_rep\", 5, [\n"
+      "      [ null, 0, 2, 0, null, \"rng\", 2, [] ]\n"
+      "    ] ]\n"
       "  ] ]\n"
       "] ]");
   }
@@ -284,7 +299,8 @@ describe "fabr_rex()"
       "    [ null, 1, 0, 2, null, \"rex_str\", 2, \"ab\" ],\n"
       "    [ null, 1, 2, 2, null, \"rex_rep\", 5, [\n"
       "      [ null, 1, 2, 1, null, \"rng\", 2, \"c\" ],\n"
-      "      [ null, 1, 3, 1, null, \"rng\", 2, \"d\" ]\n"
+      "      [ null, 1, 3, 1, null, \"rng\", 2, \"d\" ],\n"
+      "      [ null, 0, 4, 0, null, \"rng\", 2, [] ]\n"
       "    ] ]\n"
       "  ] ]\n"
       "] ]");
@@ -342,7 +358,8 @@ describe "fabr_rex()"
       "    [ null, 1, 0, 3, null, \"rex_rep\", 5, [\n"
       "      [ null, 1, 0, 1, null, \"rng\", 2, [] ],\n"
       "      [ null, 1, 1, 1, null, \"rng\", 2, [] ],\n"
-      "      [ null, 1, 2, 1, null, \"rng\", 2, [] ]\n"
+      "      [ null, 1, 2, 1, null, \"rng\", 2, [] ],\n"
+      "      [ null, 0, 3, 0, null, \"rng\", 2, [] ]\n"
       "    ] ]\n"
       "  ] ]\n"
       "] ]");
@@ -545,7 +562,8 @@ describe "fabr_rex()"
       "    [ null, 1, 0, 1, null, \"rex_str\", 1, \"=\" ],\n"
       "    [ null, 1, 1, 2, null, \"rex_rep\", 6, [\n"
       "      [ null, 1, 1, 1, null, \"rng\", 3, \"a\" ],\n"
-      "      [ null, 1, 2, 1, null, \"rng\", 3, \"b\" ]\n"
+      "      [ null, 1, 2, 1, null, \"rng\", 3, \"b\" ],\n"
+      "      [ null, 0, 3, 0, null, \"rng\", 3, [] ]\n"
       "    ] ]\n"
       "  ] ]\n"
       "] ]");
@@ -621,7 +639,9 @@ describe "fabr_rex()"
     expect(fabr_tree_to_string(t, i.string, 0) ===f ""
       "[ \"z\", 0, 3, 0, null, \"rex\", 6, [\n"
       "  [ null, 0, 3, 0, null, \"rex_seq\", 6, [\n"
-      "    [ null, 0, 3, 0, null, \"rex_rep\", 6, [] ]\n"
+      "    [ null, 0, 3, 0, null, \"rex_rep\", 6, [\n"
+      "      [ null, 0, 3, 0, null, \"rng\", 3, [] ]\n"
+      "    ] ]\n"
       "  ] ]\n"
       "] ]");
   }
@@ -636,7 +656,9 @@ describe "fabr_rex()"
     expect(fabr_tree_to_string(t, i.string, 0) ===f ""
       "[ \"x\", 1, 2, 0, null, \"rex\", 2, [\n"
       "  [ null, 1, 2, 0, null, \"rex_seq\", 2, [\n"
-      "    [ null, 1, 2, 0, null, \"rex_rep\", 2, \"\" ]\n"
+      "    [ null, 1, 2, 0, null, \"rex_rep\", 2, [\n"
+      "      [ null, 0, 2, 0, null, \"rex_str\", 1, [] ]\n"
+      "    ] ]\n"
       "  ] ]\n"
       "] ]");
   }
@@ -651,7 +673,9 @@ describe "fabr_rex()"
     expect(fabr_tree_to_string(t, i.string, 0) ===f ""
       "[ \"y\", 1, 2, 0, null, \"rex\", 2, [\n"
       "  [ null, 1, 2, 0, null, \"rex_seq\", 2, [\n"
-      "    [ null, 1, 2, 0, null, \"rex_rep\", 2, \"\" ]\n"
+      "    [ null, 1, 2, 0, null, \"rex_rep\", 2, [\n"
+      "      [ null, 0, 2, 0, null, \"rex_str\", 1, [] ]\n"
+      "    ] ]\n"
       "  ] ]\n"
       "] ]");
   }

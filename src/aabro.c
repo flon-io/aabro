@@ -815,7 +815,7 @@ static fabr_tree *rex_rep(fabr_input *i, char *rx, size_t rxn)
 
   while (1)
   {
-    if (*(i->string + i->offset) == 0) break; // EOS
+    //if (*(i->string + i->offset) == 0) break; // EOS
 
     fabr_tree *t = p(i, rx + off, z - off);
     *next = t;
