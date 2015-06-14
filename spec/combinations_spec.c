@@ -43,8 +43,8 @@ context "combinations"
     it "succeeds"
     {
       char *s = "abc";
-      t = fabr_parse_f(s, _cbo_lines, 0);
-      fabr_puts_tree(t, s, 1);
+      //t = fabr_parse_f(s, _cbo_lines, 0);
+      //fabr_puts_tree(t, s, 1);
     }
 //    //expect(fabr_tree_to_string(t, s, 0) ===f ""
 //    //  "[ null, 1, 0, 6, null, \"all\", 0, [\n"

@@ -84,13 +84,30 @@ describe "fabr_rep()"
       "[ \"x\", 0, 0, 0, null, \"rep\", 0, [\n"
       "  [ null, 1, 0, 2, null, \"str\", 2, \"t0\" ],\n"
       "  [ null, 1, 2, 2, null, \"str\", 2, \"t0\" ],\n"
-      "  [ null, 1, 4, 2, null, \"str\", 2, \"t0\" ]\n"
+      "  [ null, 1, 4, 2, null, \"str\", 2, \"t0\" ],\n"
+      "  [ null, 0, 6, 0, null, \"str\", 2, [] ]\n"
       "] ]");
   }
 
   it "succeeds when max is open"
   {
     i.string = "t0t0t0";
+
+    t = fabr_rep("x", &i, _t0, 2, 0);
+
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"x\", 1, 0, 6, null, \"rep\", 0, [\n"
+      "  [ null, 1, 0, 2, null, \"str\", 2, \"t0\" ],\n"
+      "  [ null, 1, 2, 2, null, \"str\", 2, \"t0\" ],\n"
+      "  [ null, 1, 4, 2, null, \"str\", 2, \"t0\" ],\n"
+      "  [ null, 0, 6, 0, null, \"str\", 2, [] ]\n"
+      "] ]");
+  }
+
+  it "succeeds when max is open (prune)"
+  {
+    i.string = "t0t0t0";
+    i.flags = FABR_F_PRUNE;
 
     t = fabr_rep("x", &i, _t0, 2, 0);
 
@@ -160,7 +177,9 @@ describe "fabr_rep()"
     t = fabr_rep("z", &i, _t0, 4, 0);
 
     ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
-      "[ \"z\", 0, 4, 0, null, \"rep\", 0, [] ]");
+      "[ \"z\", 0, 4, 0, null, \"rep\", 0, [\n"
+      "  [ null, 0, 4, 0, null, \"str\", 2, [] ]\n"
+      "] ]");
   }
 }
 

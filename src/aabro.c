@@ -478,7 +478,7 @@ fabr_tree *fabr_rep(
 
   while (1)
   {
-    if (*(i->string + i->offset) == 0) break; // EOS
+    //if (*(i->string + i->offset) == 0) break; // EOS
 
     fabr_tree *t = p(i);
 
