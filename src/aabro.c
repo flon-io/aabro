@@ -423,6 +423,7 @@ fabr_tree *fabr_seq(
           if (count == 0) r->result = 0;
           break;
         }
+        if (i->offset == ffo) break; // no progress
       }
       else
       {
