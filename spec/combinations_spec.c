@@ -43,15 +43,30 @@ context "combinations"
     it "succeeds"
     {
       char *s = "abc";
+
       //t = fabr_parse_f(s, _cbo_lines, 0);
       //fabr_puts_tree(t, s, 1);
+
+      t = fabr_parse_all(s, _cbo_lines);
+
+      expect(fabr_tree_to_string(t, s, 0) ===f ""
+        "[ null, 1, 0, 3, null, \"all\", 0, [\n"
+        "  [ \"ls\", 1, 0, 3, null, \"seq\", 0, [\n"
+        "    [ \"l\", 1, 0, 3, null, \"alt\", 0, [\n"
+        "      [ \"tl\", 1, 0, 3, null, \"rex\", 6, \"abc\" ]\n"
+        "    ] ],\n"
+        "    [ \"l\", 1, 3, 0, null, \"alt\", 0, [\n"
+        "      [ \"bl\", 1, 3, 0, null, \"rex\", 5, \"\" ]\n"
+        "    ] ]\n"
+        "  ] ]\n"
+        "] ]");
     }
-//    //expect(fabr_tree_to_string(t, s, 0) ===f ""
-//    //  "[ null, 1, 0, 6, null, \"all\", 0, [\n"
-//    //  "  [ \"value\", 1, 0, 6, null, \"alt\", 0, [\n"
-//    //  "    [ \"string\", 1, 0, 6, null, \"rex\", 43, \"\\\"deux\\\"\" ]\n"
-//    //  "  ] ]\n"
-//    //  "] ]");
   }
+
+  // TODO the spec above loops thanks to fabr_star
+  //      do try with a fabr_plus() !!!
+
+  // TODO the spec above loops thanks to fabr_star
+  //      do try with a fabr_rep() !!!
 }
 
