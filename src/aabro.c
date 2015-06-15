@@ -494,6 +494,8 @@ fabr_tree *fabr_rep(
 
   while (1)
   {
+    size_t ffo = i->offset;
+
     //if (*(i->string + i->offset) == 0) break; // EOS
 
     fabr_tree *t = p(i);
@@ -511,6 +513,8 @@ fabr_tree *fabr_rep(
     r->length += t->length;
 
     if (++count == max) break;
+
+    if (ffo == i->offset) break; // no progress
 
     next = &(t->sibling);
   }
