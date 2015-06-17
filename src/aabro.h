@@ -177,6 +177,9 @@ fabr_tree *fabr_eseq(
 #define fabr_jseq(name, i, eltp, sepp) \
   fabr_eseq(name, i, NULL, eltp, sepp, NULL)
 
+fabr_tree *fabr_rename(
+  char *name, fabr_input *i, fabr_parser *p);
+
 fabr_tree *fabr_all(
   char *name, fabr_input *i, fabr_parser *p);
 
