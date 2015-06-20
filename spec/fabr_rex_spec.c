@@ -776,15 +776,24 @@ describe "fabr_rex()"
     expect(i.offset zu== 3);
   }
 
-//  it "doesn't go into an infinite loop for 'djan blanks'"
-//  {
-//    i.string = "whatever";
-//
-//    t = fabr_rex("e", &i, "([ \t]*((#[^\r\n]*)?([\r\n]|$))?)*");
-//
-//    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
-//      "x");
-//  }
+  it "doesn't go into an infinite loop for 'djan blanks'"
+  {
+    i.string = "whatever";
+
+    //([ \t]*
+    //  (
+    //    (#[^\r\n]*)?
+    //    ([\r\n]|$)
+    //  )?
+    //)*
+
+    t = fabr_rex("e", &i, "([ \t]*((#[^\r\n]*)?([\r\n]|$))?)*");
+
+    expect(t->result i== 1);
+    expect(t->length zu== 0);
+
+    expect(i.offset zu== 0);
+  }
 
   context "errors"
   {
