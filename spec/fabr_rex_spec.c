@@ -684,10 +684,10 @@ describe "fabr_rex()"
   {
     i.string = "abcd";
 
-    t = fabr_rex("z", &i, "ab$");
+    t = fabr_rex("nl", &i, "ab$");
 
     expect(fabr_tree_to_string(t, i.string, 0) ===f ""
-      "[ \"z\", 0, 0, 0, null, \"rex\", 3, [\n"
+      "[ \"nl\", 0, 0, 0, null, \"rex\", 3, [\n"
       "  [ null, 0, 0, 0, null, \"rex_seq\", 3, [\n"
       "    [ null, 0, 0, 0, null, \"rex_str\", 3, [] ]\n"
       "  ] ]\n"
@@ -700,10 +700,42 @@ describe "fabr_rex()"
   {
     i.string = "ab\ncd";
 
-    t = fabr_rex("z", &i, "ab$");
+    t = fabr_rex("nl", &i, "ab$");
 
     expect(fabr_tree_to_string(t, i.string, 0) ===f ""
-      "[ \"z\", 1, 0, 2, null, \"rex\", 3, [\n"
+      "[ \"nl\", 1, 0, 2, null, \"rex\", 3, [\n"
+      "  [ null, 1, 0, 2, null, \"rex_seq\", 3, [\n"
+      "    [ null, 1, 0, 2, null, \"rex_str\", 3, \"ab\" ]\n"
+      "  ] ]\n"
+      "] ]");
+
+    expect(i.offset zu== 2);
+  }
+
+  it "matches the eos $ (failure)"
+  {
+    i.string = "abc";
+
+    t = fabr_rex("0", &i, "ab$");
+
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"0\", 0, 0, 0, null, \"rex\", 3, [\n"
+      "  [ null, 0, 0, 0, null, \"rex_seq\", 3, [\n"
+      "    [ null, 0, 0, 0, null, \"rex_str\", 3, [] ]\n"
+      "  ] ]\n"
+      "] ]");
+
+    expect(i.offset zu== 0);
+  }
+
+  it "matches the eos $ (success)"
+  {
+    i.string = "ab";
+
+    t = fabr_rex("0", &i, "ab$");
+
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"0\", 1, 0, 2, null, \"rex\", 3, [\n"
       "  [ null, 1, 0, 2, null, \"rex_seq\", 3, [\n"
       "    [ null, 1, 0, 2, null, \"rex_str\", 3, \"ab\" ]\n"
       "  ] ]\n"
