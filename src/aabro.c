@@ -926,7 +926,7 @@ static fabr_tree *rex_alt(fabr_input *i, char *rx, size_t rxn)
     //printf(
     //  "  %zu.%zu i+o       >[1;33m%s[0;0m<\n",
     //  m, n, i->string + i->offset);
-    //n++;
+
 
     for (size_t j = 0, range = 0, groups = 0; ; j++)
     {
@@ -958,6 +958,11 @@ static fabr_tree *rex_alt(fabr_input *i, char *rx, size_t rxn)
 
       // else continue
     }
+
+    //printf(
+    //  "  %zu.%zu rex_alt() result: %d %zu\n",
+    //  m, n, prev->result, prev->length);
+    //n++;
 
     if (prev->result == 1) break;
 

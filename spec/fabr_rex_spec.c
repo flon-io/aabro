@@ -680,6 +680,16 @@ describe "fabr_rex()"
       "] ]");
   }
 
+//  it "doesn't go into an infinite loop for 'djan blanks'"
+//  {
+//    i.string = "whatever";
+//
+//    t = fabr_rex("e", &i, "([ \t]*((#[^\r\n]*)?([\r\n]|$))?)*");
+//
+//    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+//      "x");
+//  }
+
   context "errors"
   {
     it "rejects \"[ab\""
