@@ -101,9 +101,9 @@ char *fabr_tree_string(const char *input, fabr_tree *t)
   return strndup(input + t->offset, t->length);
 }
 
-char *fabr_tree_str(char *input, fabr_tree *t)
+char *fabr_tree_str(const char *input, fabr_tree *t)
 {
-  return input + t->offset;
+  return (char *)input + t->offset;
 }
 
 static void fabr_t_to_s(

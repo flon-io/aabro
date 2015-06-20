@@ -77,7 +77,7 @@ char *fabr_tree_string(const char *input, fabr_tree *t);
  * Does not return a new char*.
  * Returns the pointer even if the tree is not a successful one.
  */
-char *fabr_tree_str(char *input, fabr_tree *t);
+char *fabr_tree_str(const char *input, fabr_tree *t);
 
 /* Given a fabr_tree resulting from a parse run, returns the error message
  * or NULL if none.
