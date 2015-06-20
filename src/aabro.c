@@ -749,7 +749,13 @@ static fabr_tree *rex_str(fabr_input *i, char *rx, size_t rxn)
     //printf("  ic >%c<\n", ic);
     if (ic == '\0') { r->result = 0; break; }
 
-    if (rc == '.' && prc == rc && ic != '\n') continue;
+    if (rc == '.' && prc == rc && ic != '\n' && ic != '\r') continue;
+
+    if (rc == '$' && prc == rc) // unescaped dollar
+    {
+      if (ic != '\n' && ic != '\r') r->result = 0;
+      ii--; break;
+    }
 
     if (ic != rc) { r->result = 0; break; }
   }

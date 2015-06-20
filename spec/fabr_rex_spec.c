@@ -680,6 +680,70 @@ describe "fabr_rex()"
       "] ]");
   }
 
+  it "matches the eol $ (failure)"
+  {
+    i.string = "abcd";
+
+    t = fabr_rex("z", &i, "ab$");
+
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"z\", 0, 0, 0, null, \"rex\", 3, [\n"
+      "  [ null, 0, 0, 0, null, \"rex_seq\", 3, [\n"
+      "    [ null, 0, 0, 0, null, \"rex_str\", 3, [] ]\n"
+      "  ] ]\n"
+      "] ]");
+
+    expect(i.offset zu== 0);
+  }
+
+  it "matches the eol $ (success)"
+  {
+    i.string = "ab\ncd";
+
+    t = fabr_rex("z", &i, "ab$");
+
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"z\", 1, 0, 2, null, \"rex\", 3, [\n"
+      "  [ null, 1, 0, 2, null, \"rex_seq\", 3, [\n"
+      "    [ null, 1, 0, 2, null, \"rex_str\", 3, \"ab\" ]\n"
+      "  ] ]\n"
+      "] ]");
+
+    expect(i.offset zu== 2);
+  }
+
+  it "accepts an escaped $ (failure)"
+  {
+    i.string = "abDcd";
+
+    t = fabr_rex("d", &i, "ab\\$");
+
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"d\", 0, 0, 0, null, \"rex\", 4, [\n"
+      "  [ null, 0, 0, 0, null, \"rex_seq\", 4, [\n"
+      "    [ null, 0, 0, 0, null, \"rex_str\", 4, [] ]\n"
+      "  ] ]\n"
+      "] ]");
+
+    expect(i.offset zu== 0);
+  }
+
+  it "accepts an escaped $ (success)"
+  {
+    i.string = "ab$cd";
+
+    t = fabr_rex("d", &i, "ab\\$");
+
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"d\", 1, 0, 3, null, \"rex\", 4, [\n"
+      "  [ null, 1, 0, 3, null, \"rex_seq\", 4, [\n"
+      "    [ null, 1, 0, 3, null, \"rex_str\", 4, \"ab$\" ]\n"
+      "  ] ]\n"
+      "] ]");
+
+    expect(i.offset zu== 3);
+  }
+
 //  it "doesn't go into an infinite loop for 'djan blanks'"
 //  {
 //    i.string = "whatever";
