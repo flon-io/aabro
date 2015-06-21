@@ -115,10 +115,18 @@ typedef short fabr_tree_func(const fabr_tree *);
  */
 flu_list *fabr_tree_list(fabr_tree *t, fabr_tree_func *f);
 
+/* Like fabr_tree_list() but doesn't consider the root of t.
+ */
+flu_list *fabr_tree_list_cn(fabr_tree *t, fabr_tree_func *f);
+
 /* Given a tree (starting point) and a fabr_tree_func, collects all the
  * [sub-trees] that have a result to 1 and the given name.
  */
 flu_list *fabr_tree_list_named(fabr_tree *t, const char *name);
+
+/* Like fabr_tree_list_named() but doesn't consider the root of t.
+ */
+flu_list *fabr_tree_list_named_cn(fabr_tree *t, const char *name);
 
 /* Like fabr_tree_list() but returns directly an array of fabr_tree*.
  */

@@ -131,6 +131,41 @@ context "tree functions"
     }
   }
 
+  describe "fabr_tree_list_cn()"
+  {
+    it "collects the trees that match the given function"
+    {
+      char *s = "[1,2,3]";
+      t = fabr_parse_all(s, _value);
+      //fabr_puts_tree(t, s, 1);
+
+      flu_list *l = fabr_tree_list_cn(t->child, is_value);
+
+      ensure(l->size zu== 3);
+
+      fabr_tree *t0 = (fabr_tree *)flu_list_at(l, 0);
+      fabr_tree *t1 = (fabr_tree *)flu_list_at(l, 1);
+      fabr_tree *t2 = (fabr_tree *)flu_list_at(l, 2);
+
+      ensure(t0->name === "value");
+      ensure(fabr_tree_string(s, t0) ===f "1");
+      ensure(t1->name === "value");
+      ensure(fabr_tree_string(s, t1) ===f "2");
+      ensure(t2->name === "value");
+      ensure(fabr_tree_string(s, t2) ===f "3");
+
+      ensure(fabr_tree_to_string(t0, s, 0) ===f ""
+        "[ \"value\", 1, 1, 1, null, \"alt\", 0, [\n"
+        "  [ \"number\", 1, 1, 1, null, \"rex\", 19, \"1\" ]\n"
+        "] ]"
+      );
+
+      flu_list_free(l);
+        // NB: only freeing this list of pointers,
+        //     the trees themselves are freed in the "after each"
+    }
+  }
+
   describe "fabr_tree_list_named()"
   {
     it "collects the trees that match the given name"
@@ -169,6 +204,47 @@ context "tree functions"
 
       ensure(l->size == 0);
 
+      flu_list_free(l);
+    }
+
+    it "returns nodes that have names when given NULL"
+    {
+      char *s = "[1,\"deux\",3]";
+      t = fabr_parse_all(s, _value);
+      //fabr_puts_tree(t, s, 1);
+
+      flu_list *l = fabr_tree_list_named(t, NULL);
+      ensure(l->size zu== 1);
+      ensure(((fabr_tree *)l->first->item)->name === "value");
+      flu_list_free(l);
+
+      l = fabr_tree_list_named(t->child->child, NULL);
+      ensure(l->size zu== 1);
+      ensure(((fabr_tree *)l->first->item)->name === "array");
+      flu_list_free(l);
+
+      l = fabr_tree_list_named(t->child->child->child, NULL);
+      ensure(l->size zu== 0);
+      flu_list_free(l);
+    }
+  }
+
+  describe "fabr_tree_list_named_cn()"
+  {
+    it "returns nodes that have names when given NULL"
+    {
+      char *s = "[1,\"deux\",3]";
+      t = fabr_parse_all(s, _value);
+      //fabr_puts_tree(t, s, 1);
+
+      flu_list *l = fabr_tree_list_named_cn(t, NULL);
+      ensure(l->size zu== 1);
+      ensure(((fabr_tree *)l->first->item)->name === "value");
+      flu_list_free(l);
+
+      l = fabr_tree_list_named_cn(t->child->child, NULL);
+      ensure(l->size zu== 3);
+      ensure(((fabr_tree *)l->first->item)->name === "value");
       flu_list_free(l);
     }
   }
