@@ -133,7 +133,7 @@ static void fabr_t_to_s(
   if (t->name) free(name);
   if (t->note) free(note);
 
-  if (children != 1 && (input == NULL || t->result != 1 || t->child))
+  if (children == 0 && (input == NULL || t->result != 1 || t->child))
   {
     size_t cc = 0; for (fabr_tree *c = t->child; c; c = c->sibling) ++cc;
     flu_sbprintf(b, "%zu ]%s", cc, clearc);
@@ -188,6 +188,17 @@ char *fabr_tree_to_str(fabr_tree *t, const char *input, short color)
   fabr_t_to_s(t, input, b, 0, 0, color);
 
   return flu_sbuffer_to_string(b);
+}
+
+void fabr_tree_puts(fabr_tree *t, const char *input, short flags)
+{
+  flu_sbuffer *b = flu_sbuffer_malloc();
+  fabr_t_to_s(t, input, b, 0, flags & 2, flags & 1);
+  char *s = flu_sbuffer_to_string(b);
+
+  puts(s);
+
+  free(s);
 }
 
 

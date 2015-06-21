@@ -46,7 +46,7 @@ context "combinations"
       char *s = "abc";
 
       //t = fabr_parse_f(s, _cbo_lines_star, 0);
-      //fabr_puts_tree(t, s, 1);
+      //fabr_puts(t, s, 3);
 
       t = fabr_parse_all(s, _cbo_lines_star);
 
