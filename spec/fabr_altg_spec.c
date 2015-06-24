@@ -28,7 +28,7 @@ describe "fabr_altg()"
     it "takes the first succesful result"
     {
       i.string = "xx";
-      t = fabr_altg("g", &i, 1, _1x, _2x, NULL);
+      t = fabr_altg("g", &i, 0, _1x, _2x, NULL);
 
       ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
         "[ \"g\", 1, 0, 1, null, \"alt\", 0, [\n"
@@ -46,8 +46,8 @@ describe "fabr_altg()"
 
       //fabr_puts(t, i.string, 3);
       ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
-        "[ \"g\", 1, 0, 2, null, \"alt\", 0, [\n"
-        "  [ null, 1, 0, 1, null, \"str\", 1, \"x\" ],\n"
+        "[ \"g\", 1, 0, 2, null, \"altg\", 0, [\n"
+        "  [ null, 0, 0, 1, null, \"str\", 1, [] ],\n"
         "  [ null, 1, 0, 2, null, \"str\", 2, \"xx\" ]\n"
         "] ]");
     }
@@ -60,7 +60,7 @@ describe "fabr_altg()"
 
       //fabr_puts(t, i.string, 3);
       ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
-        "[ \"g\", 1, 0, 2, null, \"alt\", 0, [\n"
+        "[ \"g\", 1, 0, 2, null, \"altg\", 0, [\n"
         "  [ null, 1, 0, 2, null, \"str\", 2, \"xx\" ]\n"
         "] ]");
     }

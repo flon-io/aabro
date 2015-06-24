@@ -534,10 +534,14 @@ fabr_tree *fabr_altg(
 {
   //size_t m = mm++; printf("A %zu fabr_altg() %d \"%s\"\n", m, greedy, name);
 
-  fabr_tree *r = fabr_tree_malloc(name, "alt", i, 0);
+  size_t off = i->offset;
+
+  fabr_tree *r = fabr_tree_malloc(name, greedy ? "altg" : "alt", i, 0);
   r->result = 0;
 
   fabr_tree **next = &r->child;
+
+  fabr_tree *winner = NULL;
 
   va_list ap; va_start(ap, p);
   while (1)
@@ -545,12 +549,30 @@ fabr_tree *fabr_altg(
     fabr_tree *t = p(i);
     *next = t;
 
-    if (t->result != 0) { r->result = t->result; r->length = t->length; break; }
+    if (t->result == -1) { winner = t; break; }
+
+    if (t->result == 1)
+    {
+      if ( ! greedy) { winner = t; break; }
+      if (winner == NULL || t->length > winner->length)
+      {
+        if (winner) winner->result = 0;
+         winner = t;
+      }
+    }
 
     p = va_arg(ap, fabr_parser *); if (p == NULL) break;
+
+    i->offset = off;
     next = &(t->sibling);
   }
   va_end(ap);
+
+  if (winner)
+  {
+    r->result = winner->result;
+    r->length = winner->length;
+  }
 
   if (r->result == 1 && (i->flags & FABR_F_PRUNE)) fabr_prune(r);
 
