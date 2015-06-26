@@ -1103,6 +1103,8 @@ fabr_tree *fabr_eseq(
 {
   size_t off = i->offset;
 
+  short jseq = (startp == NULL && endp == NULL);
+
   fabr_tree *r = fabr_tree_malloc(name, "eseq", i, 0);
   fabr_tree **next = &r->child;
 
@@ -1119,9 +1121,11 @@ fabr_tree *fabr_eseq(
 
   fabr_parser *ps[] = { eltp, sepp };
 
-  for (int j = 0; ; j = j == 1 ? 0 : 1)
+  for (size_t j = 0; ; j++)
   {
-    fabr_tree *t = ps[j](i);
+    short jj = j % 2;
+
+    fabr_tree *t = ps[jj](i);
     fabr_tree **n = next;
     *next = t;
     next = &t->sibling;
@@ -1130,7 +1134,7 @@ fabr_tree *fabr_eseq(
 
     if (t->result == 0)
     {
-      if (j == 0) // no element
+      if (jj == 0 && (jseq || j > 0)) // no element
       {
         r->result = 0;
       }
