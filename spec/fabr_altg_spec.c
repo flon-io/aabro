@@ -64,6 +64,19 @@ describe "fabr_altg()"
         "  [ null, 1, 0, 2, null, \"str\", 2, \"xx\" ]\n"
         "] ]");
     }
+
+    it "drops the short winners when pruning" // prevent infinite pruning loop
+    {
+      i.string = "xx";
+      i.flags = FABR_F_PRUNE;
+      t = fabr_altg("g", &i, 1, _2x, _2x, NULL);
+
+      //fabr_puts(t, i.string, 3);
+      ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
+        "[ \"g\", 1, 0, 2, null, \"altg\", 0, [\n"
+        "  [ null, 1, 0, 2, null, \"str\", 2, \"xx\" ]\n"
+        "] ]");
+    }
   }
 }
 

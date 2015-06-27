@@ -510,10 +510,10 @@ fabr_tree *fabr_altg(
     if (t->result == 1)
     {
       if ( ! greedy) { winner = t; break; }
-      if (winner == NULL || t->length > winner->length)
+      if (winner == NULL || t->length >= winner->length)
       {
         if (winner) winner->result = 0;
-         winner = t;
+        winner = t;
       }
     }
 
