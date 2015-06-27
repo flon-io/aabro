@@ -51,6 +51,11 @@ typedef struct fabr_tree {
 
 void fabr_tree_free(fabr_tree *t);
 
+/* Prunes a tree of its 0 (failed) branches. Doesn't prune -1 (error)
+ * branches (and of course doesn't prune 1 (success) branches).
+ */
+void fabr_prune(fabr_tree *t);
+
 /* Returns a string representation (JSON) of the fabr_tree, from t to its
  * leaves. If the input is given, the parsed strings are displayed at
  * the leaves.

@@ -74,7 +74,7 @@ void fabr_tree_free(fabr_tree *t)
   free(t);
 }
 
-static void fabr_prune(fabr_tree *t)
+void fabr_prune(fabr_tree *t)
 {
   fabr_tree **next = &t->child;
 
@@ -512,7 +512,7 @@ fabr_tree *fabr_altg(
       if ( ! greedy) { winner = t; break; }
       if (winner == NULL || t->length >= winner->length)
       {
-        if (winner) winner->result = 0;
+        if (winner) { winner->result = 0; winner->length = 0; }
         winner = t;
       }
     }
