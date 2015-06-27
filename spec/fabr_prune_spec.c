@@ -44,7 +44,7 @@ describe "fabr_prune()"
     fabr_puts(t, i.string, 3);
     ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
       "[ null, 1, 0, 2, null, \"altg\", 0, [\n"
-      "  [ \"x2\", 1, 0, 2, null, \"str\", 2, \"xx\" ]\n"
+      "  [ \"y2\", 1, 0, 2, null, \"str\", 2, \"yy\" ]\n"
       "] ]");
   }
 }

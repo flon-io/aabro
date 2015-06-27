@@ -53,7 +53,7 @@ describe "fabr_altg()"
       //fabr_puts(t, i.string, 3);
       ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
         "[ \"g\", 1, 0, 2, null, \"altg\", 0, [\n"
-        "  [ \"1x\", 0, 0, 1, null, \"str\", 1, [] ],\n"
+        "  [ \"1x\", 0, 0, 0, null, \"str\", 1, [] ],\n"
         "  [ \"2x\", 1, 0, 2, null, \"str\", 2, \"xx\" ]\n"
         "] ]");
     }

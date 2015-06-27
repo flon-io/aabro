@@ -78,21 +78,22 @@ void fabr_prune(fabr_tree *t)
 {
   fabr_tree **next = &t->child;
 
-  for (fabr_tree *c = t->child; c != NULL; )
+  for (fabr_tree *c = t->child; c; )
   {
-    if (c->result == 0)
-    {
-      *next = NULL;
-      fabr_tree *s = c->sibling;
-      fabr_tree_free(c);
-      c = s;
-    }
-    else // 1 (when -1 fabr_prune() is not called)
+    fabr_tree *s = c->sibling;
+
+    if (c->result != 0)
     {
       *next = c;
-      c = c->sibling;
       next = &c->sibling;
+      *next = NULL;
     }
+    else
+    {
+      fabr_tree_free(c);
+    }
+
+    c = s;
   }
 }
 
