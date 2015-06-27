@@ -528,7 +528,10 @@ fabr_tree *fabr_altg(
   {
     r->result = winner->result;
     r->length = winner->length;
+    i->offset = off + winner->length;
   }
+
+  //fabr_puts(r, i->string, 3);
 
   if (r->result == 1 && (i->flags & FABR_F_PRUNE)) fabr_prune(r);
 
