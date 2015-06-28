@@ -808,6 +808,11 @@ static fabr_tree *rex_str(fabr_input *i, char *rx, size_t rxn)
     char ic = *(i->string + i->offset + ii++);
     //printf("  ic >%c<\n", ic);
 
+    if (rc == 'Z' && prc == '\\') // EOS
+    {
+      if (ic != '\0') r->result = 0;
+      ii--; break;
+    }
     if (rc == '$' && prc == rc) // unescaped dollar
     {
       if (ic != '\n' && ic != '\r' && ic != '\0') r->result = 0;

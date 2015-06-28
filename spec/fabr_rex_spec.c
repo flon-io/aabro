@@ -795,6 +795,34 @@ describe "fabr_rex()"
     expect(i.offset zu== 0);
   }
 
+  it "accepts \"over\\Z\" (end of string) (failure)"
+  {
+    i.string = "over\nzealous";
+    t = fabr_rex("Z", &i, "over\\Z");
+
+    //fabr_puts(t, i.string, 3);
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"Z\", 0, 0, 0, null, \"rex\", 6, [\n"
+      "  [ null, 0, 0, 0, null, \"rex_seq\", 6, [\n"
+      "    [ null, 0, 0, 0, null, \"rex_str\", 6, [] ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
+
+  it "accepts \"over\\Z\" (end of string) (success)"
+  {
+    i.string = "over";
+    t = fabr_rex("Z", &i, "over\\Z");
+
+    //fabr_puts(t, i.string, 3);
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"Z\", 1, 0, 4, null, \"rex\", 6, [\n"
+      "  [ null, 1, 0, 4, null, \"rex_seq\", 6, [\n"
+      "    [ null, 1, 0, 4, null, \"rex_str\", 6, \"over\" ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
+
   context "errors"
   {
     it "rejects \"[ab\""
