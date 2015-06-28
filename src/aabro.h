@@ -202,6 +202,8 @@ fabr_tree *fabr_eseq(
 fabr_tree *fabr_rename(
   char *name, fabr_input *i, fabr_parser *p);
 
+fabr_tree *fabr_eos(char *name, fabr_input *i);
+
 fabr_tree *fabr_all(
   char *name, fabr_input *i, fabr_parser *p);
 

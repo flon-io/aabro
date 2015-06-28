@@ -1129,13 +1129,20 @@ fabr_tree *fabr_eseq(
   return r;
 }
 
-fabr_tree *fabr_rename(
-  char *name, fabr_input *i, fabr_parser *p)
+fabr_tree *fabr_rename(char *name, fabr_input *i, fabr_parser *p)
 {
   fabr_tree *r = p(i);
 
   if (r->name) { free(r->name); r->name = NULL; }
   if (name) r->name = strdup(name);
+
+  return r;
+}
+
+fabr_tree *fabr_eos(char *name, fabr_input *i)
+{
+  fabr_tree *r = fabr_tree_malloc(name, "eos", i, 0);
+  r->result = *(i->string + i->offset) == '\0';
 
   return r;
 }
