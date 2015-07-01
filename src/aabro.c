@@ -1086,6 +1086,8 @@ fabr_tree *fabr_eseq(
 
   fabr_parser *ps[] = { eltp, sepp };
 
+  short empty_sep = 0;
+
   for (size_t j = 0; ; j++)
   {
     short jj = j % 2;
@@ -1097,8 +1099,11 @@ fabr_tree *fabr_eseq(
 
     if (t->result == -1) { r->result = -1; break; }
 
+    if (jj == 1) empty_sep = (t->result == 1 && t->length == 0);
+
     if (t->result == 0)
     {
+// TODO if empty_sep, don't add elt...
       if (jj == 0 && (jseq || j > 0)) // elt (not first elt) missing
       {
         r->result = 0;
@@ -1115,7 +1120,8 @@ fabr_tree *fabr_eseq(
     r->length += t->length;
   }
 
-  if (r->result == 1 && endp)
+  //if (r->result == 1 && endp)
+  if (endp && (r->result == 1 || (r->result == 0 && empty_sep)))
   {
     fabr_tree *t = endp(i);
     *next = t;
