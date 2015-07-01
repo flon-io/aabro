@@ -1099,7 +1099,7 @@ fabr_tree *fabr_eseq(
 
     if (t->result == 0)
     {
-      if (jj == 0 && (jseq || j > 0)) // no element
+      if (jj == 0 && (jseq || j > 0)) // elt (not first elt) missing
       {
         r->result = 0;
       }
