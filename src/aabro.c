@@ -1068,6 +1068,7 @@ fabr_tree *fabr_eseq(
 {
   size_t off = i->offset;
 
+  short prune = i->flags & FABR_F_PRUNE;
   short jseq = (startp == NULL && endp == NULL);
 
   fabr_tree *r = fabr_tree_malloc(name, "eseq", i, 0);
@@ -1084,44 +1085,82 @@ fabr_tree *fabr_eseq(
     next = &t->sibling;
   }
 
-  fabr_parser *ps[] = { eltp, sepp };
-  short empty_sep = 0;
-
   for (size_t j = 0; ; j++)
   {
-    short jj = j % 2;
+    // element
 
-    fabr_tree *t = ps[jj](i);
-    fabr_tree **n = next;
-    *next = t;
-    next = &t->sibling;
+    fabr_tree *eltt = eltp(i);
+    //
+    short rr = eltt->result;
 
-    if (t->result == -1) { r->result = -1; break; }
-
-    if (jj == 1) empty_sep = (t->result == 1 && t->length == 0);
-
-    if (t->result == 0)
+    if (eltt->result != 0 || prune == 0)
     {
-      if (jj == 0 && (jseq || j > 0) && empty_sep == 0)
-        // elt (not first elt) missing
-      {
-        r->result = 0;
-      }
-      else if (i->flags & FABR_F_PRUNE)
-        // no separator but prune
-      {
-        *n = NULL;
-        next = n;
-        fabr_tree_free(t);
-      }
-      break;
+      *next = eltt; next = &eltt->sibling; r->length += eltt->length;
     }
+    else
+    {
+      fabr_tree_free(eltt);
+    }
+    if (rr == -1) { r->result == -1; break; }
+    if (rr == 0) { break; }
 
-    r->length += t->length;
+    // separator
+
+    fabr_tree *sept = sepp(i);
+    //
+    rr = sept->result;
+    size_t ll = sept->length;
+
+    if (sept->result != 0 || prune == 0)
+    {
+      *next = sept; next = &sept->sibling; r->length += sept->length;
+    }
+    else
+    {
+      fabr_tree_free(sept);
+    }
+    if (rr == -1) { r->result == -1; break; }
+    if (rr == 0) { break; }
+
+//    if ((jseq || j == 0) && eltt->result == 0) { break; }
+//    //
+//    if (eltt->result != 1) { r->result = eltt->result; break; }
+//    if (sept->result == -1) { r->result = -1; break; }
+//    if (sept->result == 0) { break; }
+
+//    short jj = j % 2;
+//
+//    fabr_tree *t = ps[jj](i);
+//    fabr_tree **n = next;
+//    *next = t;
+//    next = &t->sibling;
+//
+//    if (t->result == -1) { r->result = -1; break; }
+//
+//    if (jj == 1) empty_sep = (t->result == 1 && t->length == 0);
+//
+//    if (t->result == 0)
+//    {
+//      if (jj == 0 && (jseq || j > 0) && empty_sep == 0)
+//        // elt (not first elt) missing
+//      {
+//        r->result = 0;
+//      }
+//      else if (i->flags & FABR_F_PRUNE)
+//        // no separator but prune
+//      {
+//        *n = NULL;
+//        next = n;
+//        fabr_tree_free(t);
+//      }
+//      break;
+//    }
+//
+//    r->length += t->length;
   }
 
-  //if (r->result == 1 && endp)
-  if (endp && (r->result == 1 || (r->result == 0 && empty_sep)))
+  if (r->result == 1 && endp)
+  //if (endp && (r->result == 1 || (r->result == 0 && empty_sep)))
   {
     fabr_tree *t = endp(i);
     *next = t;

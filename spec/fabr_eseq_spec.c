@@ -110,7 +110,7 @@ describe "fabr_eseq()"
       "] ]");
   }
 
-  it "succeeds (empty construct without start)"
+  it "succeeds (empty construct without start) (prunes)"
   {
     i.string = ">";
     i.flags = FABR_F_PRUNE;
