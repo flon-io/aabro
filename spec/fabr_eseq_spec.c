@@ -174,9 +174,7 @@ describe "fabr_eseq()"
       t = fabr_eseq("Z", &i, _es_sta, _es_elt, _es_se, _es_end);
 
       ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
-        "[ \"Z\", 1, 0, 7, null, \"eseq\", 0, [\n"
-        "  [ null, 0, 2, 0, null, \"str\", 1, [] ]\n"
-        "] ]");
+        "x";
     }
 
     it "checks for the end anyway (success)"
@@ -186,9 +184,7 @@ describe "fabr_eseq()"
       t = fabr_eseq("Z", &i, _es_sta, _es_elt, _es_se, _es_end);
 
       ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
-        "[ \"Z\", 1, 0, 5, null, \"eseq\", 0, [\n"
-        "  [ null, 0, 2, 0, null, \"str\", 1, [] ]\n"
-        "] ]");
+        "x";
     }
 
     it "checks for the end anyway (succeeds and prunes)"

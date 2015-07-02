@@ -1085,7 +1085,6 @@ fabr_tree *fabr_eseq(
   }
 
   fabr_parser *ps[] = { eltp, sepp };
-
   short empty_sep = 0;
 
   for (size_t j = 0; ; j++)
@@ -1103,12 +1102,13 @@ fabr_tree *fabr_eseq(
 
     if (t->result == 0)
     {
-// TODO if empty_sep, don't add elt...
-      if (jj == 0 && (jseq || j > 0)) // elt (not first elt) missing
+      if (jj == 0 && (jseq || j > 0) && empty_sep == 0)
+        // elt (not first elt) missing
       {
         r->result = 0;
       }
-      else if (i->flags & FABR_F_PRUNE) // no separator but prune
+      else if (i->flags & FABR_F_PRUNE)
+        // no separator but prune
       {
         *n = NULL;
         next = n;
