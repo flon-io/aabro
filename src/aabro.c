@@ -1087,14 +1087,35 @@ fabr_tree *fabr_eseq(
 
   for (size_t j = 0, sepl = 1; ; j++)
   {
+    short rr;
+    size_t sepl;
 
-// TODO: do sep then elt, on j == 0, skip sep
+    // separator
+
+    if (j > 0)
+    {
+      fabr_tree *sept = sepp(i);
+      //
+      rr = sept->result;
+      sepl = sept->length;
+
+      if (rr != 0 || prune == 0)
+      {
+        *next = sept; next = &sept->sibling; r->length += sept->length;
+      }
+      else
+      {
+        fabr_tree_free(sept);
+      }
+      if (rr == -1) { r->result = -1; break; }
+      if (rr == 0) { break; }
+    }
 
     // element
 
     fabr_tree *eltt = eltp(i);
     //
-    short rr = eltt->result;
+    rr = eltt->result;
 
     if (rr != 0 || prune == 0)
     {
@@ -1107,24 +1128,6 @@ fabr_tree *fabr_eseq(
     if (rr == 0 && (jseq == 0 && j == 0)) { break; }
     if (rr == 0 && sepl == 0) { break; }
     if (rr != 1) { r->result = rr; break; }
-
-    // separator
-
-    fabr_tree *sept = sepp(i);
-    //
-    rr = sept->result;
-    sepl = sept->length;
-
-    if (rr != 0 || prune == 0)
-    {
-      *next = sept; next = &sept->sibling; r->length += sept->length;
-    }
-    else
-    {
-      fabr_tree_free(sept);
-    }
-    if (rr == -1) { r->result = -1; break; }
-    if (rr == 0) { break; }
   }
 
   if (r->result == 1 && endp)
