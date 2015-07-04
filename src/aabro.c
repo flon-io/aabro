@@ -1098,28 +1098,26 @@ fabr_tree *fabr_eseq(
 
     if (sept && sept->result == 0) over = 1;
     else if (sept && sept->result == -1) r->result = -1;
+    else if (sept && sept->result == 1 && sept->length == 0) over = 2;
     else if (j == 0 && eltt && eltt->result == 0 && jseq == 0) over = 1;
     else if (eltt && eltt->result != 1) r->result = eltt->result;
 
     // add or free
 
-    if (sept && (sept->result != 0 || prune == 0))
+    if (over != 2 && sept && (sept->result != 0 || prune == 0))
     {
       *next = sept; next = &sept->sibling; r->length += sept->length;
-    }
-    else
-    {
-      fabr_tree_free(sept);
+      sept = NULL;
     }
 
-    if (eltt && (eltt->result != 0 || prune == 0))
+    if (over != 2 && eltt && (eltt->result != 0 || prune == 0))
     {
       *next = eltt; next = &eltt->sibling; r->length += eltt->length;
+      eltt = NULL;
     }
-    else
-    {
-      fabr_tree_free(eltt);
-    }
+
+    fabr_tree_free(sept);
+    fabr_tree_free(eltt);
 
     // break or continue
 
@@ -1127,7 +1125,6 @@ fabr_tree *fabr_eseq(
   }
 
   if (r->result == 1 && endp)
-  //if (endp && (r->result == 1 || (r->result == 0 && empty_sep)))
   {
     fabr_tree *t = endp(i);
     *next = t;

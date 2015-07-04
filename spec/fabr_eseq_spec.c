@@ -174,7 +174,19 @@ describe "fabr_eseq()"
       t = fabr_eseq("Z", &i, _es_sta, _es_elt, _es_se, _es_end);
 
       ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
-        "x";
+        "[ \"Z\", 0, 0, 0, null, \"eseq\", 0, [\n"
+        "  [ null, 1, 0, 1, null, \"str\", 1, \"<\" ],\n"
+        "  [ \"e\", 1, 1, 1, null, \"rng\", 3, \"a\" ],\n"
+        "  [ null, 1, 2, 1, null, \"rex\", 2, [\n"
+        "    [ null, 1, 2, 1, null, \"rex_seq\", 2, [\n"
+        "      [ null, 1, 2, 1, null, \"rex_rep\", 2, [\n"
+        "        [ null, 1, 2, 1, null, \"rex_str\", 1, \",\" ]\n"
+        "      ] ]\n"
+        "    ] ]\n"
+        "  ] ],\n"
+        "  [ \"e\", 1, 3, 1, null, \"rng\", 3, \"b\" ],\n"
+        "  [ null, 0, 4, 0, null, \"str\", 1, [] ]\n"
+        "] ]");
     }
 
     it "checks for the end anyway (success)"
@@ -184,7 +196,19 @@ describe "fabr_eseq()"
       t = fabr_eseq("Z", &i, _es_sta, _es_elt, _es_se, _es_end);
 
       ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
-        "x";
+        "[ \"Z\", 1, 0, 5, null, \"eseq\", 0, [\n"
+        "  [ null, 1, 0, 1, null, \"str\", 1, \"<\" ],\n"
+        "  [ \"e\", 1, 1, 1, null, \"rng\", 3, \"a\" ],\n"
+        "  [ null, 1, 2, 1, null, \"rex\", 2, [\n"
+        "    [ null, 1, 2, 1, null, \"rex_seq\", 2, [\n"
+        "      [ null, 1, 2, 1, null, \"rex_rep\", 2, [\n"
+        "        [ null, 1, 2, 1, null, \"rex_str\", 1, \",\" ]\n"
+        "      ] ]\n"
+        "    ] ]\n"
+        "  ] ],\n"
+        "  [ \"e\", 1, 3, 1, null, \"rng\", 3, \"b\" ],\n"
+        "  [ null, 1, 4, 1, null, \"str\", 1, \">\" ]\n"
+        "] ]");
     }
 
     it "checks for the end anyway (succeeds and prunes)"
