@@ -227,6 +227,38 @@ describe "fabr_eseq()"
         "  [ null, 1, 4, 1, null, \"str\", 1, \">\" ]\n"
         "] ]");
     }
+
+    it "goes beyond the first element"
+    {
+      i.string = "<ab>";
+      i.flags = FABR_F_PRUNE;
+
+      t = fabr_eseq("Z", &i, _es_sta, _es_elt, _es_se, _es_end);
+
+      ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
+        "[ \"Z\", 1, 0, 4, null, \"eseq\", 0, [\n"
+        "  [ null, 1, 0, 1, null, \"str\", 1, \"<\" ],\n"
+        "  [ \"e\", 1, 1, 1, null, \"rng\", 3, \"a\" ],\n"
+        "  [ null, 1, 2, 0, null, \"rex\", 2, \"\" ],\n"
+        "  [ \"e\", 1, 2, 1, null, \"rng\", 3, \"b\" ],\n"
+        "  [ null, 1, 3, 1, null, \"str\", 1, \">\" ]\n"
+        "] ]");
+    }
+
+    it "goes beyond the first element (jseq)"
+    {
+      i.string = "ab";
+      i.flags = FABR_F_PRUNE;
+
+      t = fabr_jseq("Z", &i, _es_elt, _es_se);
+
+      ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
+        "[ \"Z\", 1, 0, 2, null, \"eseq\", 0, [\n"
+        "  [ \"e\", 1, 0, 1, null, \"rng\", 3, \"a\" ],\n"
+        "  [ null, 1, 1, 0, null, \"rex\", 2, \"\" ],\n"
+        "  [ \"e\", 1, 1, 1, null, \"rng\", 3, \"b\" ]\n"
+        "] ]");
+    }
   }
 }
 

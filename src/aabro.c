@@ -1088,36 +1088,36 @@ fabr_tree *fabr_eseq(
   for (size_t j = 0; ; j++)
   {
     short over = 0;
-    fabr_tree *sept = NULL;
-    fabr_tree *eltt = NULL;
+    fabr_tree *st = NULL;
+    fabr_tree *et = NULL;
 
-    if (j > 0) sept = sepp(i);
-    if (sept == NULL || sept->result == 1) eltt = eltp(i);
+    if (j > 0) st = sepp(i);
+    if (st == NULL || st->result == 1) et = eltp(i);
 
     // determine r->result
 
-    if (sept && sept->result == 0) over = 1;
-    else if (sept && sept->result == -1) r->result = -1;
-    else if (sept && sept->result == 1 && sept->length == 0) over = 2;
-    else if (j == 0 && eltt && eltt->result == 0 && jseq == 0) over = 1;
-    else if (eltt && eltt->result != 1) r->result = eltt->result;
+    if (st && st->result == 0) over = 1;
+    else if (st && st->result == -1) r->result = -1;
+    else if (st && st->result == 1 && st->length == 0 && et->result == 0) over = 2;
+    else if (j == 0 && et && et->result == 0 && jseq == 0) over = 1;
+    else if (et && et->result != 1) r->result = et->result;
 
     // add or free
 
-    if (over != 2 && sept && (sept->result != 0 || prune == 0))
+    if (over != 2 && st && (st->result != 0 || prune == 0))
     {
-      *next = sept; next = &sept->sibling; r->length += sept->length;
-      sept = NULL;
+      *next = st; next = &st->sibling; r->length += st->length;
+      st = NULL;
     }
 
-    if (over != 2 && eltt && (eltt->result != 0 || prune == 0))
+    if (over != 2 && et && (et->result != 0 || prune == 0))
     {
-      *next = eltt; next = &eltt->sibling; r->length += eltt->length;
-      eltt = NULL;
+      *next = et; next = &et->sibling; r->length += et->length;
+      et = NULL;
     }
 
-    fabr_tree_free(sept);
-    fabr_tree_free(eltt);
+    fabr_tree_free(st);
+    fabr_tree_free(et);
 
     // break or continue
 
