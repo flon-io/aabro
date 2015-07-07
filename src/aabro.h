@@ -178,10 +178,12 @@ fabr_tree *fabr_str(
 fabr_tree *fabr_seq(
   char *name, fabr_input *i, fabr_parser *p, ...);
 
-fabr_tree *fabr_altg(
+fabr_tree *fabr_altgr(
   char *name, fabr_input *i, short greedy, fabr_parser *p, ...);
+#define fabr_altg(name, i, p, ...) \
+  fabr_altgr(name, i, 1, p, __VA_ARGS__)
 #define fabr_alt(name, i, p, ...) \
-  fabr_altg(name, i, 0, p, __VA_ARGS__)
+  fabr_altgr(name, i, 0, p, __VA_ARGS__)
 
 fabr_tree *fabr_rep(
   char *name, fabr_input *i, fabr_parser *p, size_t min, size_t max);

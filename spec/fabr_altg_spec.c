@@ -30,7 +30,7 @@ describe "fabr_altg()"
     it "takes the first succesful result"
     {
       i.string = "xx";
-      t = fabr_altg("g", &i, 0, _1x, _2x, NULL);
+      t = fabr_altgr("g", &i, 0, _1x, _2x, NULL);
 
       expect(i.offset zu== 1);
 
@@ -46,7 +46,7 @@ describe "fabr_altg()"
     it "favours the longest successful result"
     {
       i.string = "xx";
-      t = fabr_altg("g", &i, 1, _1x, _2x, NULL);
+      t = fabr_altg("g", &i, _1x, _2x, NULL);
 
       expect(i.offset zu== 2);
 
@@ -62,7 +62,7 @@ describe "fabr_altg()"
     {
       i.string = "xx";
       i.flags = FABR_F_PRUNE;
-      t = fabr_altg("g", &i, 1, _1x, _2x, NULL);
+      t = fabr_altg("g", &i, _1x, _2x, NULL);
 
       expect(i.offset zu== 2);
 
@@ -77,7 +77,7 @@ describe "fabr_altg()"
     {
       i.string = "xx";
       i.flags = FABR_F_PRUNE;
-      t = fabr_altg("g", &i, 1, _2x, _x2, NULL);
+      t = fabr_altg("g", &i, _2x, _x2, NULL);
 
       expect(i.offset zu== 2);
 
@@ -92,7 +92,7 @@ describe "fabr_altg()"
     {
       i.string = "xx";
       i.flags = FABR_F_PRUNE;
-      t = fabr_altg("g", &i, 1, _2x, _x2, _3x, NULL);
+      t = fabr_altg("g", &i, _2x, _x2, _3x, NULL);
 
       expect(i.offset zu== 2);
 

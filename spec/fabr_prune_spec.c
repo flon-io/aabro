@@ -27,7 +27,7 @@ describe "fabr_prune()"
   it "drops the short winners when pruning (2)"
   {
     i.string = "yy";
-    t = fabr_altg(NULL, &i, 1, _y1, _y2, _y3, NULL);
+    t = fabr_altg(NULL, &i, _y1, _y2, _y3, NULL);
 
     expect(i.offset zu== 2);
 

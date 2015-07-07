@@ -486,7 +486,7 @@ fabr_tree *fabr_seq(
   return r;
 }
 
-fabr_tree *fabr_altg(
+fabr_tree *fabr_altgr(
   char *name, fabr_input *i, short greedy, fabr_parser *p, ...)
 {
   //size_t m = mm++; printf("A %zu fabr_altg() %d \"%s\"\n", m, greedy, name);
