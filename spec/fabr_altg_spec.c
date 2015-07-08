@@ -96,7 +96,7 @@ describe "fabr_altg()"
 
       expect(i.offset zu== 2);
 
-      fabr_puts(t, i.string, 3);
+      //fabr_puts(t, i.string, 3);
       ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
         "[ \"g\", 1, 0, 2, null, \"altg\", 0, [\n"
         "  [ \"x2\", 1, 0, 2, null, \"str\", 2, \"xx\" ]\n"

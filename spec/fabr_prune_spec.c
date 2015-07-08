@@ -31,7 +31,7 @@ describe "fabr_prune()"
 
     expect(i.offset zu== 2);
 
-    fabr_puts(t, i.string, 3);
+    //fabr_puts(t, i.string, 3);
     ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
       "[ null, 1, 0, 2, null, \"altg\", 0, [\n"
       "  [ \"y1\", 0, 0, 0, null, \"str\", 1, [] ],\n"
@@ -41,7 +41,7 @@ describe "fabr_prune()"
 
     fabr_prune(t);
 
-    fabr_puts(t, i.string, 3);
+    //fabr_puts(t, i.string, 3);
     ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
       "[ null, 1, 0, 2, null, \"altg\", 0, [\n"
       "  [ \"y2\", 1, 0, 2, null, \"str\", 2, \"yy\" ]\n"
