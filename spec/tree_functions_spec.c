@@ -129,6 +129,15 @@ context "tree functions"
         // NB: only freeing this list of pointers,
         //     the trees themselves are freed in the "after each"
     }
+
+    it "returns an empty list when the tree is NULL"
+    {
+      flu_list *l = fabr_tree_list(NULL, is_value);
+
+      ensure(l->size zu== 0);
+
+      flu_list_free(l);
+    }
   }
 
   describe "fabr_tree_list_cn()"

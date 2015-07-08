@@ -248,6 +248,8 @@ char *fabr_lookup_string(const char *input, fabr_tree *t, const char *name)
 static void fabr_t_list(
   flu_list *l, fabr_tree *t, fabr_tree_func *f, int skip)
 {
+  if (t == NULL) return;
+
   if ( ! skip)
   {
     short r = f(t);
