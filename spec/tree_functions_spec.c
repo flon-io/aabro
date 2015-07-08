@@ -130,13 +130,11 @@ context "tree functions"
         //     the trees themselves are freed in the "after each"
     }
 
-    it "returns an empty list when the tree is NULL"
+    it "returns NULL when the tree is NULL"
     {
       flu_list *l = fabr_tree_list(NULL, is_value);
 
-      ensure(l->size zu== 0);
-
-      flu_list_free(l);
+      ensure(l == NULL);
     }
   }
 
@@ -203,13 +201,11 @@ context "tree functions"
         //     the trees themselves are freed in the "after each"
     }
 
-    it "returns an empty list when the tree is NULL"
+    it "returns NULL when the tree is NULL"
     {
       flu_list *l = fabr_tree_list_named(NULL, "nada");
 
-      ensure(l->size == 0);
-
-      flu_list_free(l);
+      ensure(l == NULL);
     }
 
     it "returns an empty list when it finds nothing"
