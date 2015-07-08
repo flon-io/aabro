@@ -283,6 +283,8 @@ flu_list *fabr_tree_list_cn(fabr_tree *t, fabr_tree_func *f)
 static void fabr_t_list_named(
   flu_list *l, fabr_tree *t, const char *name, int skip)
 {
+  if (t == NULL) return;
+
   if ( ! skip)
   {
     if (t->result != 1) { return; }
