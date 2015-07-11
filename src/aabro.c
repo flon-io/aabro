@@ -520,6 +520,10 @@ fabr_tree *fabr_altgr(
         if (winner) { winner->result = 0; winner->length = 0; }
         winner = t;
       }
+      else
+      {
+        t->result = 0;
+      }
     }
 
     p = va_arg(ap, fabr_parser *); if (p == NULL) break;

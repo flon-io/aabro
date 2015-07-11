@@ -102,6 +102,21 @@ describe "fabr_altg()"
         "  [ \"x2\", 1, 0, 2, null, \"str\", 2, \"xx\" ]\n"
         "] ]");
     }
+
+    it "drops the short winners when pruning (3)"
+    {
+      i.string = "xx";
+      i.flags = FABR_F_PRUNE;
+      t = fabr_altg("g", &i, _2x, _1x, NULL);
+
+      expect(i.offset zu== 2);
+
+      //fabr_puts(t, i.string, 3);
+      ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
+        "[ \"g\", 1, 0, 2, null, \"altg\", 0, [\n"
+        "  [ \"2x\", 1, 0, 2, null, \"str\", 2, \"xx\" ]\n"
+        "] ]");
+    }
   }
 }
 
