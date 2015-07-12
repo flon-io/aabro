@@ -381,6 +381,19 @@ describe "fabr_rex()"
   }
 
   it "accepts \"[ab]?\" (success 2)"
+  {
+    i.string = "a";
+    t = fabr_rex("x", &i, "[ab]?");
+
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"x\", 1, 0, 1, null, \"rex\", 5, [\n"
+      "  [ null, 1, 0, 1, null, \"rex_seq\", 5, [\n"
+      "    [ null, 1, 0, 1, null, \"rex_rep\", 5, [\n"
+      "      [ null, 1, 0, 1, null, \"rng\", 2, \"a\" ]\n"
+      "    ] ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
 
   it "accepts \"[ab]*\" (failure)"
   it "accepts \"[ab]*\" (success)"
