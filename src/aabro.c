@@ -1105,11 +1105,18 @@ fabr_tree *fabr_eseq(
 
     // determine r->result
 
-    if (st && st->result == 0) over = 1;
-    else if (st && st->result == -1) r->result = -1;
-    else if (st && st->result == 1 && st->length == 0 && et->result == 0) over = 2;
-    else if (j == 0 && et && et->result == 0 && jseq == 0) over = 1;
-    else if (et && et->result != 1) r->result = et->result;
+    if (st && st->result == 0)
+      over = 1;
+    else if (st && st->result == -1)
+      r->result = -1;
+    else if (st && st->result == 1 && st->length == 0 && et->result == 0)
+      over = 2;
+    else if (st && st->result == 1 && st->length == 0 && et->result == 1 && et->length == 0)
+      over = 2;
+    else if (j == 0 && et && et->result == 0 && jseq == 0)
+      over = 1;
+    else if (et && et->result != 1)
+      r->result = et->result;
 
     // add or free
 

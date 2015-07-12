@@ -290,6 +290,23 @@ describe "fabr_eseq()"
   context "with zero-length elements and separators"
   {
     it "works"
+    {
+      i.string = "<a,,a>";
+      i.flags = FABR_F_PRUNE;
+
+      t = fabr_eseq("B", &i, _es_sta, _es_el, _es_se, _es_end);
+
+      ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
+        "[ \"B\", 1, 0, 6, null, \"eseq\", 0, [\n"
+        "  [ null, 1, 0, 1, null, \"str\", 1, \"<\" ],\n"
+        "  [ \"e\", 1, 1, 1, null, \"rex\", 2, \"a\" ],\n"
+        "  [ null, 1, 2, 1, null, \"rex\", 2, \",\" ],\n"
+        "  [ \"e\", 1, 3, 0, null, \"rex\", 2, \"\" ],\n"
+        "  [ null, 1, 3, 1, null, \"rex\", 2, \",\" ],\n"
+        "  [ \"e\", 1, 4, 1, null, \"rex\", 2, \"a\" ],\n"
+        "  [ null, 1, 5, 1, null, \"str\", 1, \">\" ]\n"
+        "] ]");
+    }
   }
 }
 
