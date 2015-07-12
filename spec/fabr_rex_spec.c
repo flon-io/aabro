@@ -433,19 +433,81 @@ describe "fabr_rex()"
     t = fabr_rex("x", &i, "[ab]{2}");
 
     expect(fabr_tree_to_string(t, i.string, 0) ===f ""
-      "[ \"x\", 1, 0, 0, null, \"rex\", 5, [\n"
-      "  [ null, 1, 0, 0, null, \"rex_seq\", 5, [\n"
-      "    [ null, 1, 0, 0, null, \"rex_rep\", 5, [\n"
-      "      [ null, 0, 0, 0, null, \"rng\", 2, [] ]\n"
+      "[ \"x\", 0, 0, 0, null, \"rex\", 7, [\n"
+      "  [ null, 0, 0, 0, null, \"rex_seq\", 7, [\n"
+      "    [ null, 0, 0, 0, null, \"rex_rep\", 7, [\n"
+      "      [ null, 1, 0, 1, null, \"rng\", 2, \"a\" ],\n"
+      "      [ null, 0, 1, 0, null, \"rng\", 2, [] ]\n"
       "    ] ]\n"
       "  ] ]\n"
       "] ]");
   }
 
   it "accepts \"[ab]{2}\" (success)"
+  {
+    i.string = "aa";
+    t = fabr_rex("x", &i, "[ab]{2}");
+
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"x\", 1, 0, 2, null, \"rex\", 7, [\n"
+      "  [ null, 1, 0, 2, null, \"rex_seq\", 7, [\n"
+      "    [ null, 1, 0, 2, null, \"rex_rep\", 7, [\n"
+      "      [ null, 1, 0, 1, null, \"rng\", 2, \"a\" ],\n"
+      "      [ null, 1, 1, 1, null, \"rng\", 2, \"a\" ]\n"
+      "    ] ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
 
   it "accepts \"[ab]{2,3}\" (failure)"
+  {
+    i.string = "a";
+    t = fabr_rex("z", &i, "[ab]{2,3}");
+
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"z\", 0, 0, 0, null, \"rex\", 9, [\n"
+      "  [ null, 0, 0, 0, null, \"rex_seq\", 9, [\n"
+      "    [ null, 0, 0, 0, null, \"rex_rep\", 9, [\n"
+      "      [ null, 1, 0, 1, null, \"rng\", 2, \"a\" ],\n"
+      "      [ null, 0, 1, 0, null, \"rng\", 2, [] ]\n"
+      "    ] ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
+
   it "accepts \"[ab]{2,3}\" (success)"
+  {
+    i.string = "aaa";
+    t = fabr_rex("z", &i, "[ab]{2,3}");
+
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"z\", 1, 0, 3, null, \"rex\", 9, [\n"
+      "  [ null, 1, 0, 3, null, \"rex_seq\", 9, [\n"
+      "    [ null, 1, 0, 3, null, \"rex_rep\", 9, [\n"
+      "      [ null, 1, 0, 1, null, \"rng\", 2, \"a\" ],\n"
+      "      [ null, 1, 1, 1, null, \"rng\", 2, \"a\" ],\n"
+      "      [ null, 1, 2, 1, null, \"rng\", 2, \"a\" ]\n"
+      "    ] ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
+
+  it "accepts \"[ab]{2,3}\" (success 2)"
+  {
+    i.string = "aaaa";
+    t = fabr_rex("z", &i, "[ab]{2,3}");
+
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"z\", 1, 0, 3, null, \"rex\", 9, [\n"
+      "  [ null, 1, 0, 3, null, \"rex_seq\", 9, [\n"
+      "    [ null, 1, 0, 3, null, \"rex_rep\", 9, [\n"
+      "      [ null, 1, 0, 1, null, \"rng\", 2, \"a\" ],\n"
+      "      [ null, 1, 1, 1, null, \"rng\", 2, \"a\" ],\n"
+      "      [ null, 1, 2, 1, null, \"rng\", 2, \"a\" ]\n"
+      "    ] ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
 
   it "accepts \"ab(cd|ef)\" (failure)"
   {
