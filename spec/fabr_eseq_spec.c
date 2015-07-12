@@ -163,10 +163,14 @@ describe "fabr_eseq()"
       "] ]");
   }
 
+  //
+  // zero-length spec'ing
+
+  static fabr_tree *_es_se(fabr_input *i) { return fabr_rex(NULL, i, ",?"); }
+  static fabr_tree *_es_el(fabr_input *i) { return fabr_rex("e", i, "a?"); }
+
   context "with zero-length separators"
   {
-    static fabr_tree *_es_se(fabr_input *i) { return fabr_rex(NULL, i, ",?"); }
-
     it "checks for the end anyway (failure)"
     {
       i.string = "<a,b...";
@@ -259,6 +263,33 @@ describe "fabr_eseq()"
         "  [ \"e\", 1, 1, 1, null, \"rng\", 3, \"b\" ]\n"
         "] ]");
     }
+  }
+
+  context "with zero-length elements"
+  {
+    it "accepts 'blanks' between separators"
+    {
+      i.string = "<a,,a>";
+      i.flags = FABR_F_PRUNE;
+
+      t = fabr_eseq("Z", &i, _es_sta, _es_el, _es_sep, _es_end);
+
+      ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
+        "[ \"Z\", 1, 0, 6, null, \"eseq\", 0, [\n"
+        "  [ null, 1, 0, 1, null, \"str\", 1, \"<\" ],\n"
+        "  [ \"e\", 1, 1, 1, null, \"rex\", 2, \"a\" ],\n"
+        "  [ null, 1, 2, 1, null, \"str\", 1, \",\" ],\n"
+        "  [ \"e\", 1, 3, 0, null, \"rex\", 2, \"\" ],\n"
+        "  [ null, 1, 3, 1, null, \"str\", 1, \",\" ],\n"
+        "  [ \"e\", 1, 4, 1, null, \"rex\", 2, \"a\" ],\n"
+        "  [ null, 1, 5, 1, null, \"str\", 1, \">\" ]\n"
+        "] ]");
+    }
+  }
+
+  context "with zero-length elements and separators"
+  {
+    it "works"
   }
 }
 
