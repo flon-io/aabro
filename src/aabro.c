@@ -1045,7 +1045,7 @@ static fabr_tree *rex_alt(fabr_input *i, char *rx, size_t rxn)
     //  m, n, prev->result, prev->length);
     //n++;
 
-    if (prev->result == 1) break;
+    if (prev->result != 0) break;
 
   } while (c != 0);
 

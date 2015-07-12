@@ -428,7 +428,22 @@ describe "fabr_rex()"
   }
 
   it "accepts \"[ab]{2}\" (failure)"
+  {
+    i.string = "a";
+    t = fabr_rex("x", &i, "[ab]{2}");
+
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"x\", 1, 0, 0, null, \"rex\", 5, [\n"
+      "  [ null, 1, 0, 0, null, \"rex_seq\", 5, [\n"
+      "    [ null, 1, 0, 0, null, \"rex_rep\", 5, [\n"
+      "      [ null, 0, 0, 0, null, \"rng\", 2, [] ]\n"
+      "    ] ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
+
   it "accepts \"[ab]{2}\" (success)"
+
   it "accepts \"[ab]{2,3}\" (failure)"
   it "accepts \"[ab]{2,3}\" (success)"
 
@@ -970,6 +985,24 @@ describe "fabr_rex()"
         "    [ null, 0, 0, 0, null, \"rex_str\", 1, [] ]\n"
         "  ] ]\n"
         "] ]");
+    }
+
+    it "rejects \"ab**|cd\""
+    {
+      i.string = "acadabra";
+      t = fabr_rex("x", &i, "ab**|cd");
+
+      //fabr_puts(t, i.string, 3);
+      expect(t->result d== -1);
+    }
+
+    it "rejects \"(ab**|cd)\""
+    {
+      i.string = "acadabra";
+      t = fabr_rex("x", &i, "(ab**|cd)");
+
+      //fabr_puts(t, i.string, 3);
+      expect(t->result d== -1);
     }
   }
 }
