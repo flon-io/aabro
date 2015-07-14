@@ -198,6 +198,33 @@ describe "fabr_eseq()"
       "] ]");
   }
 
+  it "propagates -1 (error start)"
+  {
+    i.string = "<ab>";
+
+    t = fabr_eseq("r", &i, _es_err, _es_elt, _es_sep, _es_end);
+
+    ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"r\", -1, 0, 0, null, \"eseq\", 0, [\n"
+      "  [ null, -1, 0, 0, null, \"_es_err\", 0, [] ]\n"
+      "] ]");
+  }
+
+  it "propagates -1 (error end)"
+  {
+    i.string = "<ab>";
+
+    t = fabr_eseq("r", &i, _es_sta, _es_elt, _es_sep, _es_err);
+
+    ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"r\", -1, 0, 0, null, \"eseq\", 0, [\n"
+      "  [ null, 1, 0, 1, null, \"str\", 1, \"<\" ],\n"
+      "  [ \"e\", 1, 1, 1, null, \"rng\", 3, \"a\" ],\n"
+      "  [ null, 0, 2, 0, null, \"str\", 1, [] ],\n"
+      "  [ null, -1, 2, 0, null, \"_es_err\", 0, [] ]\n"
+      "] ]");
+  }
+
   //
   // zero-length spec'ing
 

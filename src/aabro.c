@@ -1088,7 +1088,7 @@ fabr_tree *fabr_eseq(
     fabr_tree *t = startp(i);
     *next = t;
 
-    if (t->result != 1) { r->result = 0; return r; }
+    if (t->result != 1) { r->result = t->result; return r; }
 
     r->length += t->length;
     next = &t->sibling;
