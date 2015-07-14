@@ -27,9 +27,7 @@ describe "fabr_alt()"
   static fabr_tree *_talterr(fabr_input *i)
   {
     fabr_tree *r = calloc(1, sizeof(fabr_tree));
-    r->result = -1;
-    r->parter = "_talterr";
-    r->offset = i->offset;
+    r->result = -1; r->parter = "_talterr"; r->offset = i->offset;
 
     return r;
   }

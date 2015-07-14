@@ -25,6 +25,14 @@ describe "fabr_altg()"
   static fabr_tree *_x2(fabr_input *i) { return fabr_str("x2", i, "xx"); }
   static fabr_tree *_3x(fabr_input *i) { return fabr_str("3x", i, "xxx"); }
 
+  static fabr_tree *_xerr(fabr_input *i)
+  {
+    fabr_tree *r = calloc(1, sizeof(fabr_tree));
+    r->result = -1; r->parter = "_xerr"; r->offset = i->offset;
+
+    return r;
+  }
+
   context "greedy=0"
   {
     it "takes the first succesful result"
@@ -115,6 +123,29 @@ describe "fabr_altg()"
       ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
         "[ \"g\", 1, 0, 2, null, \"altg\", 0, [\n"
         "  [ \"2x\", 1, 0, 2, null, \"str\", 2, \"xx\" ]\n"
+        "] ]");
+    }
+    it "propagates -1 (error)"
+    {
+      i.string = "xx";
+      t = fabr_altg("e", &i, _2x, _1x, _xerr, NULL);
+
+      ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
+        "[ \"e\", -1, 0, 0, null, \"altg\", 0, [\n"
+        "  [ \"2x\", 1, 0, 2, null, \"str\", 2, \"xx\" ],\n"
+        "  [ \"1x\", 0, 0, 1, null, \"str\", 1, [] ],\n"
+        "  [ null, -1, 0, 0, null, \"_xerr\", 0, [] ]\n"
+        "] ]");
+    }
+
+    it "propagates -1 (error) immediately"
+    {
+      i.string = "xx";
+      t = fabr_altg("e", &i, _xerr, _2x, _1x, NULL);
+
+      ensure(fabr_tree_to_string(t, i.string, 0) ===f ""
+        "[ \"e\", -1, 0, 0, null, \"altg\", 0, [\n"
+        "  [ null, -1, 0, 0, null, \"_xerr\", 0, [] ]\n"
         "] ]");
     }
   }
