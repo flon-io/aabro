@@ -107,6 +107,15 @@ char *fabr_tree_str(const char *input, fabr_tree *t)
   return (char *)input + t->offset;
 }
 
+long long fabr_tree_llong(const char *input, fabr_tree *t, int base)
+{
+  char *s = fabr_tree_string(input, t);
+  long long r = strtoll(s, NULL, base);
+  free(s);
+
+  return r;
+}
+
 static void fabr_t_to_s(
   fabr_tree *t, const char *input,
   flu_sbuffer *b, size_t indent, short children, short color)

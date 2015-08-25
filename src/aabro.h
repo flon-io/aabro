@@ -91,6 +91,10 @@ char *fabr_tree_string(const char *input, fabr_tree *t);
  */
 char *fabr_tree_str(const char *input, fabr_tree *t);
 
+/* Attempts to extract a long long from the pointed at string.
+ */
+long long fabr_tree_llong(const char *input, fabr_tree *t, int base);
+
 /* Given a fabr_tree resulting from a parse run, returns the error message
  * or NULL if none.
  */

@@ -114,6 +114,7 @@ context "tree functions"
 
       ensure(t0->name === "value");
       ensure(fabr_tree_string(s, t0) ===f "1");
+      ensure(fabr_tree_llong(s, t0, 10) == 1);
       ensure(t1->name === "value");
       ensure(fabr_tree_string(s, t1) ===f "2");
       ensure(t2->name === "value");
@@ -575,5 +576,21 @@ context "tree functions"
       expect(fabr_lookup_string(s, t, "number") ===f "-1");
     }
   }
+
+  describe "fabr_tree_llong()"
+  {
+    it "returns a long long containing the parsed input for the tree"
+    {
+      char *in = "[-1,0,1]";
+      t = fabr_parse_all(in, _value);
+      //fabr_puts_tree(t, in, 1);
+
+      fabr_tree *tt = fabr_tree_lookup(t, "number");
+      //fabr_puts_tree(t, in, 1);
+
+      long long l = fabr_tree_llong(in, tt, 10);
+
+      ensure(l == -1);
+    }
 }
 
