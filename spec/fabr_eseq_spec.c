@@ -351,7 +351,9 @@ describe "fabr_eseq()"
 
   context "with zero-length elements and separators"
   {
-    it "works"
+    it "parses <>"
+
+    it "parses <a,,a>"
     {
       i.string = "<a,,a>";
       i.flags = FABR_F_PRUNE;
