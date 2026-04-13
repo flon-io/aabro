@@ -1,6 +1,6 @@
 
 //
-// Copyright (c) 2013-2015, John Mettraux, jmettraux+flon@gmail.com
+// Copyright (c) 2013-2026, John Mettraux, jmettraux+flon@gmail.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -175,7 +175,7 @@ static void fabr_t_to_s(
   }
 
   flu_sbputc(b, '\n');
-  for (int i = 0; i < indent; i++) flu_sbprintf(b, "  ");
+  for (size_t i = 0; i < indent; i++) flu_sbprintf(b, "  ");
   flu_sbprintf(b, "%s] ]%s", resultc, clearc);
 }
 
@@ -406,9 +406,9 @@ fabr_tree *fabr_str(
 
 //static size_t mm = 0;
 
-fabr_tree *fabr_qmark(fabr_input *i) { return NULL; }
-fabr_tree *fabr_star(fabr_input *i) { return NULL; }
-fabr_tree *fabr_plus(fabr_input *i) { return NULL; }
+fabr_tree *fabr_qmark(fabr_input *i) { (void)i; return NULL; }
+fabr_tree *fabr_star(fabr_input *i) { (void)i; return NULL; }
+fabr_tree *fabr_plus(fabr_input *i) { (void)i; return NULL; }
 
 fabr_tree *fabr_seq(
   char *name, fabr_input *i, fabr_parser *p, ...)
@@ -610,7 +610,7 @@ static char *rx_chr(char *rx, size_t rxn, int c)
 {
   char *r = strchr(rx, c);
 
-  return r - rx >= rxn ? NULL : r;
+  return r - rx >= (long)rxn ? NULL : r;
 }
 
 typedef fabr_tree *fabr_rex_parser(fabr_input *i, char *rx, size_t rxn);
