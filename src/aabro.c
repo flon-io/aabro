@@ -999,7 +999,9 @@ static fabr_tree *rex_alt(fabr_input *i, char *rx, size_t rxn)
 {
   fabr_tree *r = fabr_tree_malloc(NULL, "rex_alt", i, rxn);
 
-  // TODO/WARNING: greedy, the wants to have the longest match...
+  // TODO/WARNING: greedy, it goes for the longest match...
+
+  // eleven years later, I am surprised I implemented this mini rex thing
 
   fabr_tree *prev = NULL;
   fabr_tree **next = &r->child;
