@@ -1,6 +1,6 @@
 
 //
-// Copyright (c) 2013-2015, John Mettraux, jmettraux+flon@gmail.com
+// Copyright (c) 2013-2026, John Mettraux, jmettraux+flon@gmail.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -240,6 +240,10 @@ flu_list *flu_list_malloc();
  */
 flu_list *flu_l(void *elt0, ...);
 
+/* Returns the length of the given flu_list.
+ */
+size_t flu_list_length(flu_list *l);
+
 /* Frees a flu_list and all its nodes. But doesn't attempt freeing the
  * items in the nodes.
  */
@@ -372,6 +376,11 @@ flu_node *flu_list_getn(flu_list *l, const char *key);
  * Expects a last arg that is the default value, returned in case of miss.
  */
 void *flu_list_getd(flu_list *l, const char *key, ...);
+
+/* Like flu_list_getd() but tolerates a NULL l, in which case it returns
+ * the default.
+ */
+void *flu_list_getod(flu_list *l, const char *key, ...);
 
 /* Given a key, returns the item bound for it, NULL instead.
  * (O(n)).
@@ -506,8 +515,3 @@ void flu_zero_and_free(char *s, ssize_t n);
 
 #endif // FLON_FLUTIL_H
 
-//commit 86f3f65cab0fc210be3e60d08fb42c7de9ca9afc
-//Author: John Mettraux <jmettraux@gmail.com>
-//Date:   Fri Feb 27 09:40:05 2015 +0900
-//
-//    add flu_sv() as shortcut for flu_svprintf()

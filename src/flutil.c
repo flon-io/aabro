@@ -1,6 +1,6 @@
 
 //
-// Copyright (c) 2013-2015, John Mettraux, jmettraux+flon@gmail.com
+// Copyright (c) 2013-2026, John Mettraux, jmettraux+flon@gmail.com
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -36,7 +36,7 @@
 #include <libgen.h>
 #include <errno.h>
 #include <dirent.h>
-#include <wordexp.h>
+#include <glob.h>
 
 #include "flutil.h"
 
@@ -449,7 +449,9 @@ char *flu_basename(const char *path, ...)
   char *dbn = strdup(bn);
   free(s);
 
-  if (new_suffix) strcpy(strrchr(dbn, '.'), new_suffix);
+  //if (new_suffix) strcpy(strrchr(dbn, '.'), new_suffix);
+  //if (new_suffix) strlcpy(strrchr(dbn, '.'), new_suffix, strlen(new_suffix));
+  if (new_suffix) memcpy(strrchr(dbn, '.'), new_suffix, strlen(new_suffix));
 
   return dbn;
 }
@@ -531,18 +533,18 @@ ssize_t flu_rm_files(const char *path, ...)
 
   ssize_t r = 0;
 
-  wordexp_t we;
-  wordexp(p, &we, WRDE_NOCMD);
+  glob_t gl;
+  glob(p, GLOB_NOSORT, NULL, &gl);
 
-  for (size_t i = 0; i < we.we_wordc; ++i)
+  for (size_t i = 0; i < gl.gl_pathc; ++i)
   {
-    if (unlink(we.we_wordv[i]) != 0) { r = -1; goto _over; }
+    if (unlink(gl.gl_pathv[i]) != 0) { r = -1; goto _over; }
     ++r;
   }
 
 _over:
 
-  wordfree(&we);
+  globfree(&gl);
   free(p);
 
   return r;
@@ -661,6 +663,14 @@ flu_list *flu_l(void *elt0, ...)
   for (void *e = elt0; e; e = va_arg(ap, void *)) flu_list_add(r, e);
 
   va_end(ap);
+
+  return r;
+}
+
+size_t flu_list_length(flu_list *l)
+{
+  size_t r = 0;
+  for (flu_node *n = l->first; n != NULL; n = n->next) { r++; }
 
   return r;
 }
@@ -901,6 +911,20 @@ void *flu_list_getd(flu_list *l, const char *key, ...)
   return n ? n->item : def;
 }
 
+void *flu_list_getod(flu_list *l, const char *key, ...)
+{
+  va_list ap; va_start(ap, key);
+  char *k = flu_svprintf(key, ap);
+  void *def = va_arg(ap, void *);
+  va_end(ap);
+
+  flu_node *n = l ? flu_list_getn(l, k) : NULL;
+
+  free(k);
+
+  return n ? n->item : def;
+}
+
 void *flu_list_get(flu_list *l, const char *key, ...)
 {
   va_list ap; va_start(ap, key);
@@ -1119,7 +1143,7 @@ char *flu_urlencode(const char *s, ssize_t n)
 
   flu_sbuffer *b = flu_sbuffer_malloc();
 
-  for (size_t i = 0; i < n; ++i)
+  for (ssize_t i = 0; i < n; ++i)
   {
     char c = s[i];
 
@@ -1143,7 +1167,7 @@ char *flu_urldecode(const char *s, ssize_t n)
 
   char *r = calloc(n + 1, sizeof(char));
 
-  for (size_t i = 0, j = 0; i < n; ++j)
+  for (ssize_t i = 0, j = 0; i < n; ++j)
   {
     if (s[i] != '%') { r[j] = s[i++]; continue; }
 
@@ -1184,7 +1208,9 @@ char *flu_strdup(char *s)
 {
   int l = strlen(s);
   char *r = calloc(l + 1, sizeof(char));
-  strcpy(r, s);
+
+  //strcpy(r, s);
+  memcpy(r, s, strlen(s));
 
   return r;
 }
@@ -1250,8 +1276,3 @@ void flu_zero_and_free(char *s, ssize_t n)
   free(s);
 }
 
-//commit 86f3f65cab0fc210be3e60d08fb42c7de9ca9afc
-//Author: John Mettraux <jmettraux@gmail.com>
-//Date:   Fri Feb 27 09:40:05 2015 +0900
-//
-//    add flu_sv() as shortcut for flu_svprintf()

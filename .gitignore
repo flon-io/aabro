@@ -1,7 +1,8 @@
+
 *.swp
-tmp/*.h
-tmp/*.c
-tmp/*.o
-tmp/*.so
-tmp/s
-tmp/spec_*.txt
+
+.chat.md
+.deep.*
+.claude.*
+.openai.*
+
