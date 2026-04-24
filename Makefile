@@ -6,6 +6,7 @@ OBJS := $(SRCS:.c=.o)
 
 RODZO = ../rodzo/bin/rodzo
 
+all: spec
 
 $(OBJS):
 	$(CC) $(CFLAGS) -c $< -o $@
