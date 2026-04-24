@@ -1,6 +1,9 @@
 
 *.swp
 
+src/*.o
+tmp/spec*
+
 .chat.md
 .deep.*
 .claude.*
