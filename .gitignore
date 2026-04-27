@@ -1,5 +1,6 @@
 
 *.swp
+.vim*
 
 src/*.o
 tmp/spec*
