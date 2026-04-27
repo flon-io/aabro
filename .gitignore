@@ -1,12 +1,14 @@
 
 *.swp
-.vim*
+.vimgrep
+.viminfo
 
 src/*.o
 tmp/spec*
 
 .chat.md
-.deep.*
-.claude.*
+.deep*
 .openai.*
+.claude.md
+.klaude.*
 
