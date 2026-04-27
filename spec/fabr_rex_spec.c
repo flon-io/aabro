@@ -943,6 +943,20 @@ describe "fabr_rex()"
       "] ]");
   }
 
+  it "accepts \"\\$\" (escaped dollar) (success)"
+  {
+    i.string = "a$b";
+    t = fabr_rex("dollar", &i, "a\\$b");
+
+    //fabr_puts(t, i.string, 3);
+    expect(fabr_tree_to_string(t, i.string, 0) ===f ""
+      "[ \"dollar\", 1, 0, 3, null, \"rex\", 4, [\n"
+      "  [ null, 1, 0, 3, null, \"rex_seq\", 4, [\n"
+      "    [ null, 1, 0, 3, null, \"rex_str\", 4, \"a$b\" ]\n"
+      "  ] ]\n"
+      "] ]");
+  }
+
   context "errors"
   {
     it "rejects \"[ab\""

@@ -12,7 +12,7 @@ $(OBJS):
 	$(CC) $(CFLAGS) -c $< -o $@
 
 tmp/spec.c: spec/*_spec.c
-	$(RODZO) spec -o tmp/spec.c
+	$(RODZO) spec/ -o tmp/spec.c
 
 tmp/spec: tmp/spec.c $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) tmp/spec.c -o tmp/spec
@@ -24,5 +24,5 @@ clean:
 	rm -f src/*.o
 	rm -f tmp/spec.c
 
-.PHONY: clean
+.PHONY: clean spec
 
